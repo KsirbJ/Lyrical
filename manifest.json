@@ -1,0 +1,36 @@
+{
+	"manifest_version": 2,
+	"name": "Lyrical",
+	"version": "0.1",
+
+	"permissions": [
+		"tabs", "*://*/*", "storage", "webRequest", "notifications", "<all_urls>",
+		"activeTab", "https://ajax.googleapis.com/"
+	],
+
+	"content_scripts" : [
+		{
+			"matches" : [
+				"https://play.google.com/music/*"
+			],
+
+			"js" : [
+				"libs/jquery-3.1.1.min.js", "scripts/content/main.js"
+			]
+
+		}
+	],
+
+
+	"browser_action": {
+		"default_popup": "ui/popup.html",
+		"default_title": "Lyrical",
+		"default_icon":	"img/icon.png"
+	},
+
+	"background": {
+		"scripts": [
+			"libs/jquery-3.1.1.min.js", "scripts/background/background.js"
+		]
+	}
+}
