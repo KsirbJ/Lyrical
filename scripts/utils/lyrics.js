@@ -19,8 +19,10 @@ const $lyrics = {
 
 			    		console.log(hits[i].result.title);
 			    		console.log(hits[i].result.primary_artist.name);
-
-			    		if(hits[i].result.title === title && hits[i].result.primary_artist.name == artist){
+			    		
+			    		let mtch1 = new RegExp(title, 'i');
+			    		let mtch2 = new RegExp(artist, 'i');
+			    		if(hits[i].result.title.match(mtch1) && hits[i].result.primary_artist.name.match(mtch2)){
 			    			
 			    			found = true;
 
