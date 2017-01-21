@@ -1,11 +1,9 @@
 import $CORS from '../utils/CORS'
+import $utils from '../utils/utils'
 
 
 $(function(){
 
-	
-
-	console.log($CORS);
 	$("head").append(`
 		<style type="text/css">
 			#mainContainer.lyrics_visible {
@@ -17,7 +15,7 @@ $(function(){
 				position: absolute;
 				right: 0;
 				top: 0;
-				padding: 1em 3em 1em .5em;
+				padding: 1em 3em 1em 2em;
 				margin: 0;
 				overflow: scroll;
 			}
@@ -53,7 +51,7 @@ $(function(){
 				get_lyrics(current_artist, current_title);
 
 				if(!observer_attached){
-					create_observer("playerSongInfo", check_playing);
+					$utils.create_observer("playerSongInfo", check_playing);
 					observer_attached = true;
 				}
 			}
@@ -61,30 +59,10 @@ $(function(){
 		}
 	}
 
-	/**
-	 *	Create a Mutation Observer
-	 *	@param	The id of the element to observe
-	 *	@param	The function to call when a mutation is observed
-	 */
-	function create_observer(target, call_this_function){
-			let observer = new MutationObserver(function(mutations) {
-				mutations.forEach(function(mutation) {
-					call_this_function();
-				});    
-			});
-
-			let observerConfig = {
-				attributes: true, 
-				childList: true, 
-				characterData: false
-			};
-
-			let targetNode = document.getElementById(target);
-			observer.observe(targetNode, observerConfig);
-	}
+	
 	
 	// initialize observer
-	create_observer("player", check_playing);
+	$utils.create_observer("player", check_playing);
 
 	function get_lyrics(artist, title){
 		$("#lyrics").empty();
@@ -93,36 +71,37 @@ $(function(){
 		fetch('https://api.genius.com/search?access_token=' + access_token + '&q=' + 
 			encodeURIComponent(title) + encodeURIComponent(artist)).then(function (response) {
 		    	response.json().then(function (data) {
+
+		    		// Go through the data returned by Genius and check whether they have lyrics for this song.
 			    	let hits = data.response.hits || 0;
-			    	let not_found = true;
-			    	for(let i = 0; i < hits.length && not_found; ++i){
+			    	let found = false;
+			    	for(let i = 0; i < hits.length && !found; ++i){
 
 			    		console.log(hits[i].result.title);
 			    		console.log(hits[i].result.primary_artist.name);
 
 			    		if(hits[i].result.title === title && hits[i].result.primary_artist.name == artist){
 			    			
-			    			not_found = false;
+			    			found = true;
 
-			    			// get the actual lyrics
-			    			let path = hits[i].result.id;
-			    			fetch('https://api.genius.com/songs/' + path + '?access_token=' + access_token).then( function(response){
-			    				response.json().then(function(data){
-			    					let url = data.response.song.url;
-			    					$CORS.makeCorsRequest(url);
-			    				})
-			    			})
-
+			    			// They have the song, now get the actual lyrics.
+			    			let url = hits[i].result.url;
+			    			$CORS.makeCorsRequest(url);
 			    		}
+			    	}
+			    	// Looped through all the data and no lyrics found.
+			    	if(!found){
+			    		$("#lyrics").html("<h3>Whoops!</h3><p>Couldn't find lyrics, sorry :( </p>");
+			    		
+			    		// TODO Search additional lyric databases
 			    	}
 		      
 		  		});
-		  	}
-		);
+		  	});
 	}
 
 
-
+	// Toggle the lyrics panel when #show_hide_lyrics is clicked
 	function show_hide_panel(){
 		$("#lyrics").toggle();
 		$("#mainContainer").toggleClass("lyrics_visible");

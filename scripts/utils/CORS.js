@@ -36,7 +36,7 @@ const $CORS = {
 	   	let doc = parser.parseFromString(text, 'text/html');
 	    let actual_lyrics = $(doc).find(".lyrics").text();
 
-	    // add <p> </p> tags to lyrics
+	    // add html tags to lyrics
 	    actual_lyrics = actual_lyrics.split(/\r?\n/);
 	    actual_lyrics.forEach(function(element, index, arr){
 	    	arr[index] = "<p>" + arr[index] + "</p>";
@@ -44,6 +44,8 @@ const $CORS = {
 	    
 	    // Finally, show the lyrics
 	    $("#lyrics").append(actual_lyrics);
+	    // Credit website
+	    $("#lyrics").prepend(`<p style="text-align:right">Lyrics from <a href="${url}" target="_blank">Genius</a></p>`);
 
 	    // Clean up
 	    xhr = null;
