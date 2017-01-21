@@ -4,8 +4,7 @@
 	"version": "0.1",
 
 	"permissions": [
-		"tabs", "*://*/*", "storage", "webRequest", "notifications", "<all_urls>",
-		"activeTab", "https://ajax.googleapis.com/"
+		"tabs", "*://*/*", "webRequest", "<all_urls>", "activeTab"
 	],
 
 	"content_scripts" : [

@@ -1,5 +1,5 @@
-import $CORS from '../utils/CORS'
 import $utils from '../utils/utils'
+import $lyrics from '../utils/lyrics'
 
 
 $(function(){
@@ -31,11 +31,11 @@ $(function(){
 	// have we already attached a mutation observer?
 	let observer_attached = false;
 
-
 	let cur_song = {
 		title: "",
 		artist: ""
 	}
+	
 	// When a mutation on the player is observed, check whether the song has changed by comparing the
 	// title and artist with the stored version
 	function check_playing(){
@@ -48,7 +48,7 @@ $(function(){
 				cur_song.title = current_title;
 				cur_song.artist = current_artist;
 				console.log("updated - " + current_title + " " + current_artist);
-				get_lyrics(current_artist, current_title);
+				$lyrics.get_lyrics(current_artist, current_title);
 
 				if(!observer_attached){
 					$utils.create_observer("playerSongInfo", check_playing);
@@ -64,41 +64,7 @@ $(function(){
 	// initialize observer
 	$utils.create_observer("player", check_playing);
 
-	function get_lyrics(artist, title){
-		$("#lyrics").empty();
-		let access_token = "6xTujcUZfJUiPAssUT1jMwkkeeYWhMzLAOgXc5fPaWAdY0tz-UzE-EyrtYcOjoWo";
 
-		fetch('https://api.genius.com/search?access_token=' + access_token + '&q=' + 
-			encodeURIComponent(title) + encodeURIComponent(artist)).then(function (response) {
-		    	response.json().then(function (data) {
-
-		    		// Go through the data returned by Genius and check whether they have lyrics for this song.
-			    	let hits = data.response.hits || 0;
-			    	let found = false;
-			    	for(let i = 0; i < hits.length && !found; ++i){
-
-			    		console.log(hits[i].result.title);
-			    		console.log(hits[i].result.primary_artist.name);
-
-			    		if(hits[i].result.title === title && hits[i].result.primary_artist.name == artist){
-			    			
-			    			found = true;
-
-			    			// They have the song, now get the actual lyrics.
-			    			let url = hits[i].result.url;
-			    			$CORS.makeCorsRequest(url);
-			    		}
-			    	}
-			    	// Looped through all the data and no lyrics found.
-			    	if(!found){
-			    		$("#lyrics").html("<h3>Whoops!</h3><p>Couldn't find lyrics, sorry :( </p>");
-			    		
-			    		// TODO Search additional lyric databases
-			    	}
-		      
-		  		});
-		  	});
-	}
 
 
 	// Toggle the lyrics panel when #show_hide_lyrics is clicked
@@ -110,4 +76,7 @@ $(function(){
 	}
 
 	$(document).on("click", "#show_hide_lyrics", show_hide_panel);
+
+	// Hide panel by default on page load
+	$("#show_hide_lyrics").trigger("click");
 });
