@@ -1,10 +1,11 @@
 {
 	"manifest_version": 2,
 	"name": "Lyrical",
-	"version": "0.1",
+	"version": "0.2",
 
 	"permissions": [
-		"tabs", "*://*/*", "webRequest", "<all_urls>", "activeTab"
+		"activeTab", "https://play.google.com/music/*", "https://www.youtube.com/watch*",
+		"https://youtube.com/watch*", "https://api.genius.com/*", "https://genius.com/*"
 	],
 
 	"content_scripts" : [
@@ -16,7 +17,6 @@
 			"js" : [
 				"libs/jquery-3.1.1.min.js", "scripts/content_compiled/play_music.js"
 			]
-
 		}
 	],
 
