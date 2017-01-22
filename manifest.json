@@ -4,8 +4,8 @@
 	"version": "0.2",
 
 	"permissions": [
-		"activeTab", "https://play.google.com/music/*", "https://www.youtube.com/watch*",
-		"https://youtube.com/watch*", "https://api.genius.com/*", "https://genius.com/*"
+		"activeTab", "*://play.google.com/music/*", "*://www.youtube.com/watch*",
+		"*://youtube.com/*", "*://api.genius.com/*", "*://genius.com/*"
 	],
 
 	"content_scripts" : [
@@ -16,6 +16,17 @@
 
 			"js" : [
 				"libs/jquery-3.1.1.min.js", "scripts/content_compiled/play_music.js"
+			]
+		},
+
+		{
+			"matches" : [
+				"*://www.youtube.com/*",
+				"*://youtube.com/*"
+			],
+
+			"js" : [
+				"libs/jquery-3.1.1.min.js", "scripts/content_compiled/youtube.js"
 			]
 		}
 	],

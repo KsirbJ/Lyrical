@@ -15,23 +15,21 @@ const $CORS = {
 
 	extract_lyrics: function(text){
 		// Find lyrics in the returned document
-	   	let parser = new DOMParser();
-	   	let doc = parser.parseFromString(text, 'text/html');
-	    let actual_lyrics = $(doc).find(".lyrics").text();
+		let parser = new DOMParser();
+		let doc = parser.parseFromString(text, 'text/html');
+		let actual_lyrics = $(doc).find(".lyrics").text();
 
-	    // add html tags to lyrics
-	    actual_lyrics = actual_lyrics.split(/\r?\n/);
-	    actual_lyrics.forEach(function(element, index, arr){
-	    	arr[index] = "<p>" + arr[index] + "</p>";
-	    });
+		// add html tags to lyrics
+		actual_lyrics = actual_lyrics.split(/\r?\n/);
+		actual_lyrics.forEach(function(element, index, arr){
+			arr[index] = "<p>" + arr[index] + "</p>";
+		});
 
-	    // Finally, show the lyrics
-	    $("#lyrics").append(actual_lyrics);
-	    // Credit website
-	    $("#lyrics").prepend(`<p style="text-align:right">Lyrics from <a href="${url}" target="_blank">Genius</a></p>`);
+		// Finally, show the lyrics
+		$("#lyrics").append(actual_lyrics);
 
-	    parser = null
-	    doc = null;
+		parser = null
+		doc = null;
 	},
 
 	// Make the actual CORS request.
@@ -48,6 +46,9 @@ const $CORS = {
 			let text = xhr.responseText;
 
 			$CORS.extract_lyrics(text);
+			
+			// Credit website
+			$("#lyrics").prepend(`<p style="text-align:right">Lyrics from <a href="${url}" target="_blank">Genius</a></p>`);
 
 			// Clean up
 			xhr = null;

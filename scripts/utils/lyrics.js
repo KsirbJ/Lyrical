@@ -5,6 +5,8 @@ const $lyrics = {
 	// Function to pull lyrics from Genius
 	get_lyrics: function(artist, title){
 
+		console.log(artist);
+		console.log(title);
 		$("#lyrics").empty();
 		let access_token = "6xTujcUZfJUiPAssUT1jMwkkeeYWhMzLAOgXc5fPaWAdY0tz-UzE-EyrtYcOjoWo";
 
@@ -39,7 +41,7 @@ const $lyrics = {
 			    	}
 		      
 		  		});
-		  	});
+			});
 	}
 
 }
