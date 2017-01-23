@@ -1,4 +1,3 @@
-import $utils from '../utils/utils'
 import $lyrics from '../utils/lyrics'
 
 // lyrics on youtube 
@@ -6,7 +5,7 @@ $(function(){
 	function init(){
 
 		if(location.pathname === "/watch"){
-			console.log("i'm running");
+			console.log("Lyrical is running");
 
 			$("head").append(`
 				<style type="text/css">
@@ -46,13 +45,27 @@ $(function(){
 				if($(".watch-extras-section .watch-meta-item").last().find(".title").text().trim() === "Music"){
 
 					let song_info = $(".watch-extras-section .watch-meta-item").last().find("ul.watch-info-tag-list");
+					
 					let title = $(song_info).text().split("\"")[1];
 					let artist = $(song_info).find("a").first().text();
+					// If it got the wrong artist
+					if(artist === "Google Play" || artist.toUpperCase() === "ITUNES"){
+						let song_txt = song_info.text();
+						artist = song_txt.match(/by (.*) \(G/)[1];
+					}
 
 					$lyrics.get_lyrics(artist, title);
 				}else{
-					// Couldn't find title and artist
-					$("#lyrics").html("<h3>Whoops!</h3><p>Couldn't find lyrics, sorry :( </p>");
+					// Less accurate method. Try to find song info from the title
+					// Assumes "Artist - Song Title" format
+					let song_info = $("h1.watch-title-container").text();
+					song_info = song_info.split("-"); 
+					let artist = song_info[0].trim();
+					let title = song_info[1].trim();
+					// remove anything in parentheses or brackets
+					title = title.replace(/ *\([^)]*\) */g, " ").replace(/ *\[.*?\] */g, " ");
+
+					$lyrics.get_lyrics(artist, title);
 				}
 			}
 

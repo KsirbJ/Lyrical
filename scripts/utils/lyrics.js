@@ -19,13 +19,17 @@ const $lyrics = {
 			    	let found = false;
 			    	for(let i = 0; i < hits.length && !found; ++i){
 
-			    		console.log(hits[i].result.title);
-			    		console.log(hits[i].result.primary_artist.name);
+			    		// console.log(hits[i].result.title);
+			    		// console.log(hits[i].result.primary_artist.name);
 			    		
-			    		let mtch1 = new RegExp(title, 'i');
-			    		let mtch2 = new RegExp(artist, 'i');
-			    		if(hits[i].result.title.match(mtch1) && hits[i].result.primary_artist.name.match(mtch2)){
-			    			
+			    		title = title.trim().toUpperCase();
+			    		artist = artist.trim().toUpperCase();
+			    		let g_title = hits[i].result.title.trim().toUpperCase();
+			    		let g_artist = hits[i].result.primary_artist.name.trim().toUpperCase();
+
+			    		if((g_title.indexOf(title) !== -1 && g_artist.indexOf(artist) !== -1) || 
+			    			(title.indexOf(g_title) !== -1 && artist.indexOf(g_artist) !== -1) ){
+
 			    			found = true;
 
 			    			// They have the song, now get the actual lyrics.
