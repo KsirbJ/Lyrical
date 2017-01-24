@@ -2,7 +2,7 @@ import $lyrics from '../utils/lyrics'
 
 // lyrics on youtube 
 $(function(){
-	function init(){
+	function init(autorun){
 
 		if(location.pathname === "/watch"){
 			console.log("Lyrical is running");
@@ -17,7 +17,11 @@ $(function(){
 					}
 					#show_hide_lyrics {
 						text-decoration: none;
-						text-align: right;
+						position: absolute;
+						top: .5em;
+						right: .5em;
+						border: 1px solid #000;
+						padding: 1em;
 					}
 					#lyrics p{
 						line-height: 2em;
@@ -39,7 +43,7 @@ $(function(){
 				let player_height = $(".player-height").css("height");
 				$("#lyrics").css('height', player_height);
 
-				$("#watch-headline-title").append('<a href="#" id="show_hide_lyrics">Hide Lyrics</a>');
+				$("#watch-header").append('<a href="#" id="show_hide_lyrics">Hide Lyrics</a>');
 
 				// Try to find the song's info 
 				if($(".watch-extras-section .watch-meta-item").last().find(".title").text().trim() === "Music"){
@@ -67,25 +71,35 @@ $(function(){
 
 					$lyrics.get_lyrics(artist, title);
 				}
+
+				let el = document.getElementById("show_hide_lyrics");
+				el.addEventListener("click", show_hide_panel, false);
+				// Hide panel by default on page load
+				if(!autorun)
+					show_hide_panel();
 			}
+		}
 
-
-			// Toggle the lyrics panel when #show_hide_lyrics is clicked
-			function show_hide_panel(){
-				$("#lyrics").toggle();
-				let txt = $("#show_hide_lyrics").text();
-				$("#show_hide_lyrics").text(txt === "Hide Lyrics" ? "Show Lyrics" : "Hide Lyrics");
-			}
-
-			$(document).on("click", "#show_hide_lyrics", show_hide_panel);
-			// Hide panel by default on page load
-			$("#show_hide_lyrics").trigger("click");
+		// Toggle the lyrics panel when #show_hide_lyrics is clicked
+		function show_hide_panel(){
+			$("#lyrics").toggle();
+			let txt = $("#show_hide_lyrics").text();
+			$("#show_hide_lyrics").text(txt === "Hide Lyrics" ? "Show Lyrics" : "Hide Lyrics");
 		}
 	}
-	init();
 
-	// Listen to youtube's spfdone event to detect page changes
-	document.addEventListener("spfdone", init);
+	chrome.storage.sync.get({'run_on_yt': true, 'autorun': false}, function(response){
+		if(response.run_on_yt){
+			init(response.autorun);
+			// Listen to youtube's spfdone event to detect page changes
+			document.addEventListener("spfdone", function(){
+				init(response.autorun);
+			});
+		}
+	});
+	
+
+
 	
 })
 

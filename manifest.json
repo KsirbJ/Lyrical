@@ -5,7 +5,7 @@
 
 	"permissions": [
 		"activeTab", "*://play.google.com/music/*", "*://www.youtube.com/watch*",
-		"*://youtube.com/*", "*://api.genius.com/*", "*://genius.com/*"
+		"*://youtube.com/*", "*://api.genius.com/*", "*://genius.com/*", "storage"
 	],
 
 	"content_scripts" : [
@@ -36,6 +36,17 @@
 		"default_popup": "ui/popup.html",
 		"default_title": "Lyrical",
 		"default_icon":	"img/icon.png"
+	},
+
+	"icons" : {
+		"16" : "img/icon.png",
+		"48" : "img/icon.png",
+		"128" : "img/icon.png"
+	},
+
+	"options_ui" : {
+		"page" : "ui/options.html",
+		"chrome_style" : true
 	},
 
 	"background": {
