@@ -49,13 +49,14 @@ $(function(){
 				if($(".watch-extras-section .watch-meta-item").last().find(".title").text().trim() === "Music"){
 
 					let song_info = $(".watch-extras-section .watch-meta-item").last().find("ul.watch-info-tag-list");
-					
+					console.log($(song_info).text().match(/(.*)by /));
 					let title = $(song_info).text().split("\"")[1];
 					let artist = $(song_info).find("a").first().text();
 					// If it got the wrong artist
-					if(artist === "Google Play" || artist.toUpperCase() === "ITUNES"){
+					if(artist === "Google Play" || artist.toUpperCase() === "ITUNES" || artist.indexOf("Listen ad-free") !== -1){
 						let song_txt = song_info.text();
-						artist = song_txt.match(/by (.*) \(G/)[1];
+						artist = (song_txt.match(/by (.*) \(G/) || $(song_info).text().match(/by (.*) Listen/))[1];
+						//artist = song_txt.match(/by (.*) \(G/)[1];
 					}
 
 					$lyrics.get_lyrics(artist, title);
