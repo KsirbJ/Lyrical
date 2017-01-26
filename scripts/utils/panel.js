@@ -1,7 +1,7 @@
 
 // Basic functions to create and add the lyrics panel to sites
 const $panel = {
-	
+
 	// Append the styles for the lyrics panel to the page
 	append_styles: function(){
 		$("head").append(`
@@ -10,6 +10,7 @@ const $panel = {
 					cursor: default;
 				}
 				#lyrics {
+					background: #fff;
 					padding: 1em 3em 1em 2em;
 					margin: 0;
 					overflow-y: scroll;
@@ -42,6 +43,9 @@ const $panel = {
 					position: absolute;
 					top: .5em; 
 					left: .5em;
+				}
+				#words {
+					background: #fff;
 				}
 
 			</style>
