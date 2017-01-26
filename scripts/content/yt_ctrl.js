@@ -8,6 +8,21 @@ $(function(){
 		if(location.pathname === "/watch"){
 			console.log("Lyrical is running");
 
+			$('body').append(`
+				<style type="text/css">
+					#show_hide_lyrics {
+						text-decoration: none;
+						position: absolute;
+						top: .5em;
+						right: .5em;
+						border: 1px solid #000;
+						padding: 1em;
+					}
+					#lyrics p {
+						line-height: 2em;
+					}
+					
+				`)
 			$panel.append_styles();
 
 			// Only append the lyrics div if it's under the music category
