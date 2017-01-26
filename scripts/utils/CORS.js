@@ -49,6 +49,7 @@ const $CORS = {
 			
 			// Credit website
 			$("#lyrics").prepend(`<p style="text-align:right">Lyrics from <a href="${url}" target="_blank">Genius</a></p>`);
+			$("#lyrics").prepend('<a href="#" class="pop_out_btn">Pop out</a>');
 
 			// Clean up
 			xhr = null;

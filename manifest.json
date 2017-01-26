@@ -5,7 +5,7 @@
 
 	"permissions": [
 		"activeTab", "*://play.google.com/music/*", "*://www.youtube.com/watch*",
-		"*://youtube.com/*", "*://api.genius.com/*", "*://genius.com/*", "storage"
+		"*://youtube.com/*", "*://*.genius.com/*", "*://genius.com/*", "storage"
 	],
 
 	"content_scripts" : [
@@ -15,7 +15,7 @@
 			],
 
 			"js" : [
-				"libs/jquery-3.1.1.min.js", "scripts/content_compiled/play_music.js"
+				"libs/jquery-3.1.1.min.js", "libs/interact.min.js", "scripts/utils/resize_drag.js", "scripts/content_compiled/play_music.js"
 			]
 		},
 
@@ -26,7 +26,7 @@
 			],
 
 			"js" : [
-				"libs/jquery-3.1.1.min.js", "scripts/content_compiled/youtube.js"
+				"libs/jquery-3.1.1.min.js", "libs/interact.min.js", "scripts/utils/resize_drag.js", "scripts/content_compiled/youtube.js"
 			]
 		}
 	],

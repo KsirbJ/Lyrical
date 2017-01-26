@@ -1,5 +1,6 @@
 import $utils from '../utils/utils'
 import $lyrics from '../utils/lyrics'
+import $panel from '../utils/panel'
 
 // Lyrics on google play music
 $(function(){
@@ -17,15 +18,14 @@ $(function(){
 						position: absolute;
 						right: 0;
 						top: 0;
-						padding: 1em 3em 1em 2em;
-						margin: 0;
-						overflow: scroll;
 					}
 					#show_hide_lyrics {
 						text-decoration: none;
 					}
 				</style>
 				`);
+
+			$panel.append_styles();
 			$("#mainPanel").append('<div id="lyrics"></div>');
 			$("#material-one-right").prepend('<a href="#" id="show_hide_lyrics">Hide Lyrics</a>');
 			$("#mainContainer").toggleClass("lyrics_visible");
@@ -71,17 +71,20 @@ $(function(){
 
 			// Toggle the lyrics panel when #show_hide_lyrics is clicked
 			function show_hide_panel(){
-				$("#lyrics").toggle();
 				$("#mainContainer").toggleClass("lyrics_visible");
-				let txt = $("#show_hide_lyrics").text();
-				$("#show_hide_lyrics").text(txt === "Hide Lyrics" ? "Show Lyrics" : "Hide Lyrics");
+				$panel.show_hide_panel();
 			}
 
 			$(document).on("click", "#show_hide_lyrics", show_hide_panel);
 
+			// pop the panel in / out on click
+			$(document).on('click', '.pop_out_btn', function(){
+				$panel.pop_in_out('100%');
+			});
+
 			// Hide panel by default on page load
 			if(!response.autorun)
-				$("#show_hide_lyrics").trigger("click");
+				show_hide_panel();
 		}
 	});
 	
