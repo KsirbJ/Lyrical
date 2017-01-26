@@ -3,7 +3,7 @@ import $panel from '../utils/panel'
 
 // lyrics on youtube 
 $(function(){
-	function init(autorun){
+	function init(autorun, auto_pop){
 
 		if(location.pathname === "/watch"){
 			console.log("Lyrical is running");
@@ -21,7 +21,7 @@ $(function(){
 					#lyrics p {
 						line-height: 2em;
 					}
-					
+
 				`)
 			$panel.append_styles();
 
@@ -37,6 +37,7 @@ $(function(){
 				// Make the lyrics div as tall as the player
 				let player_height = $(".player-height").css("height");
 				$("#lyrics").css('height', player_height);
+				$("#lyrics").prepend('<a href="#" class="pop_out_btn">Pop out</a>');
 
 				$("#watch-header").append('<a href="#" id="show_hide_lyrics">Hide Lyrics</a>');
 
@@ -72,6 +73,8 @@ $(function(){
 				// Hide panel by default on page load
 				if(!autorun)
 					$panel.show_hide_panel();
+				if(auto_pop)
+					$panel.pop_in_out(player_height);
 
 
 				$(document).on('click', '.pop_out_btn', function(){
@@ -81,9 +84,9 @@ $(function(){
 		}
 	}
 
-	chrome.storage.sync.get({'run_on_yt': true, 'autorun': false}, function(response){
+	chrome.storage.sync.get({'run_on_yt': true, 'autorun': false, 'auto_pop': false}, function(response){
 		if(response.run_on_yt){
-			init(response.autorun);
+			init(response.autorun, response.auto_pop);
 			// Listen to youtube's spfdone event to detect page changes
 			document.addEventListener("spfdone", function(){
 				init(response.autorun);

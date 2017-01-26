@@ -26,6 +26,11 @@
 			h3 {
 				font-size: 1.5em;
 			}
+			#feedback {
+				text-decoration: none;
+				display: block;
+				margin: 1em;
+			}
 		</style>
 	</head>
 	<body>
@@ -40,10 +45,14 @@
 					<input type="checkbox" name="run_on_yt" id="run_on_yt">
 					<label for="run_on_yt">Run on Youtube</label>
 				</span>
-				<span class="input_set">
-					<input type="checkbox" name="autorun" id="autorun">
+				<span class="input_set" title="When this is selected the lyrics panel will be visible as soon as the page loads.">
+					<input type="checkbox" name="autorun" id="autorun" >
 					<label for="autorun">Show lyrics section when the page loads</label>
 				</span>
+				<span class="input_set" title="When this is selected the lyrics panel will pop out over the page instead of being intergrated.">
+					<input type="checkbox" name="auto_pop" id="auto_pop">
+					<label for="auto_pop">Pop out lyrics panel by default </label>
+				</span>				
 				<span id="submit_btn">
 					<input type="submit" name="submit" id="_btn" value="Update">
 					<p id="response_msg"></p>
@@ -54,8 +63,11 @@
 		<div id="about">
 			<h3><strong>About</strong></h3>
 			<p>Lyrical version 0.2 alpha</p>
+			<a href="https://goo.gl/forms/Uf040UhVZv0bugjo1" id="feedback"> Provide feedback and suggestions </a>
 			<a href="https://github.com/KsirbJ/Lyrical">Source code</a>
 		</div>
+
+
 		
 	</body>
 </html>

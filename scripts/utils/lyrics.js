@@ -7,11 +7,11 @@ const $lyrics = {
 
 		console.log(artist);
 		console.log(title);
-		$("#lyrics").empty();
+		$("#words").empty();
 		let access_token = "6xTujcUZfJUiPAssUT1jMwkkeeYWhMzLAOgXc5fPaWAdY0tz-UzE-EyrtYcOjoWo";
 
 		fetch('https://api.genius.com/search?access_token=' + access_token + '&q=' + 
-			encodeURIComponent(title) + encodeURIComponent(artist)).then(function (response) {
+			encodeURIComponent(title) + "%20" + encodeURIComponent(artist)).then(function (response) {
 		    	response.json().then(function (data) {
 
 		    		// Go through the data returned by Genius and check whether they have lyrics for this song.
@@ -19,8 +19,8 @@ const $lyrics = {
 			    	let found = false;
 			    	for(let i = 0; i < hits.length && !found; ++i){
 
-			    		// console.log(hits[i].result.title);
-			    		// console.log(hits[i].result.primary_artist.name);
+			    		console.log(hits[i].result.title);
+			    		console.log(hits[i].result.primary_artist.name);
 			    		
 			    		title = title.trim().toUpperCase();
 			    		artist = artist.trim().toUpperCase();
@@ -39,7 +39,7 @@ const $lyrics = {
 			    	}
 			    	// Looped through all the data and no lyrics found.
 			    	if(!found){
-			    		$("#lyrics").html("<h3>Whoops!</h3><p>Couldn't find lyrics, sorry :( </p>");
+			    		$("#words").html("<h3>Whoops!</h3><p>Couldn't find lyrics, sorry :( </p>");
 
 			    		// TODO Search additional lyric databases
 			    	}

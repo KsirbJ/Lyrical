@@ -49,7 +49,7 @@ const $panel = {
 
 	// Add the panel to the view
 	prepend_panel: function(toWhat){
-		$(toWhat).prepend('<div id="lyrics"></div>');
+		$(toWhat).prepend('<div id="lyrics"><div id="words"></div></div>');
 	},
 
 	// Show or hide the panel

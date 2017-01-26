@@ -26,7 +26,7 @@ const $CORS = {
 		});
 
 		// Finally, show the lyrics
-		$("#lyrics").append(actual_lyrics);
+		$("#words").append(actual_lyrics);
 
 		parser = null
 		doc = null;
@@ -48,8 +48,7 @@ const $CORS = {
 			$CORS.extract_lyrics(text);
 			
 			// Credit website
-			$("#lyrics").prepend(`<p style="text-align:right">Lyrics from <a href="${url}" target="_blank">Genius</a></p>`);
-			$("#lyrics").prepend('<a href="#" class="pop_out_btn">Pop out</a>');
+			$("#words").prepend(`<p style="text-align:right">Lyrics from <a href="${url}" target="_blank">Genius</a></p>`);
 
 			// Clean up
 			xhr = null;
