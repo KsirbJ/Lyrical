@@ -4,9 +4,11 @@ import $panel from '../utils/panel'
 
 // Lyrics on google play music
 $(function(){
+	// pull the user specified options from storage and react accordingly
 	chrome.storage.sync.get({'run_on_gp': true, 'autorun': false, 'auto_pop': false}, function(response){
 		if(response.run_on_gp){
 
+			// Add site specific styles
 			$("head").append(`
 				<style type="text/css">
 					#mainContainer.lyrics_visible {
@@ -24,16 +26,19 @@ $(function(){
 					}
 				</style>
 				`);
-
+			// add global styles
 			$panel.append_styles();
+			// add the lyrics div
 			$("#mainPanel").append('<div id="lyrics"><div id="words">Play a song...</div></div>');
+			// add the show-hide-lyrics button
 			$("#material-one-right").prepend('<a href="#" id="show_hide_lyrics">Hide Lyrics</a>');
 			$("#mainContainer").toggleClass("lyrics_visible");
-
+			// add the pop-in-out button
 			$("#lyrics").prepend('<a href="#" class="pop_out_btn">Pop out</a>');
+
 			// have we already attached a mutation observer?
 			let observer_attached = false;
-
+			// The currently playing song
 			let cur_song = {
 				title: "",
 				artist: ""
@@ -75,22 +80,21 @@ $(function(){
 				$("#mainContainer").toggleClass("lyrics_visible");
 				$panel.show_hide_panel();
 			}
+			$(document).on("click", "#show_hide_lyrics", show_hide_panel);
+
+			// pop the panel in / out on click
 			function pop_in_out(){
 				$("#mainContainer").toggleClass("lyrics_visible");
 				$panel.pop_in_out('100%');
 			}
-
-			$(document).on("click", "#show_hide_lyrics", show_hide_panel);
-
-			// pop the panel in / out on click
 			$(document).on('click', '.pop_out_btn', pop_in_out);
 
 			// Hide panel by default on page load
 			if(!response.autorun)
 				show_hide_panel();
+			// pop panel out if option is selected
 			if(response.auto_pop)
 				pop_in_out();
 		}
-	});
-	
+	});	
 });

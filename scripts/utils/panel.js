@@ -1,6 +1,7 @@
 
-
+// Basic functions to create and add the lyrics panel to sites
 const $panel = {
+	
 	// Append the styles for the lyrics panel to the page
 	append_styles: function(){
 		$("head").append(`

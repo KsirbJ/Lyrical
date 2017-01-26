@@ -19,8 +19,8 @@ const $lyrics = {
 			    	let found = false;
 			    	for(let i = 0; i < hits.length && !found; ++i){
 
-			    		console.log(hits[i].result.title);
-			    		console.log(hits[i].result.primary_artist.name);
+			    		//console.log(hits[i].result.title);
+			    		//console.log(hits[i].result.primary_artist.name);
 			    		
 			    		title = title.trim().toUpperCase();
 			    		artist = artist.trim().toUpperCase();

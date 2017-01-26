@@ -13,8 +13,11 @@ const $CORS = {
 		return xhr;
 	},
 
+	// Find lyrics in the returned document and display it
+	// (should eventually be handled by lyrics.js)
 	extract_lyrics: function(text){
-		// Find lyrics in the returned document
+		
+		// find the lyrics
 		let parser = new DOMParser();
 		let doc = parser.parseFromString(text, 'text/html');
 		let actual_lyrics = $(doc).find(".lyrics").text();
