@@ -15,7 +15,7 @@
 			],
 
 			"js" : [
-				"libs/jquery-3.1.1.min.js", "libs/interact.min.js", "scripts/utils/resize_drag.js", "scripts/content_compiled/play_music.js"
+				"libs/jquery-3.1.1.min.js", "libs/interact.min.js", "scripts/content_compiled/resize_drag.js", "scripts/content_compiled/play_music.js"
 			]
 		},
 
@@ -26,7 +26,7 @@
 			],
 
 			"js" : [
-				"libs/jquery-3.1.1.min.js", "libs/interact.min.js", "scripts/utils/resize_drag.js", "scripts/content_compiled/youtube.js"
+				"libs/jquery-3.1.1.min.js", "libs/interact.min.js", "scripts/content_compiled/resize_drag.js", "scripts/content_compiled/youtube.js"
 			]
 		}
 	],
