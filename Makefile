@@ -21,9 +21,8 @@ deploy:	compile
 	mkdir lyrical/scripts
 	cp -r scripts/background lyrical/scripts/
 	cp -r scripts/content_compiled/ lyrical/scripts/
-	cp -r ui/ lyrical/ui
-	cd lyrical
-	zip -r ../lyrical.zip *
+	cp -r ui/ lyrical/ui/
+	cd lyrical && zip -r ../lyrical.zip *
 
 clean:
 	rm -r scripts/content_compiled/*
