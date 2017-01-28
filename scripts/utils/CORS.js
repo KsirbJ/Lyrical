@@ -51,7 +51,7 @@ const $CORS = {
 			$CORS.extract_lyrics(text);
 			
 			// Credit website
-			$("#words").prepend(`<p style="text-align:right">Lyrics from <a href="${url}" target="_blank">Genius</a></p>`);
+			$("#words").prepend(`<span id="credits">Lyrics from <a href="${url}" target="_blank">Genius</a></span>`);
 
 			// Clean up
 			xhr = null;

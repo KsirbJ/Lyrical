@@ -9,6 +9,12 @@ const $panel = {
 				html, body {
 					cursor: default;
 				}
+				a {
+					text-decoration: none;
+				}
+				a:hover {
+					text-decoration: none;
+				}
 				#lyrics {
 					background: #fff;
 					padding: 1em 3em 1em 2em;
@@ -40,12 +46,61 @@ const $panel = {
 					max-width: 300px;
 				}
 				.pop_out_btn {
-					position: absolute;
-					top: .5em; 
-					left: .5em;
+					position: fixed;
+					top: 0;     
+					left: 0;
+    				background: #FFCF90;
+    				color: #fff;
+    				display: inline-block;
+    				height: 35px;
+				}
+				.pop_out_btn[data-state="is_in"]:before {
+					content: "⇱";
+					font-size: 2em;
+					font-weight: 800;
+    				padding: 0 .2em;
+				}
+				.pop_out_btn[data-state="is_out"]:before {
+					content: "⇲";
+					font-size: 2em;
+					font-weight: 800;
+    				padding: 0 .2em;
+				}
+				.pop_out_btn:hover{
+					background: #fff;
+					color: #FFCF90;
 				}
 				#words {
 					background: #fff;
+					margin-top: 1em;
+					padding-top: 1em;
+				}
+				#err_msg {
+					padding-top: 30%;
+					margin: 0 auto;
+					text-align: center;
+				}
+				.btn {
+					width: 100%;
+					height: 35px;
+					background: #FFCF90;
+					position: fixed;
+    				top: 0;
+    				right: 0;
+				}
+				#credits {
+					position: fixed;
+					top: 10px;
+					right: 25px;
+				}
+				#credits a {
+					color: #0000ff;
+				}
+				#show_hide_lyrics {
+					border: 1px solid #000;
+					padding: 1em;
+					background: #fff;
+					text-decoration: none;
 				}
 
 			</style>
@@ -54,22 +109,36 @@ const $panel = {
 
 	// Add the panel to the view
 	prepend_panel: function(toWhat){
-		$(toWhat).prepend('<div id="lyrics"><div id="words"></div></div>');
+		$(toWhat).prepend(`<div id="lyrics">
+			<div class="btn"><a href="#" class="pop_out_btn" id="pop-in-out" data-state="is_in"></a></div>
+			<div id="words"><div id="err_msg">Play a song to see lyrics</div></div>
+			</div>`);
+	},
+
+	append_panel: function(toWhat){
+		$(toWhat).append(`<div id="lyrics">
+			<div class="btn"><a href="#" class="pop_out_btn" id="pop-in-out" data-state="is_in"></a></div>
+			<div id="words"><div id="err_msg">Play a song to see lyrics</div></div>
+			</div>`);
 	},
 
 	// Show or hide the panel
-	show_hide_panel: function(){
+	show_hide_panel: function(e){
 		$("#lyrics").toggle();
 		let txt = $("#show_hide_lyrics").text();
 		$("#show_hide_lyrics").text(txt === "Hide Lyrics" ? "Show Lyrics" : "Hide Lyrics");
+		e.preventDefault();
+		e.stopPropagation();
 	},
 
 	// Pop the panel in and out of the page
-	pop_in_out: function(player_height){	
+	pop_in_out: function(player_height, e){	
 		$("#lyrics").toggleClass("can_drag").toggleClass("resize-drag");
-		let txt = $(".pop_out_btn").text();
-		$(".pop_out_btn").text(txt === "Pop out" ? "Pop in" : "Pop out");
+		let state = $(".pop_out_btn").attr('data-state');
+		$(".pop_out_btn").attr('data-state', state === 'is_in' ? 'is_out' : 'is_in' );
 		$("#lyrics").removeAttr("style").removeAttr("data-x").removeAttr("data-y").css('height', player_height);
+		e.preventDefault();
+		e.stopPropagation();
 	}
 
 }

@@ -39,7 +39,7 @@ const $lyrics = {
 			    	}
 			    	// Looped through all the data and no lyrics found.
 			    	if(!found){
-			    		$("#words").html("<h3>Whoops!</h3><p>Couldn't find lyrics, sorry :( </p>");
+			    		$("#words").html("<div id='err_msg'><h3>Whoops!</h3><p>Couldn't find lyrics, sorry :( </p></div>");
 
 			    		// TODO Search additional lyric databases
 			    	}

@@ -21,20 +21,14 @@ $(function(){
 						right: 0;
 						top: 0;
 					}
-					#show_hide_lyrics {
-						text-decoration: none;
-					}
 				</style>
 				`);
 			// add global styles
 			$panel.append_styles();
 			// add the lyrics div
-			$("#mainPanel").append('<div id="lyrics"><div id="words">Play a song...</div></div>');
+			$panel.append_panel("#mainPanel")
 			// add the show-hide-lyrics button
 			$("#material-one-right").prepend('<a href="#" id="show_hide_lyrics">Hide Lyrics</a>');
-			$("#mainContainer").toggleClass("lyrics_visible");
-			// add the pop-in-out button
-			$("#lyrics").prepend('<a href="#" class="pop_out_btn">Pop out</a>');
 
 			// have we already attached a mutation observer?
 			let observer_attached = false;
@@ -73,28 +67,42 @@ $(function(){
 			$utils.create_observer("player", check_playing);
 
 
-
-
 			// Toggle the lyrics panel when #show_hide_lyrics is clicked
-			function show_hide_panel(){
-				$("#mainContainer").toggleClass("lyrics_visible");
-				$panel.show_hide_panel();
+			function show_hide_panel(e){
+				if($("#show_hide_lyrics").text() === "Hide Lyrics"){
+					$("#mainContainer").removeClass("lyrics_visible");
+				}else {
+					$("#mainContainer").addClass("lyrics_visible");
+				}
+				$panel.show_hide_panel(e);
 			}
 			$(document).on("click", "#show_hide_lyrics", show_hide_panel);
 
 			// pop the panel in / out on click
-			function pop_in_out(){
-				$("#mainContainer").toggleClass("lyrics_visible");
-				$panel.pop_in_out('100%');
+			function pop_in_out(e){
+				if($(".pop_out_btn").attr('data-state') === "is_in"){
+					$("#mainContainer").removeClass("lyrics_visible");
+				}else {
+					$("#mainContainer").addClass("lyrics_visible");
+				}
+				$panel.pop_in_out('100%', e);
 			}
 			$(document).on('click', '.pop_out_btn', pop_in_out);
 
+			// hack to resize the content on the page
+			window.onhashchange = function(){
+			 	if(($("#show_hide_lyrics").text() === "Hide Lyrics") && $(".pop_out_btn").attr('data-state') === "is_in"){
+			 		if($("#mainContainer").length > 0 && ! $("#mainContainer").hasClass('lyrics_visible'))
+			 			$("#mainContainer").addClass("lyrics_visible");
+			 	}
+			}
+
 			// Hide panel by default on page load
 			if(!response.autorun)
-				show_hide_panel();
+				show_hide_panel(new Event('click'));
 			// pop panel out if option is selected
 			if(response.auto_pop)
-				pop_in_out();
+				pop_in_out(new Event('click'));
 		}
 	});	
 });

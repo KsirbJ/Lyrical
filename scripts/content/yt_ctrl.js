@@ -15,18 +15,15 @@ $(function(){
 				$('body').append(`
 					<style type="text/css">
 						#show_hide_lyrics {
-							text-decoration: none;
 							position: absolute;
 							top: .5em;
 							right: .5em;
-							border: 1px solid #000;
-							padding: 1em;
 						}
 						#lyrics p {
 							line-height: 2em;
 						}
 
-					`)
+					`);
 				// add global panel styles
 				$panel.append_styles();
 
@@ -40,9 +37,6 @@ $(function(){
 				let player_height = $(".player-height").css("height");
 				$("#lyrics").css('height', player_height);
 
-				// Add the pop-in-out button to the panel
-				$("#lyrics").prepend('<a href="#" class="pop_out_btn">Pop out</a>');
-
 				// add the show-hide-lyrics button 
 				$("#watch-header").append('<a href="#" id="show_hide_lyrics">Hide Lyrics</a>');
 
@@ -52,6 +46,8 @@ $(function(){
 					let song_info = $(".watch-extras-section .watch-meta-item").last().find("ul.watch-info-tag-list");
 
 					let title = $(song_info).text().split("\"")[1];
+					// remove anything in parentheses or brackets
+					title = title.replace(/ *\([^)]*\) */g, " ").replace(/ *\[.*?\] */g, " ");
 					let artist = $(song_info).find("a").first().text();
 
 					// If it got the wrong artist use an alternative method to find it
@@ -64,31 +60,38 @@ $(function(){
 					$lyrics.get_lyrics(artist, title);
 				}else{
 					// Less accurate method. Try to find song info from the title
-					// Assumes "Artist - Song Title" format
-					let song_info = $("h1.watch-title-container").text();
-					song_info = (song_info.split("-") || song_info.split("|")); 
-					let artist = song_info[0].trim();
-					let title = song_info[1].trim();
-					// remove anything in parentheses or brackets
-					title = title.replace(/ *\([^)]*\) */g, " ").replace(/ *\[.*?\] */g, " ");
+					// Assumes "Artist - Song Title"  or "Artist | song title" format
+					try{
+						let song_info = $("h1.watch-title-container").text();
+						song_info = (song_info.split("-") || song_info.split("|")); 
+						let artist = song_info[0].trim();
+						let title = song_info[1].trim();
+						// remove anything in parentheses or brackets
+						title = title.replace(/ *\([^)]*\) */g, " ").replace(/ *\[.*?\] */g, " ");
 
-					$lyrics.get_lyrics(artist, title);
+						$lyrics.get_lyrics(artist, title);
+					}catch(err){
+						$("#words").html("<div id='err_msg'><h3>Whoops!</h3><p>Couldn't find lyrics, sorry :( </p></div>");
+						console.log(err);
+
+					}
+
 				}
 
 				// listen for clicks on the show-hide button
 				let el = document.getElementById("show_hide_lyrics");
-				el.addEventListener("click", $panel.show_hide_panel, false);
+				el.addEventListener("click", function(e){$panel.show_hide_panel(e)}, false);
 
 				// Hide panel by default on page load
 				if(!autorun)
-					$panel.show_hide_panel();
+					$panel.show_hide_panel(new Event('click'));
 				if(auto_pop)
-					$panel.pop_in_out(player_height);
+					$panel.pop_in_out(player_height, new Event('click'));
 
 				// listen for clicks on the pop-in-out button
-				$(document).on('click', '.pop_out_btn', function(){
-					$panel.pop_in_out(player_height);
-				});
+				document.getElementById("pop-in-out").addEventListener("click", function(e){
+					$panel.pop_in_out(player_height, e);
+				}, false);
 			}
 		}
 	}
@@ -97,7 +100,7 @@ $(function(){
 	chrome.storage.sync.get({'run_on_yt': true, 'autorun': false, 'auto_pop': false}, function(response){
 		if(response.run_on_yt){
 			init(response.autorun, response.auto_pop);
-			
+
 			// Listen to youtube's spfdone event to detect page changes
 			document.addEventListener("spfdone", function(){
 				init(response.autorun, response.auto_pop);
