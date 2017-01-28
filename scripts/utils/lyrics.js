@@ -1,6 +1,47 @@
-import $CORS from 'scripts/utils/CORS'
 
+// Find and pull lyrics from Genius and Metro Lyrics
 const $lyrics = {
+
+	// Function to pull the lyrics page and extract the lyrics from it
+	pull_page: function(url, domain){
+		let myHeaders = new Headers();
+		let myInit = {
+			method: 'GET',
+			headers: myHeaders,
+			mode: 'cors',
+			cache: 'default'
+		}
+		// Make the request
+		fetch(url, myInit).then(function(response){
+			if(response.ok){
+				return response.text();
+			}
+			throw new Error("Couldn't make request :(");
+
+		}).then(function(text){
+			// find the lyrics
+			let parser = new DOMParser();
+			let doc = parser.parseFromString(text, 'text/html');
+			let actual_lyrics = $(doc).find(".lyrics").text();
+
+			// add html tags to lyrics
+			actual_lyrics = actual_lyrics.split(/\r?\n/);
+			actual_lyrics.forEach(function(element, index, arr){
+				arr[index] = "<p>" + arr[index] + "</p>";
+			});
+
+			// Finally, show the lyrics
+			$("#words").append(actual_lyrics);
+
+			parser = null
+			doc = null;
+
+			// Credit website
+			$("#words").prepend(`<span id="credits">Lyrics from <a href="${url}" target="_blank">${domain}</a></span>`);
+		}).catch(function(e){
+			console.error("Fetch error: " + e.message);
+		});
+	},
 	
 	// Function to pull lyrics from Genius
 	get_lyrics: function(artist, title){
@@ -34,7 +75,9 @@ const $lyrics = {
 
 			    			// They have the song, now get the actual lyrics.
 			    			let url = hits[i].result.url;
-			    			$CORS.makeCorsRequest(url);
+
+			    			//$CORS.makeCorsRequest(url, "Genius");
+			    			$lyrics.pull_page(url, "Genius");
 			    		}
 			    	}
 			    	// Looped through all the data and no lyrics found.

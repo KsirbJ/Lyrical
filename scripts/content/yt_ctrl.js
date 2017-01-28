@@ -45,9 +45,11 @@ $(function(){
 
 					let song_info = $(".watch-extras-section .watch-meta-item").last().find("ul.watch-info-tag-list");
 
+					// Find the title and clean it up
 					let title = $(song_info).text().split("\"")[1];
-					// remove anything in parentheses or brackets
-					title = title.replace(/ *\([^)]*\) */g, " ").replace(/ *\[.*?\] */g, " ");
+					title = clean_title(title);
+
+					// find the artist and clean it up
 					let artist = $(song_info).find("a").first().text();
 
 					// If it got the wrong artist use an alternative method to find it
@@ -66,8 +68,8 @@ $(function(){
 						song_info = (song_info.split("-") || song_info.split("|")); 
 						let artist = song_info[0].trim();
 						let title = song_info[1].trim();
-						// remove anything in parentheses or brackets
-						title = title.replace(/ *\([^)]*\) */g, " ").replace(/ *\[.*?\] */g, " ");
+						// clean up the title
+						title = clean_title(title);
 
 						$lyrics.get_lyrics(artist, title);
 					}catch(err){
@@ -94,6 +96,29 @@ $(function(){
 				}, false);
 			}
 		}
+	}
+
+	// Clean up the title text
+	function clean_title(title){
+		
+		// remove anything in parentheses or brackets
+		title = title.replace(/ *\([^)]*\) */g, " ").replace(/ *\[.*?\] */g, " ");
+
+		// remove any featuring x from the title because this causes issues
+		let ft = null;
+		if(title.toLowerCase().indexOf("featuring") !== -1 )
+			ft = "featuring";
+		else if(title.toLowerCase().indexOf("feat") !== -1)
+			ft = "feat";
+		else if(title.toLowerCase().indexOf("ft.") !== -1)
+			ft = "ft.";
+
+		if(ft){
+			let regex = new RegExp(ft + '.*$', 'i');
+			title = title.replace(regex, "");
+		}
+
+		return title;
 	}
 
 	// On load pull the user specified options, and run extension accordingly

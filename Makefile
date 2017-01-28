@@ -1,6 +1,6 @@
 
 compiler = closure-compiler.jar
-common_files = scripts/utils/lyrics.js scripts/utils/panel.js scripts/utils/CORS.js
+common_files = scripts/utils/lyrics.js scripts/utils/panel.js
 play_music_files = scripts/content/pm_ctrl.js scripts/utils/utils.js  
 youtube_files = scripts/content/yt_ctrl.js 
 flags = --js
