@@ -67,6 +67,12 @@ const $lyrics = {
 			    		artist = artist.trim().toUpperCase();
 			    		let g_title = hits[i].result.title.trim().toUpperCase();
 			    		let g_artist = hits[i].result.primary_artist.name.trim().toUpperCase();
+			    		
+			    		// replace fancy curly quotes
+			    		title = title.replace(/[\u2018\u2019]/g, "'").replace(/[\u201C\u201D]/g, '"');
+			    		g_title = g_title.replace(/[\u2018\u2019]/g, "'").replace(/[\u201C\u201D]/g, '"');
+			    		artist = artist.replace(/[\u2018\u2019]/g, "'").replace(/[\u201C\u201D]/g, '"');
+			    		g_artist = g_artist.replace(/[\u2018\u2019]/g, "'").replace(/[\u201C\u201D]/g, '"');
 
 			    		if((g_title.indexOf(title) !== -1 && g_artist.indexOf(artist) !== -1) || 
 			    			(title.indexOf(g_title) !== -1 && artist.indexOf(g_artist) !== -1) ){
@@ -76,7 +82,6 @@ const $lyrics = {
 			    			// They have the song, now get the actual lyrics.
 			    			let url = hits[i].result.url;
 
-			    			//$CORS.makeCorsRequest(url, "Genius");
 			    			$lyrics.pull_page(url, "Genius");
 			    		}
 			    	}

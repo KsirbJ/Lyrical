@@ -94,15 +94,17 @@ $(function(){
 				document.getElementById("pop-in-out").addEventListener("click", function(e){
 					$panel.pop_in_out(player_height, e);
 				}, false);
+
+				$panel.register_keybd_shortcut($panel.show_hide_panel, null, 'S');
 			}
 		}
 	}
 
 	// Clean up the title text
 	function clean_title(title){
-		
+
 		// remove anything in parentheses or brackets
-		title = title.replace(/ *\([^)]*\) */g, " ").replace(/ *\[.*?\] */g, " ");
+		title = title.replace(/ *\([^)]*\) */gi, " ").replace(/ *\[.*?\] */gi, " ");
 
 		// remove any featuring x from the title because this causes issues
 		let ft = null;

@@ -139,6 +139,21 @@ const $panel = {
 		$("#lyrics").removeAttr("style").removeAttr("data-x").removeAttr("data-y").css('height', player_height);
 		e.preventDefault();
 		e.stopPropagation();
+	}, 
+
+	// Register a keyboard shortcut to open / close the panel
+	register_keybd_shortcut: function(execute_this, with_this_param, for_shortcut_letter){
+		
+		$(window).on('keydown', function(e){
+			if(e.ctrlKey && e.shiftKey && e.keyCode == for_shortcut_letter.charCodeAt(0)){
+				if(with_this_param)
+					execute_this(with_this_param, new Event('click'));
+				else
+					execute_this(new Event('click'));
+				e.preventDefault();
+				e.stopPropagation();
+			}
+		})
 	}
 
 }

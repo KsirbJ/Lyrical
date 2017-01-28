@@ -103,6 +103,8 @@ $(function(){
 			// pop panel out if option is selected
 			if(response.auto_pop)
 				pop_in_out(new Event('click'));
+
+			$panel.register_keybd_shortcut(show_hide_panel, null, 'S');
 		}
 	});	
 });
