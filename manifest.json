@@ -1,7 +1,7 @@
 {
 	"manifest_version": 2,
 	"name": "Lyrical",
-	"version": "0.1.1",
+	"version": "0.1.2",
 
 	"permissions": [
 		"activeTab", "*://play.google.com/music/*", "*://www.youtube.com/watch*",
@@ -53,5 +53,9 @@
 		"scripts": [
 			"libs/jquery-3.1.1.min.js", "scripts/background/background.js"
 		]
-	}
+	},
+
+	"web_accessible_resources" : [
+		"img/*.png"
+	]
 }
