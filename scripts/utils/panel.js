@@ -243,12 +243,12 @@ const $panel = {
 
 	// check whether the panel is visible
 	is_visible: function(){
-		return ($("#lyrics").text() === "Hide Lyrics");
+		return ($("#show_hide_lyrics").text() === "Hide Lyrics");
 	},
 
 	// check if the panel is popped in or out
 	is_popped_in: function(){
-		return ($("#lyrics").attr('data-state') === "is_in");
+		return ($(".pop_out_btn").attr('data-state') === "is_in");
 	}
 
 }

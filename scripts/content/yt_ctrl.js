@@ -3,6 +3,13 @@ import $panel from '../utils/panel'
 
 // lyrics on youtube 
 $(function(){
+	// Info about the currently playing song
+	let cur_song = {
+		artist: "",
+		title: "",
+		gotLyrics: false
+	}
+
 	function init(autorun, auto_pop){
 
 		if(location.pathname === "/watch"){
@@ -46,7 +53,7 @@ $(function(){
 					let song_info = $(".watch-extras-section .watch-meta-item").last().find("ul.watch-info-tag-list");
 
 					// Find the title and clean it up
-					let title = $(song_info).text().split("\"")[1];
+					title = $(song_info).text().split("\"")[1];
 					title = clean_title(title);
 
 					// find the artist and clean it up
@@ -58,9 +65,13 @@ $(function(){
 						artist = (song_txt.match(/by (.*) \(G/) || $(song_info).text().match(/by (.*) Listen/))[1];
 					}
 
+					cur_song.title = title;
+					cur_song.artist = artist;
 					// get the lyrics
-					if($panel.is_visible())
+					if($panel.is_visible()){
 						$lyrics.get_lyrics(artist, title);
+						cur_song.gotLyrics = true;
+					}
 				}else{
 					// Less accurate method. Try to find song info from the title
 					// Assumes "Artist - Song Title"  or "Artist | song title" format
@@ -72,7 +83,13 @@ $(function(){
 						// clean up the title
 						title = clean_title(title);
 
-						$lyrics.get_lyrics(artist, title);
+						cur_song.title = title;
+						cur_song.artist = artist;
+
+						if($panel.is_visible()){
+							$lyrics.get_lyrics(artist, title);
+							cur_song.gotLyrics = true;
+						}
 					}catch(err){
 						$("#words").html("<div id='err_msg'><h3>Whoops!</h3><p>Couldn't find lyrics, sorry :( </p></div>");
 						console.log(err);
@@ -83,7 +100,7 @@ $(function(){
 
 				// listen for clicks on the show-hide button
 				let el = document.getElementById("show_hide_lyrics");
-				el.addEventListener("click", function(e){$panel.show_hide_panel(e)}, false);
+				el.addEventListener("click", function(e){toggle_panel(e)}, false);
 
 				// Hide panel by default on page load
 				if(!autorun)
@@ -96,7 +113,7 @@ $(function(){
 					$panel.pop_in_out(player_height, e);
 				}, false);
 
-				$panel.register_keybd_shortcut($panel.show_hide_panel, null, 'S');
+				$panel.register_keybd_shortcut(toggle_panel, null, 'S');
 			}
 		}
 	}
@@ -122,6 +139,15 @@ $(function(){
 		}
 
 		return title;
+	}
+
+	function toggle_panel(e){
+		// If the user opens the panel and we didn't get the lyrics yet, pull it.
+		if(!cur_song.gotLyrics){
+			$lyrics.get_lyrics(cur_song.artist, cur_song.title);
+			cur_song.gotLyrics = true;
+		}
+		$panel.show_hide_panel(e);
 	}
 
 	// On load pull the user specified options, and run extension accordingly
