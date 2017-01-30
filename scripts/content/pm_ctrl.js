@@ -50,7 +50,7 @@ $(function(){
 						cur_song.title = current_title;
 						cur_song.artist = current_artist;
 						console.log("updated - " + current_title + " " + current_artist);
-						$lyrics.get_lyrics(current_artist, current_title);
+							$lyrics.get_lyrics(current_artist, current_title);
 
 						if(!observer_attached){
 							$utils.create_observer("playerSongInfo", check_playing);
@@ -69,7 +69,7 @@ $(function(){
 
 			// Toggle the lyrics panel when #show_hide_lyrics is clicked
 			function show_hide_panel(e){
-				if($("#show_hide_lyrics").text() === "Hide Lyrics"){
+				if($panel.is_visible()){
 					$("#mainContainer").removeClass("lyrics_visible");
 				}else {
 					$("#mainContainer").addClass("lyrics_visible");
@@ -80,7 +80,7 @@ $(function(){
 
 			// pop the panel in / out on click
 			function pop_in_out(e){
-				if($(".pop_out_btn").attr('data-state') === "is_in"){
+				if($panel.is_popped_in()){
 					$("#mainContainer").removeClass("lyrics_visible");
 				}else {
 					$("#mainContainer").addClass("lyrics_visible");
@@ -91,7 +91,7 @@ $(function(){
 
 			// hack to resize the content on the page
 			window.onhashchange = function(){
-			 	if(($("#show_hide_lyrics").text() === "Hide Lyrics") && $(".pop_out_btn").attr('data-state') === "is_in"){
+			 	if($panel.is_visible() && $panel.is_popped_in()){
 			 		if($("#mainContainer").length > 0 && ! $("#mainContainer").hasClass('lyrics_visible'))
 			 			$("#mainContainer").addClass("lyrics_visible");
 			 	}

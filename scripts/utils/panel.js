@@ -6,7 +6,7 @@ const $panel = {
 	append_styles: function(){
 		$("head").append(`
 			<style type="text/css">
-				@import url('https://fonts.googleapis.com/css?family=Kalam:400,700');
+				@import url('https://fonts.googleapis.com/css?family=Libre+Franklin|Kalam:400,700');
 				html, body {
 					cursor: default;
 				}
@@ -19,7 +19,7 @@ const $panel = {
 				#lyrics {
 					background: #fff;
 					padding: 1em 3em 1em 2em;
-					overflow-y: scroll;
+					overflow: hidden;
 					-webkit-font-smoothing: subpixel-antialiased;
 					transform: translateZ(0) scale(1.0, 1.0);
 					backface-visibility: hidden;
@@ -38,6 +38,7 @@ const $panel = {
 					filter: blur(0);
 					transform-origin: 50%  53%;
 					perspective: 1000px;
+					font-family: 'Libre Franklin', sans-serif;
 				}
 				#lyrics.can_drag {
 					position: absolute;
@@ -45,11 +46,12 @@ const $panel = {
 					right: 0;
 					background: #fff;
 					z-index: 199999000000;
-					overflow: auto;
+					overflow: hidden;
 					max-width: 300px;
+					width: 300px;
 				}
 				.pop_out_btn {
-					position: fixed;
+					position: absolute;
 					top: 0;     
 					left: 0;
     				background: #FFCF90;
@@ -75,9 +77,15 @@ const $panel = {
 				}
 				#words {
 					background: #fff;
-					margin: 1em 0 0 0;
-					padding-top: 2.5em;
+					margin: 0;
+					padding: 5% 3% 5% 0;
 					color: #000;
+					overflow-y: scroll;
+					position: absolute;
+					top: 35px;
+					right: 0;
+					width: 93%;
+					height: 85.5%;
 				}
 				#err_msg {
 					padding-top: 30%;
@@ -88,13 +96,13 @@ const $panel = {
 					width: 100%;
 					height: 35px;
 					background: #FFCF90;
-					position: fixed;
+					position: absolute;
     				top: 0;
     				right: 0;
 				}
 				#credits {
 					position: absolute;
-					top: 40px;
+					top: 5px;
 					right: 10px;
 					font-size: .9em;
 				}
@@ -108,36 +116,37 @@ const $panel = {
 					z-index: 191919191919;
 					height: 23px;
 				}
-				#lyrics::-webkit-scrollbar {
+				#words::-webkit-scrollbar {
 				  width: 11px;
 				  height: 10px;
 				}
-				#lyrics::-webkit-scrollbar-button {
+				#words::-webkit-scrollbar-button {
 				  width: 0px;
 				  height: 0px;
 				}
-				#lyrics::-webkit-scrollbar-thumb {
+				#words::-webkit-scrollbar-thumb {
 				  background: #ffcf90;
 				  border: 1px solid #fff;
 				  border-radius: 10px;
 				}
-				#lyrics::-webkit-scrollbar-thumb:hover {
+				#words::-webkit-scrollbar-thumb:hover {
 				  background: #ffcf90;
 				}
-				#lyrics::-webkit-scrollbar-thumb:active {
+				#words::-webkit-scrollbar-thumb:active {
 				  background: #ffcf90;
 				}
-				#lyrics::-webkit-scrollbar-track {
+				#words::-webkit-scrollbar-track {
 				  background: #ffffff;
-				  border: 1px solid #ffcf90;
+				  border-right: 1px solid #ffcf90;
+				  border-left: 1px solid #ffcf90;
 				}
-				#lyrics::-webkit-scrollbar-track:hover {
-				  background: #ffffff;
-				}
-				#lyrics::-webkit-scrollbar-track:active {
+				#words::-webkit-scrollbar-track:hover {
 				  background: #ffffff;
 				}
-				#lyrics::-webkit-scrollbar-corner {
+				#words::-webkit-scrollbar-track:active {
+				  background: #ffffff;
+				}
+				#words::-webkit-scrollbar-corner {
 				  background: transparent;
 				}
 				#lyrical_title {
@@ -230,6 +239,16 @@ const $panel = {
 				e.stopPropagation();
 			}
 		})
+	},
+
+	// check whether the panel is visible
+	is_visible: function(){
+		return ($("#lyrics").text() === "Hide Lyrics");
+	},
+
+	// check if the panel is popped in or out
+	is_popped_in: function(){
+		return ($("#lyrics").attr('data-state') === "is_in");
 	}
 
 }

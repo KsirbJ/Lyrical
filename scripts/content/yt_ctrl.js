@@ -59,7 +59,8 @@ $(function(){
 					}
 
 					// get the lyrics
-					$lyrics.get_lyrics(artist, title);
+					if($panel.is_visible())
+						$lyrics.get_lyrics(artist, title);
 				}else{
 					// Less accurate method. Try to find song info from the title
 					// Assumes "Artist - Song Title"  or "Artist | song title" format
