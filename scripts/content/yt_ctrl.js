@@ -53,7 +53,7 @@ $(function(){
 					let song_info = $(".watch-extras-section .watch-meta-item").last().find("ul.watch-info-tag-list");
 
 					// Find the title and clean it up
-					title = $(song_info).text().split("\"")[1];
+					let title = $(song_info).text().split("\"")[1];
 					title = clean_title(title);
 
 					// find the artist and clean it up
@@ -67,7 +67,8 @@ $(function(){
 
 					cur_song.title = title;
 					cur_song.artist = artist;
-					// get the lyrics
+					
+					// get the lyrics - only pull it if the panel is open
 					if($panel.is_visible()){
 						$lyrics.get_lyrics(artist, title);
 						cur_song.gotLyrics = true;

@@ -35,7 +35,8 @@ $(function(){
 			// The currently playing song
 			let cur_song = {
 				title: "",
-				artist: ""
+				artist: "",
+				gotLyrics: false
 			}
 			
 			// When a mutation on the player is observed, check whether the song has changed by comparing the
@@ -49,8 +50,12 @@ $(function(){
 
 						cur_song.title = current_title;
 						cur_song.artist = current_artist;
+						cur_song.gotLyrics = false;
 						console.log("updated - " + current_title + " " + current_artist);
+						if($panel.is_visible()){
 							$lyrics.get_lyrics(current_artist, current_title);
+							gcur_song.otLyrics = true;
+						}
 
 						if(!observer_attached){
 							$utils.create_observer("playerSongInfo", check_playing);
@@ -73,6 +78,8 @@ $(function(){
 					$("#mainContainer").removeClass("lyrics_visible");
 				}else {
 					$("#mainContainer").addClass("lyrics_visible");
+					if(!cur_song.gotLyrics && cur_song.artist !== "")
+						$lyrics.get_lyrics(cur_song.artist, cur_song.title);
 				}
 				$panel.show_hide_panel(e);
 			}
