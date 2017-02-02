@@ -179,53 +179,65 @@ const $panel = {
 		`);
 	},
 
+	// Set up the panel HTML 
+	get_panel_html: function(){
+		let panel = `<div id="lyrics">
+						<div class="btn">
+							<a href="#" class="pop_out_btn" id="pop-in-out" data-state="is_in"></a>
+							<h2 id="lyrical_title">Lyrical</h2>
+							<img src="" id="lyrical_icon" />
+						</div>
+						<div id="words"><div id="err_msg">Play a song to see lyrics</div></div>
+					</div>`;
+		return panel;
+	},
+
+
 	// Add the panel to the view
 	prepend_panel: function(toWhat){
-		$(toWhat).prepend(`<div id="lyrics">
-			<div class="btn">
-				<a href="#" class="pop_out_btn" id="pop-in-out" data-state="is_in"></a>
-				<h2 id="lyrical_title">Lyrical</h2>
-				<img src="" id="lyrical_icon" />
-			</div>
-			<div id="words"><div id="err_msg">Play a song to see lyrics</div></div>
-			</div>`);
-
-			let img = chrome.extension.getURL("img/icon-128.png");
-			$("#lyrical_icon").attr('src', img);
-
-			$lyrical_panel = $("#lyrics");
-	},	
-
-	append_panel: function(toWhat){
-		$(toWhat).append(`<div id="lyrics">
-			<div class="btn">
-				<a href="#" class="pop_out_btn" id="pop-in-out" data-state="is_in"></a>
-				<h2 id="lyrical_title">Lyrical</h2>
-				<img src="" id="lyrical_icon" />
-			</div>
-			<div id="words"><div id="err_msg">Play a song to see lyrics</div></div>
-			</div>`);
+		$(toWhat).prepend($panel.get_panel_html());	
 		let img = chrome.extension.getURL("img/icon-128.png");
 		$("#lyrical_icon").attr('src', img);
 
-		$lyrical_panel = $("#lyrics");
+		$panel.$lyrical_panel = $("#lyrics");
+		$panel.$pop_btn = $(".pop_out_btn");		
+	},	
+
+	append_panel: function(toWhat){
+		$(toWhat).append($panel.get_panel_html());
+		let img = chrome.extension.getURL("img/icon-128.png");
+		$("#lyrical_icon").attr('src', img);
+
+		$panel.$lyrical_panel = $("#lyrics");
+		$panel.$pop_btn = $(".pop_out_btn");		
+	},
+
+	// add the show hide lyrics button
+	append_btn: function(toWhat){
+		$(toWhat).append('<a href="#" id="show_hide_lyrics">Hide Lyrics</a>');
+		$panel.$show_hide_btn = $("#show_hide_lyrics");
+	},
+
+	prepend_btn: function(toWhat){
+		$(toWhat).prepend('<a href="#" id="show_hide_lyrics">Hide Lyrics</a>');
+		$panel.$show_hide_btn = $("#show_hide_lyrics");
 	},
 
 	// Show or hide the panel
 	show_hide_panel: function(e){
-		$lyrical_panel.toggle();
-		let txt = $("#show_hide_lyrics").text();
-		$("#show_hide_lyrics").text(txt === "Hide Lyrics" ? "Show Lyrics" : "Hide Lyrics");
+		$panel.$lyrical_panel.toggle();
+		let txt = $panel.$show_hide_btn.text();
+		$panel.$show_hide_btn.text(txt === "Hide Lyrics" ? "Show Lyrics" : "Hide Lyrics");
 		e.preventDefault();
 		e.stopPropagation();
 	},
 
 	// Pop the panel in and out of the page
 	pop_in_out: function(player_height, e){	
-		$lyrical_panel.toggleClass("can_drag").toggleClass("resize-drag");
-		let state = $(".pop_out_btn").attr('data-state');
-		$(".pop_out_btn").attr('data-state', state === 'is_in' ? 'is_out' : 'is_in' );
-		$lyrical_panel.removeAttr("style").removeAttr("data-x").removeAttr("data-y").css('height', player_height);
+		$panel.$lyrical_panel.toggleClass("can_drag").toggleClass("resize-drag");
+		let state = $panel.$pop_btn.attr('data-state');
+		$panel.$pop_btn.attr('data-state', state === 'is_in' ? 'is_out' : 'is_in' );
+		$panel.$lyrical_panel.removeAttr("style").removeAttr("data-x").removeAttr("data-y").css('height', player_height);
 		e.preventDefault();
 		e.stopPropagation();
 	}, 
@@ -247,16 +259,18 @@ const $panel = {
 
 	// check whether the panel is visible
 	is_visible: function(){
-		return ($("#show_hide_lyrics").text() === "Hide Lyrics");
+		return ($panel.$show_hide_btn.text() === "Hide Lyrics");
 	},
 
 	// check if the panel is popped in or out
 	is_popped_in: function(){
-		return ($(".pop_out_btn").attr('data-state') === "is_in");
+		return ($panel.$pop_btn.attr('data-state') === "is_in");
 	},
 
-	// Used to cache the panel
-	$lyrical_panel: null
+	// Used for selector cache
+	$lyrical_panel: null,
+	$show_hide_btn: null,
+	$pop_btn: null
 
 }
 

@@ -33,7 +33,7 @@ $(function(){
 			// add the lyrics div
 			$panel.append_panel("#mainPanel")
 			// add the show-hide-lyrics button
-			$("#material-one-right").prepend('<a href="#" id="show_hide_lyrics">Hide Lyrics</a>');
+			$panel.prepend_btn("#material-one-right");
 
 			// have we already attached a mutation observer?
 			let observer_attached = false;

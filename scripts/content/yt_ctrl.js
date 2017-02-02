@@ -49,7 +49,7 @@ $(function(){
 				$("#lyrics").css('height', player_height);
 
 				// add the show-hide-lyrics button 
-				$("#watch-header").append('<a href="#" id="show_hide_lyrics">Hide Lyrics</a>');
+				$panel.append_btn("#watch-header");
 
 				// Hide panel by default on page load
 				if(!autorun)
@@ -148,7 +148,7 @@ $(function(){
 
 	function toggle_panel(e){
 		// If the user opens the panel and we didn't get the lyrics yet, pull it.
-		if(!cur_song.gotLyrics){
+		if(!cur_song.gotLyrics && cur_song.title !== ""){
 			$lyrics.get_lyrics(cur_song.artist, cur_song.title);
 			cur_song.gotLyrics = true;
 		}
