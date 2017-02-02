@@ -7,7 +7,7 @@ This chrome extension displays lyrics for songs on Youtube and Google Play Music
 ### How to install ###
 	
 * Clone this project
-* Download Google Closure Compiler, and make sure the compiler variable in Makefile has the right location.
+* Download [Google Closure Compiler](https://developers.google.com/closure/compiler/), and make sure the compiler variable in Makefile has the right location.
 * Run make or make compile. This will run the closure compiler and generate the required files.
 * Follow the steps [here](https://developer.chrome.com/extensions/getstarted#unpacked) to install the extension in Chrome.
 
