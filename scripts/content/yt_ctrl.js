@@ -12,8 +12,12 @@ $(function(){
 
 	function init(autorun, auto_pop){
 
+		cur_song.gotLyrics = false;
+		
 		if(location.pathname === "/watch"){
 			console.log("Lyrical is running");
+
+			$(window).off('keydown');
 
 			// Only append the lyrics panel if it's under the music category
 			if($(".watch-extras-section .watch-meta-item").first().find("a").text() === "Music"){
@@ -46,6 +50,12 @@ $(function(){
 
 				// add the show-hide-lyrics button 
 				$("#watch-header").append('<a href="#" id="show_hide_lyrics">Hide Lyrics</a>');
+
+				// Hide panel by default on page load
+				if(!autorun)
+					$panel.show_hide_panel(new Event('click'));
+				if(auto_pop)
+					$panel.pop_in_out(player_height, new Event('click'));
 
 				// Try to find the song's info 
 				if($(".watch-extras-section .watch-meta-item").last().find(".title").text().trim() === "Music"){
@@ -102,12 +112,6 @@ $(function(){
 				// listen for clicks on the show-hide button
 				let el = document.getElementById("show_hide_lyrics");
 				el.addEventListener("click", function(e){toggle_panel(e)}, false);
-
-				// Hide panel by default on page load
-				if(!autorun)
-					$panel.show_hide_panel(new Event('click'));
-				if(auto_pop)
-					$panel.pop_in_out(player_height, new Event('click'));
 
 				// listen for clicks on the pop-in-out button
 				document.getElementById("pop-in-out").addEventListener("click", function(e){

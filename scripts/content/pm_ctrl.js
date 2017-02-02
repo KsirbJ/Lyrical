@@ -4,6 +4,11 @@ import $panel from '../utils/panel'
 
 // Lyrics on google play music
 $(function(){
+
+	// Selector cache 
+	let $mainContainer = $("#mainContainer"),
+		$player = $("#player");
+
 	// pull the user specified options from storage and react accordingly
 	chrome.storage.sync.get({'run_on_gp': true, 'autorun': false, 'auto_pop': false}, function(response){
 		if(response.run_on_gp){
@@ -42,7 +47,7 @@ $(function(){
 			// When a mutation on the player is observed, check whether the song has changed by comparing the
 			// title and artist with the stored version
 			function check_playing(){
-				if($("#player").hasClass("active")){
+				if($player.hasClass("active")){
 					let current_title = $("#currently-playing-title").text();
 					let current_artist = $("#player-artist").text();
 
@@ -54,7 +59,7 @@ $(function(){
 						console.log("updated - " + current_title + " " + current_artist);
 						if($panel.is_visible()){
 							$lyrics.get_lyrics(current_artist, current_title);
-							gcur_song.otLyrics = true;
+							cur_song.gotLyrics = true;
 						}
 
 						if(!observer_attached){
@@ -75,11 +80,13 @@ $(function(){
 			// Toggle the lyrics panel when #show_hide_lyrics is clicked
 			function show_hide_panel(e){
 				if($panel.is_visible()){
-					$("#mainContainer").removeClass("lyrics_visible");
+					$mainContainer.removeClass("lyrics_visible");
 				}else {
-					$("#mainContainer").addClass("lyrics_visible");
-					if(!cur_song.gotLyrics && cur_song.artist !== "")
+					$mainContainer.addClass("lyrics_visible");
+					if(!cur_song.gotLyrics && cur_song.artist !== ""){
 						$lyrics.get_lyrics(cur_song.artist, cur_song.title);
+						cur_song.gotLyrics = true;
+					}
 				}
 				$panel.show_hide_panel(e);
 			}
@@ -88,19 +95,23 @@ $(function(){
 			// pop the panel in / out on click
 			function pop_in_out(e){
 				if($panel.is_popped_in()){
-					$("#mainContainer").removeClass("lyrics_visible");
+					$mainContainer.removeClass("lyrics_visible");
 				}else {
-					$("#mainContainer").addClass("lyrics_visible");
+					$mainContainer.addClass("lyrics_visible");
 				}
 				$panel.pop_in_out('100%', e);
 			}
 			$(document).on('click', '.pop_out_btn', pop_in_out);
 
-			// hack to resize the content on the page
-			window.onhashchange = function(){
-			 	if($panel.is_visible() && $panel.is_popped_in()){
-			 		if($("#mainContainer").length > 0 && ! $("#mainContainer").hasClass('lyrics_visible'))
-			 			$("#mainContainer").addClass("lyrics_visible");
+			// Resize the content on the page 
+			$mainContainer.scroll(resize_content);
+			window.onhashchange = resize_content();
+			
+
+			function resize_content(){
+				if($panel.is_visible() && $panel.is_popped_in()){
+			 		if($mainContainer.length > 0 && ! $mainContainer.hasClass('lyrics_visible'))
+			 			$mainContainer.addClass("lyrics_visible");
 			 	}
 			}
 

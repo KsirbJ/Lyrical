@@ -15,16 +15,17 @@ compile:
 
 deploy:	compile
 	mkdir lyrical
-	cp manifest.json lyrical/
-	cp -r libs/ lyrical/
-	cp -r img/ lyrical/
+	cp -f manifest.json lyrical/
+	cp -rf libs/ lyrical/
+	cp -rf img/ lyrical/
 	mkdir lyrical/scripts
-	cp -r scripts/background lyrical/scripts/
-	cp -r scripts/content_compiled/ lyrical/scripts/
-	cp -r ui/ lyrical/ui/
+	cp -rf scripts/background lyrical/scripts/
+	cp -rf scripts/content_compiled/ lyrical/scripts/
+	cp -rf ui/ lyrical/ui/
 	cd lyrical && zip -r ../lyrical.zip *
 
 clean:
-	rm -r scripts/content_compiled/*
-	rm -r lyrical/*
-	rm -r lyrical
+	rm -rf scripts/content_compiled/*
+	rm -rf lyrical/*
+	rm -rf lyrical
+	rm -rf lyrical.zip

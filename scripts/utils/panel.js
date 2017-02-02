@@ -1,9 +1,9 @@
 
 // Basic functions to create and add the lyrics panel to sites
 const $panel = {
-
 	// Append the styles for the lyrics panel to the page
 	append_styles: function(){
+
 		$("head").append(`
 			<style type="text/css">
 				@import url('https://fonts.googleapis.com/css?family=Libre+Franklin|Kalam:400,700');
@@ -192,6 +192,8 @@ const $panel = {
 
 			let img = chrome.extension.getURL("img/icon-128.png");
 			$("#lyrical_icon").attr('src', img);
+
+			$lyrical_panel = $("#lyrics");
 	},	
 
 	append_panel: function(toWhat){
@@ -205,11 +207,13 @@ const $panel = {
 			</div>`);
 		let img = chrome.extension.getURL("img/icon-128.png");
 		$("#lyrical_icon").attr('src', img);
+
+		$lyrical_panel = $("#lyrics");
 	},
 
 	// Show or hide the panel
 	show_hide_panel: function(e){
-		$("#lyrics").toggle();
+		$lyrical_panel.toggle();
 		let txt = $("#show_hide_lyrics").text();
 		$("#show_hide_lyrics").text(txt === "Hide Lyrics" ? "Show Lyrics" : "Hide Lyrics");
 		e.preventDefault();
@@ -218,17 +222,17 @@ const $panel = {
 
 	// Pop the panel in and out of the page
 	pop_in_out: function(player_height, e){	
-		$("#lyrics").toggleClass("can_drag").toggleClass("resize-drag");
+		$lyrical_panel.toggleClass("can_drag").toggleClass("resize-drag");
 		let state = $(".pop_out_btn").attr('data-state');
 		$(".pop_out_btn").attr('data-state', state === 'is_in' ? 'is_out' : 'is_in' );
-		$("#lyrics").removeAttr("style").removeAttr("data-x").removeAttr("data-y").css('height', player_height);
+		$lyrical_panel.removeAttr("style").removeAttr("data-x").removeAttr("data-y").css('height', player_height);
 		e.preventDefault();
 		e.stopPropagation();
 	}, 
 
 	// Register a keyboard shortcut to open / close the panel
 	register_keybd_shortcut: function(execute_this, with_this_param, for_shortcut_letter){
-		
+
 		$(window).on('keydown', function(e){
 			if(e.ctrlKey && e.shiftKey && e.keyCode == for_shortcut_letter.charCodeAt(0)){
 				if(with_this_param)
@@ -249,7 +253,10 @@ const $panel = {
 	// check if the panel is popped in or out
 	is_popped_in: function(){
 		return ($(".pop_out_btn").attr('data-state') === "is_in");
-	}
+	},
+
+	// Used to cache the panel
+	$lyrical_panel: null
 
 }
 
