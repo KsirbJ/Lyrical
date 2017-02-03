@@ -12,7 +12,7 @@
 	"content_scripts" : [
 		{
 			"matches" : [
-				"https://play.google.com/music/*"
+				"https://play.google.com/music/listen*"
 			],
 
 			"js" : [

@@ -48,6 +48,10 @@ const $lyrics = {
 
 		console.log(artist);
 		console.log(title);
+
+		// clean up the title 
+		title = $lyrics.clean_title(title);
+
 		$("#words").empty();
 		let access_token = "6xTujcUZfJUiPAssUT1jMwkkeeYWhMzLAOgXc5fPaWAdY0tz-UzE-EyrtYcOjoWo";
 
@@ -69,7 +73,6 @@ const $lyrics = {
 			    		let g_artist = hits[i].result.primary_artist.name.trim().toUpperCase();
 			    		
 			    		// replace fancy curly quotes
-			    		title = title.replace(/[\u2018\u2019]/g, "'").replace(/[\u201C\u201D]/g, '"');
 			    		g_title = g_title.replace(/[\u2018\u2019]/g, "'").replace(/[\u201C\u201D]/g, '"');
 			    		artist = artist.replace(/[\u2018\u2019]/g, "'").replace(/[\u201C\u201D]/g, '"');
 			    		g_artist = g_artist.replace(/[\u2018\u2019]/g, "'").replace(/[\u201C\u201D]/g, '"');
@@ -94,6 +97,31 @@ const $lyrics = {
 		      
 		  		});
 			});
+	},
+
+		// Clean up the title text
+	clean_title: function(title){
+
+		// remove anything in parentheses or brackets
+		title = title.replace(/ *\([^)]*\) */gi, " ").replace(/ *\[.*?\] */gi, " ");
+		// remove curly quotes
+		title = title.replace(/[\u2018\u2019]/g, "'").replace(/[\u201C\u201D]/g, '"');
+
+		// remove any featuring x from the title because this causes issues
+		let ft = null;
+		if(title.toLowerCase().indexOf("featuring") !== -1 )
+			ft = "featuring";
+		else if(title.toLowerCase().indexOf("feat") !== -1)
+			ft = "feat";
+		else if(title.toLowerCase().indexOf("ft.") !== -1)
+			ft = "ft.";
+
+		if(ft){
+			let regex = new RegExp(ft + '.*$', 'i');
+			title = title.replace(regex, "");
+		}
+
+		return title;
 	}
 
 }
