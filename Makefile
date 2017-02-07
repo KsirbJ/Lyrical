@@ -11,9 +11,9 @@ all: compile
 compile:
 	java -jar $(compiler) $(flags) $(play_music_files)  $(common_files) --js_output_file scripts/content_compiled/play_music.js
 	java -jar $(compiler) $(flags) $(youtube_files) $(common_files) --js_output_file scripts/content_compiled/youtube.js
-	cp scripts/utils/resize_drag.js scripts/content_compiled/
+	java -jar $(compiler) $(flags) scripts/utils/resize_drag.js --js_output_file scripts/content_compiled/resize_drag.js
 
-deploy:	compile
+deploy:	clean compile
 	mkdir lyrical
 	cp -f manifest.json lyrical/
 	cp -rf libs/ lyrical/

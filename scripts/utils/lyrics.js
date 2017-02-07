@@ -56,8 +56,13 @@ const $lyrics = {
 		let access_token = "6xTujcUZfJUiPAssUT1jMwkkeeYWhMzLAOgXc5fPaWAdY0tz-UzE-EyrtYcOjoWo";
 
 		fetch('https://api.genius.com/search?access_token=' + access_token + '&q=' + 
-			encodeURIComponent(title) + "%20" + encodeURIComponent(artist)).then(function (response) {
-		    	response.json().then(function (data) {
+			encodeURIComponent(title) + "%20" + encodeURIComponent(artist)).then(
+			function (response) {
+				if(response.ok)
+					return response.json();
+				throw new Error("Couldn't make Genius request :(");
+			}).then(
+			function (data) {
 
 		    		// Go through the data returned by Genius and check whether they have lyrics for this song.
 			    	let hits = data.response.hits || 0;
@@ -95,11 +100,12 @@ const $lyrics = {
 			    		// TODO Search additional lyric databases
 			    	}
 		      
-		  		});
-			});
+		  	}).catch(function(e){
+		  		console.error(e.message);
+		  	});
 	},
 
-		// Clean up the title text
+	// Clean up the title text
 	clean_title: function(title){
 
 		// remove anything in parentheses or brackets

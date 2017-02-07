@@ -44,10 +44,7 @@ const $panel = {
 					position: absolute;
 					top: 0;
 					right: 0;
-					background: #fff;
 					z-index: 199999000000;
-					overflow: hidden;
-					max-width: 300px;
 					width: 300px;
 				}
 				.pop_out_btn {
@@ -92,7 +89,7 @@ const $panel = {
 					margin: 0 auto;
 					text-align: center;
 				}
-				.btn {
+				.btn_bar {
 					width: 100%;
 					height: 35px;
 					background: #FFCF90;
@@ -117,37 +114,37 @@ const $panel = {
 					height: 23px;
 				}
 				#words::-webkit-scrollbar {
-				  width: 11px;
-				  height: 10px;
+					width: 11px;
+					height: 10px;
 				}
 				#words::-webkit-scrollbar-button {
-				  width: 0px;
-				  height: 0px;
+					width: 0px;
+					height: 0px;
 				}
 				#words::-webkit-scrollbar-thumb {
-				  background: #ffcf90;
-				  border: 1px solid #fff;
-				  border-radius: 10px;
+					background: #ffcf90;
+					border: 1px solid #fff;
+					border-radius: 10px;
 				}
 				#words::-webkit-scrollbar-thumb:hover {
-				  background: #ffcf90;
+					background: #ffcf90;
 				}
 				#words::-webkit-scrollbar-thumb:active {
-				  background: #ffcf90;
+					background: #ffcf90;
 				}
 				#words::-webkit-scrollbar-track {
-				  background: #ffffff;
-				  border-right: 1px solid #ffcf90;
-				  border-left: 1px solid #ffcf90;
+					background: #ffffff;
+					border-right: 1px solid #ffcf90;
+					border-left: 1px solid #ffcf90;
 				}
 				#words::-webkit-scrollbar-track:hover {
-				  background: #ffffff;
+					background: #ffffff;
 				}
 				#words::-webkit-scrollbar-track:active {
-				  background: #ffffff;
+					background: #ffffff;
 				}
 				#words::-webkit-scrollbar-corner {
-				  background: transparent;
+					background: transparent;
 				}
 				#lyrical_title {
 					font-family: 'Kalam', cursive;
@@ -179,10 +176,19 @@ const $panel = {
 		`);
 	},
 
+	// set the img src, and set up selector cache
+	set_up_items: function(){
+		let img = chrome.extension.getURL("img/icon-128.png");
+		$("#lyrical_icon").attr('src', img);
+
+		$panel.$lyrical_panel = $("#lyrics");
+		$panel.$pop_btn = $(".pop_out_btn")
+	},
+
 	// Set up the panel HTML 
 	get_panel_html: function(){
 		let panel = `<div id="lyrics">
-						<div class="btn">
+						<div class="btn_bar">
 							<a href="#" class="pop_out_btn" id="pop-in-out" data-state="is_in"></a>
 							<h2 id="lyrical_title">Lyrical</h2>
 							<img src="" id="lyrical_icon" />
@@ -196,20 +202,12 @@ const $panel = {
 	// Add the panel to the view
 	prepend_panel: function(toWhat){
 		$(toWhat).prepend($panel.get_panel_html());	
-		let img = chrome.extension.getURL("img/icon-128.png");
-		$("#lyrical_icon").attr('src', img);
-
-		$panel.$lyrical_panel = $("#lyrics");
-		$panel.$pop_btn = $(".pop_out_btn");		
+		$panel.set_up_items();	
 	},	
 
 	append_panel: function(toWhat){
 		$(toWhat).append($panel.get_panel_html());
-		let img = chrome.extension.getURL("img/icon-128.png");
-		$("#lyrical_icon").attr('src', img);
-
-		$panel.$lyrical_panel = $("#lyrics");
-		$panel.$pop_btn = $(".pop_out_btn");		
+		$panel.set_up_items();		
 	},
 
 	// add the show hide lyrics button

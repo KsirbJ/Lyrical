@@ -82,7 +82,7 @@ $(function(){
 				if($panel.is_visible()){
 					$mainContainer.removeClass("lyrics_visible");
 				}else {
-					$mainContainer.addClass("lyrics_visible");
+					if($panel.is_popped_in()) $mainContainer.addClass("lyrics_visible");
 					if(!cur_song.gotLyrics && cur_song.artist !== ""){
 						$lyrics.get_lyrics(cur_song.artist, cur_song.title);
 						cur_song.gotLyrics = true;
@@ -119,8 +119,10 @@ $(function(){
 			if(!response.autorun)
 				show_hide_panel(new Event('click'));
 			// pop panel out if option is selected
-			if(response.auto_pop)
+			if(response.auto_pop){
 				pop_in_out(new Event('click'));
+				if(!response.autorun) $panel.$lyrical_panel.toggle();
+			}
 
 			$panel.register_keybd_shortcut(show_hide_panel, null, 'S');
 		}

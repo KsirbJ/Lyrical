@@ -44,7 +44,7 @@ $(function(){
 				else if($("#watch7-sidebar-contents").length > 0)
 					$panel.prepend_panel("#watch7-sidebar-contents");
 
-				// Make the lyrics div as tall as the player
+				// Make the lyrics div as tall as the Youtube player
 				let player_height = $(".player-height").css("height");
 				$("#lyrics").css('height', player_height);
 
@@ -54,8 +54,10 @@ $(function(){
 				// Hide panel by default on page load
 				if(!autorun)
 					$panel.show_hide_panel(new Event('click'));
-				if(auto_pop)
+				if(auto_pop){
 					$panel.pop_in_out(player_height, new Event('click'));
+					if(!autorun) $panel.$lyrical_panel.toggle();
+				}
 
 				// Try to find the song's info 
 				if($(".watch-extras-section .watch-meta-item").last().find(".title").text().trim() === "Music"){
