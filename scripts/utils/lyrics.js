@@ -47,7 +47,7 @@ const $lyrics = {
 	get_lyrics: function(artist, title){	
 
 		// Set cache
-		if(!$lyrics.$words) $lyrics.$words = $("#words");
+		$lyrics.$words = $("#words");
 
 		console.log(artist);
 		console.log(title);
