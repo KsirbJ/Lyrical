@@ -90,7 +90,7 @@ $(function(){
 				}
 				$panel.show_hide_panel(e);
 			}
-			$(document).on("click", "#show_hide_lyrics", show_hide_panel);
+			$panel.add_toggle_handler(show_hide_panel);
 
 			// pop the panel in / out on click
 			function pop_in_out(e){

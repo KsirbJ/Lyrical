@@ -109,7 +109,7 @@ const $panel = {
 				#lyrical_icon {
 					position: absolute;
 					top: 6px;
-					right: 6px;
+					right: 32px;
 					z-index: 191919191919;
 					height: 23px;
 				}
@@ -153,7 +153,7 @@ const $panel = {
 					font-size: 2em;
 					position: absolute;
 					top: -2px;
-					right: 40px;
+					right: 65px;
 					margin: 0;
 				}
 				#show_hide_lyrics {
@@ -171,6 +171,17 @@ const $panel = {
 					background-color: #ee792c;
 					text-decoration: none;
 					transition: background-color .3s;
+				}
+				#close_btn {
+					color: #ff0000;
+					position: absolute;
+					right: 5px;
+				    top: 1px;
+				    font-size: 1.8em;
+				}
+				#close_btn:hover {
+					cursor: pointer;
+					color: #fff;
 				}
 			</style>
 		`);
@@ -192,6 +203,7 @@ const $panel = {
 							<a href="#" class="pop_out_btn" id="pop-in-out" data-state="is_in"></a>
 							<h2 id="lyrical_title">Lyrical</h2>
 							<img src="" id="lyrical_icon" />
+							<span id="close_btn">&#10006;</span>
 						</div>
 						<div id="words"><div id="err_msg">Play a song to see lyrics</div></div>
 					</div>`;
@@ -263,6 +275,12 @@ const $panel = {
 	// check if the panel is popped in or out
 	is_popped_in: function(){
 		return ($panel.$pop_btn.attr('data-state') === "is_in");
+	},
+
+	// register a handler for the open / close button
+	add_toggle_handler: function(call_this){
+		document.getElementById("show_hide_lyrics").addEventListener("click", function(e){call_this(e)}, false);
+		document.getElementById("close_btn").addEventListener("click", function(e){call_this(e)}, false);
 	},
 
 	// Used for selector cache

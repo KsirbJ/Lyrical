@@ -109,8 +109,7 @@ $(function(){
 				}
 
 				// listen for clicks on the show-hide button
-				let el = document.getElementById("show_hide_lyrics");
-				el.addEventListener("click", function(e){toggle_panel(e)}, false);
+				$panel.add_toggle_handler(toggle_panel);
 
 				// listen for clicks on the pop-in-out button
 				document.getElementById("pop-in-out").addEventListener("click", function(e){
