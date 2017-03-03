@@ -41,11 +41,12 @@ const $panel = {
 					font-family: 'Libre Franklin', sans-serif;
 				}
 				#lyrics.can_drag {
-					position: absolute;
+					position: fixed;
 					top: 0;
 					right: 0;
 					z-index: 199999000000;
 					width: 300px;
+					max-width: 350px;
 				}
 				.pop_out_btn {
 					position: absolute;
