@@ -2,108 +2,75 @@
 <html lang="en">
 	<head>
 		<title>Options | Lyrical</title>
+		<link href="https://fonts.googleapis.com/css?family=Open+Sans|Merriweather" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="options.css">
 		<script type="text/javascript" src="../libs/jquery-3.1.1.min.js"></script>
 		<script type="text/javascript" src="options.js"></script>
-
-		<style type="text/css">
-			html, body {
-				width: 900px;
-				margin: 2em;
-			}
-			#where_to_run {
-				display: flex;
-				justify-content: flex-start;
-				flex-direction: column;
-				width: 300px;
-			}
-			.input_set {
-				margin: 1em 1em .5em 1em;
-			}
-			#submit_btn {
-				text-align: left;
-				margin: .5em;
-			}
-			h3 {
-				font-size: 1.5em;
-			}
-			#feedback {
-				text-decoration: none;
-				display: block;
-				margin: 1em;
-			}
-			#howTo li, #howTo h4 {
-				font-size: 1.1em;
-				line-height: 2em;
-			}
-			#howTo a {
-				text-decoration: none;
-				font-weight: 800;
-				font-size: 1.3em;
-				color: gray;
-			}
-			#howTo h4, ul {
-				margin-left: 1em;
-			}
-			#howTo img {
-				vertical-align: middle;
-			}
-		</style>
 	</head>
 	<body>
-		<div id="options">
-			<h3><strong>Options</strong></h3>
-			<div id="where_to_run">
-				<span class="input_set">
-					<input type="checkbox" name="run_on_gp" id="run_on_gp">
-					<label for="run_on_gp">Run on Google Play Music</label>
-				</span>
-				<span class="input_set">
-					<input type="checkbox" name="run_on_yt" id="run_on_yt">
-					<label for="run_on_yt">Run on Youtube</label>
-				</span>
-				<span class="input_set" title="When this is selected the lyrics panel will be visible as soon as the page loads.">
-					<input type="checkbox" name="autorun" id="autorun" >
-					<label for="autorun">Show lyrics section when the page loads</label>
-				</span>
-				<span class="input_set" title="When this is selected the lyrics panel will pop out over the page instead of being integrated.">
-					<input type="checkbox" name="auto_pop" id="auto_pop">
-					<label for="auto_pop">Pop out lyrics panel by default </label>
-				</span>				
-				<span id="submit_btn">
-					<input type="submit" name="submit" id="_btn" value="Update">
-					<p id="response_msg"></p>
-				</span>
+		<div id="tabs">
+			<ul>
+				<li><a href="#options">Options</a></li>
+				<li><a href="#howTo">How to Use</a></li>
+				<li><a href="#about">About</a></li>
+			</ul>
+
+			<div id="options">
+				<h3>Options</h3>
+				<div id="where_to_run">
+					<span class="input_set">
+						<input type="checkbox" name="run_on_gp" id="run_on_gp">
+						<label for="run_on_gp">Run on Google Play Music</label>
+					</span>
+					<span class="input_set">
+						<input type="checkbox" name="run_on_yt" id="run_on_yt">
+						<label for="run_on_yt">Run on Youtube</label>
+					</span>
+					<span class="input_set" title="When this is selected the lyrics panel will be visible as soon as the page loads.">
+						<input type="checkbox" name="autorun" id="autorun" >
+						<label for="autorun">Show lyrics section when the page loads</label>
+					</span>
+					<span class="input_set" title="When this is selected the lyrics panel will pop out over the page instead of being integrated.">
+						<input type="checkbox" name="auto_pop" id="auto_pop">
+						<label for="auto_pop">Pop out lyrics panel by default </label>
+					</span>				
+					<span id="submit_btn">
+						<a href="#" id="_btn" >Save</a>
+						<p id="response_msg"></p>
+					</span>
+				</div>
+			</div>
+
+			<div id="howTo">
+				<h3>How to Use</h3>
+				<h4>Basic Usage:</h4>
+				<ul>
+					<li>On youtube, for every video uploaded under the "Music" category a "Show Lyrics" button will appear under the video 
+						<a href="#"" id="img1"> &#128712;</a></li>
+					<li>When clicking on this button a panel with the lyrics for the song will appear on the right
+						<a href="#"" id="img2"> &#128712; </a></li>
+					<li>On other supported websites, a similar "Show Lyrics" button will appear in a prominent position on the page</li>
+					<li>When clicking on this button, the lyrics panel will appear on the page</li>
+				</ul>
+				<h4>Additional Options:</h4>
+				<ul>
+					<li>Use <em>Ctrl + Shift + S</em> on any supported website to toggle the panel</li>
+					<li>When the panel is open, click on the icon that looks like this <img src="../img/pop-out-icon.png" height="25px"/> to pop the panel out over the page </li>
+					<li>When the panel is popped out you can move it anywhere on the page by dragging it with your mouse</li>
+					<li>When the panel is popped out you can also resize it by pulling on any edge with your mouse</li>
+					<li>When the panel is popped out, click on the icon that looks like this <img src="../img/pop-in-icon.png" height="25px"/> to pop the panel back into its original place on the page</li>
+					<li>Additionally, use the options above to customize where and how the extension works</li>
+				</ul>
+
+			</div>
+			<div id="about">
+				<h3>About</h3>
+				<p>Lyrical v0.1.8 - Developed by Jake B.</p>
+				<a href="https://goo.gl/forms/Uf040UhVZv0bugjo1" id="feedback"> Provide feedback and suggestions </a>
+				<a href="https://github.com/KsirbJ/Lyrical">Source code</a>
 			</div>
 		</div>
-
-		<div id="howTo">
-			<h3><strong>How to Use</strong></h3>
-			<h4>Basic Usage:</h4>
-			<ul>
-				<li>On youtube, for every video uploaded under the "Music" category a "Show Lyrics" button will appear under the video 
-					<a href="#"" id="img1"> &#128712;</a></li>
-				<li>When clicking on this button a panel with the lyrics for the song will appear on the right
-					<a href="#"" id="img2"> &#128712; </a></li>
-				<li>On other supported websites, a similar "Show Lyrics" button will appear in a prominent position on the page</li>
-				<li>When clicking on this button, the lyrics panel will appear on the page</li>
-			</ul>
-			<h4>Additional Options:</h4>
-			<ul>
-				<li>Use <em>Ctrl + Shift + S</em> on any supported website to toggle the panel</li>
-				<li>When the panel is open, click on the icon that looks like this <img src="../img/pop-out-icon.png" height="25px"/> to pop the panel out over the page </li>
-				<li>When the panel is popped out you can move it anywhere on the page by dragging it with your mouse</li>
-				<li>When the panel is popped out you can also resize it by pulling on any edge with your mouse</li>
-				<li>When the panel is popped out, click on the icon that looks like this <img src="../img/pop-in-icon.png" height="25px"/> to pop the panel back into its original place on the page</li>
-				<li>Additionally, use the options above to customize where and how the extension works</li>
-			</ul>
-
-		</div>
-		<div id="about">
-			<h3><strong>About</strong></h3>
-			<p>Lyrical version 0.1.7</p>
-			<a href="https://goo.gl/forms/Uf040UhVZv0bugjo1" id="feedback"> Provide feedback and suggestions </a>
-			<a href="https://github.com/KsirbJ/Lyrical">Source code</a>
-		</div>
+		
 
 
 		
