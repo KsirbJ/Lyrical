@@ -239,6 +239,9 @@ const $panel = {
 		$panel.$lyrical_panel.toggle();
 		let txt = $panel.$show_hide_btn.text();
 		$panel.$show_hide_btn.text(txt === "Hide Lyrics" ? "Show Lyrics" : "Hide Lyrics");
+		// rememeber the panel state
+		txt = $panel.$show_hide_btn.text();
+		chrome.storage.sync.set({'panel_visible': (txt === "Hide Lyrics" ? true : false) });
 		e.preventDefault();
 		e.stopPropagation();
 	},
@@ -249,6 +252,9 @@ const $panel = {
 		let state = $panel.$pop_btn.attr('data-state');
 		$panel.$pop_btn.attr('data-state', state === 'is_in' ? 'is_out' : 'is_in' );
 		$panel.$lyrical_panel.removeAttr("style").removeAttr("data-x").removeAttr("data-y").css('height', player_height);
+		// save the new state of the panel
+		state = $panel.$pop_btn.attr('data-state');
+		chrome.storage.sync.set({'panel_state': state});
 		e.preventDefault();
 		e.stopPropagation();
 	}, 

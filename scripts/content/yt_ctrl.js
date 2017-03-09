@@ -131,19 +131,29 @@ $(function(){
 	}
 
 	// On load pull the user specified options, and run extension accordingly
-	chrome.storage.sync.get({'run_on_yt': true, 'autorun': false, 'auto_pop': false}, function(response){
+	chrome.storage.sync.get({'run_on_yt': true, 'autorun': false, 'auto_pop': false}, (response) => {
 		if(response.run_on_yt){
 			init(response.autorun, response.auto_pop);
-
-			// Listen to youtube's spfdone event to detect page changes
-			document.addEventListener("spfdone", function(){
-				init(response.autorun, response.auto_pop);
-			});
 		}
 	});
-	
 
+	// Listen to youtube's spfdone event to detect page changes
+	document.addEventListener("spfdone", function(){
 
-	
-})
+		chrome.storage.sync.get({'run_on_yt': true, 'autorun': false, 'auto_pop': false, 'panel_state': 'is_in', 'panel_visible': false}, 
+		(response) => {
+
+			if(response.run_on_yt){
+				if(response.panel_state === 'is_out')
+					response.auto_pop = true;
+				if(response.panel_visible)
+					response.autorun = true;
+
+				init(response.autorun, response.auto_pop);
+			}
+
+		});
+	});	
+
+});
 
