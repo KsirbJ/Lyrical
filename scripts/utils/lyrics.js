@@ -49,9 +49,6 @@ const $lyrics = {
 		// Set cache
 		$lyrics.$words = $("#words");
 
-		console.log(artist);
-		console.log(title);
-
 		// clean up the title 
 		title = this.clean_text(title);
 		artist = this.clean_text(artist);
@@ -116,6 +113,7 @@ const $lyrics = {
 	 *	@return {string} the clean text 
 	 */
 	clean_text: function(text){
+		text = text.toLowerCase();
 
 		// remove anything in parentheses or brackets
 		text = text.replace(/ *\([^)]*\) */gi, " ").replace(/ *\[.*?\] */gi, " ");
@@ -126,11 +124,11 @@ const $lyrics = {
 
 		// remove any featuring x from the title because this causes issues
 		let ft = null;
-		if(text.toLowerCase().indexOf("featuring") !== -1 )
+		if(text.indexOf("featuring") !== -1 )
 			ft = "featuring";
-		else if(text.toLowerCase().indexOf("feat") !== -1)
+		else if(text.indexOf("feat") !== -1)
 			ft = "feat";
-		else if(text.toLowerCase().indexOf("ft.") !== -1)
+		else if(text.indexOf("ft.") !== -1)
 			ft = "ft.";
 
 		if(ft){
@@ -140,13 +138,13 @@ const $lyrics = {
 
 		// remove any "produced by" text
 		let prod = null;
-		if(text.toLowerCase().indexOf('produced by') !== -1)
+		if(text.indexOf('produced by') !== -1)
 			prod = 'produced by';
-		else if(text.toLowerCase().indexOf('prod. by') !== -1)
-			prod = 'prod. by'
+		else if(text.indexOf('prod. by') !== -1)
+			prod = 'prod. by';
 
 		if(prod){
-			let regex = new RegExp(prod + '.$', 'i');
+			let regex = new RegExp(prod + '.*$', 'i');
 			text = text.replace(regex, "");
 		}
 
