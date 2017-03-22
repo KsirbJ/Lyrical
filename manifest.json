@@ -1,7 +1,7 @@
 {
 	"manifest_version": 2,
 	"name": "Lyrical",
-	"version": "0.2.0",
+	"version": "0.2.1",
 	"description": "Instantly get lyrics for songs on Youtube and Google Play Music",
 
 	"permissions": [
