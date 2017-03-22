@@ -1,5 +1,5 @@
 
-// Find and pull lyrics from Genius and Metro Lyrics
+// Find and pull lyrics from Genius
 const $lyrics = {
 
 	// Function to pull the lyrics page and extract the lyrics from it
@@ -53,7 +53,8 @@ const $lyrics = {
 		console.log(title);
 
 		// clean up the title 
-		title = $lyrics.clean_title(title);
+		title = this.clean_text(title);
+		artist = this.clean_text(artist);
 
 		$lyrics.$words.empty();
 		let access_token = "6xTujcUZfJUiPAssUT1jMwkkeeYWhMzLAOgXc5fPaWAdY0tz-UzE-EyrtYcOjoWo";
@@ -108,29 +109,48 @@ const $lyrics = {
 		  	});
 	},
 
-	// Clean up the title text
-	clean_title: function(title){
+	/**
+	 *	Clean up text
+	 *
+	 *	@param text - The text to clean up
+	 *	@return {string} the clean text 
+	 */
+	clean_text: function(text){
 
 		// remove anything in parentheses or brackets
-		title = title.replace(/ *\([^)]*\) */gi, " ").replace(/ *\[.*?\] */gi, " ");
+		text = text.replace(/ *\([^)]*\) */gi, " ").replace(/ *\[.*?\] */gi, " ");
 		// remove curly quotes
-		title = title.replace(/[\u2018\u2019]/g, "'").replace(/[\u201C\u201D]/g, '"');
+		text = text.replace(/[\u2018\u2019]/g, "'").replace(/[\u201C\u201D]/g, '"');
+
+		text = text.replace(/[\u2205\u00D8\u00F8\u2300]/gi, 'o');
 
 		// remove any featuring x from the title because this causes issues
 		let ft = null;
-		if(title.toLowerCase().indexOf("featuring") !== -1 )
+		if(text.toLowerCase().indexOf("featuring") !== -1 )
 			ft = "featuring";
-		else if(title.toLowerCase().indexOf("feat") !== -1)
+		else if(text.toLowerCase().indexOf("feat") !== -1)
 			ft = "feat";
-		else if(title.toLowerCase().indexOf("ft.") !== -1)
+		else if(text.toLowerCase().indexOf("ft.") !== -1)
 			ft = "ft.";
 
 		if(ft){
 			let regex = new RegExp(ft + '.*$', 'i');
-			title = title.replace(regex, "");
+			text = text.replace(regex, "");
 		}
 
-		return title;
+		// remove any "produced by" text
+		let prod = null;
+		if(text.toLowerCase().indexOf('produced by') !== -1)
+			prod = 'produced by';
+		else if(text.toLowerCase().indexOf('prod. by') !== -1)
+			prod = 'prod. by'
+
+		if(prod){
+			let regex = new RegExp(prod + '.$', 'i');
+			text = text.replace(regex, "");
+		}
+
+		return text;
 	},
 
 	$words: null

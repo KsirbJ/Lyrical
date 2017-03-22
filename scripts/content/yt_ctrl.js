@@ -86,10 +86,14 @@ $(function(){
 					}
 				}else{
 					// Less accurate method. Try to find song info from the title
-					// Assumes "Artist - Song Title"  or "Artist | song title" format
+					// Assumes "Artist - Song Title", "Artist | song title", or "Artist : song title" format
 					try{
 						let song_info = $("h1.watch-title-container").text();
-						song_info = (song_info.split("-") || song_info.split("|")); 
+						// try to split song in all possible ways, then choose correct one
+						let s1 = song_info.split("|"), s2 = song_info.split("-"), s3 = song_info.split(":");
+						song_info = (s1.length > 1) ? s1 : (s2.length > 1) ? s2 : (s3.length > 1) ? s3 : null; 
+						if(!song_info)
+							throw new Error("Couldn't parse song info :(");
 						let artist = song_info[0].trim();
 						let title = song_info[1].trim();
 
