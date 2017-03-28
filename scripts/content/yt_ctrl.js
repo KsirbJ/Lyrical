@@ -20,7 +20,7 @@ $(function(){
 			$(window).off('keydown');
 
 			// Only append the lyrics panel if it's under the music category
-			if($(".watch-extras-section .watch-meta-item").first().find("a").text() === "Music"){
+			if($(".watch-extras-section").find(".watch-info-tag-list a:contains('Music')").text() === "Music"){
 
 				// Append youtube specific panel styles
 				$('body').append(`
@@ -60,9 +60,9 @@ $(function(){
 				}
 
 				// Try to find the song's info 
-				if($(".watch-extras-section .watch-meta-item").last().find(".title").text().trim() === "Music"){
+				if($(".watch-extras-section .watch-meta-item").find(".title:contains('Music')").text().trim() === "Music"){
 
-					let song_info = $(".watch-extras-section .watch-meta-item").last().find("ul.watch-info-tag-list");
+					let song_info = $(".watch-extras-section .watch-meta-item").find(".title:contains('Music')").parent().find("ul.watch-info-tag-list");
 
 					// Find the title
 					let title = $(song_info).text().split("\"")[1];
@@ -90,7 +90,7 @@ $(function(){
 					try{
 						let song_info = $("h1.watch-title-container").text();
 						// try to split song in all possible ways, then choose correct one
-						let s1 = song_info.split("|"), s2 = song_info.split("-"), s3 = song_info.split(":");
+						let s1 = song_info.split(/\|(.+)/), s2 = song_info.split(/-(.+)/), s3 = song_info.split(/:(.+)/);
 						song_info = (s1.length > 1) ? s1 : (s2.length > 1) ? s2 : (s3.length > 1) ? s3 : null; 
 						if(!song_info)
 							throw new Error("Couldn't parse song info :(");

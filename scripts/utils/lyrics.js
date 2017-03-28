@@ -53,6 +53,9 @@ const $lyrics = {
 		title = this.clean_text(title);
 		artist = this.clean_text(artist);
 
+		// console.log(title);
+		// console.log(artist);
+
 		$lyrics.$words.empty();
 		let access_token = "6xTujcUZfJUiPAssUT1jMwkkeeYWhMzLAOgXc5fPaWAdY0tz-UzE-EyrtYcOjoWo";
 
@@ -120,6 +123,7 @@ const $lyrics = {
 		// remove curly quotes
 		text = text.replace(/[\u2018\u2019]/g, "'").replace(/[\u201C\u201D]/g, '"');
 
+		// replace all variations of Ø with o 
 		text = text.replace(/[\u2205\u00D8\u00F8\u2300]/gi, 'o');
 
 		// remove any featuring x from the title because this causes issues
