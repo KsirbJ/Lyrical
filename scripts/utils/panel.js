@@ -1,4 +1,4 @@
-
+import Translator from '../utils/translate'
 // Basic functions to create and add the lyrics panel to sites
 const $panel = {
 	// Append the styles for the lyrics panel to the page
@@ -56,6 +56,7 @@ const $panel = {
     				color: #fff;
     				display: inline-block;
     				height: 35px;
+    				transition: all .4s linear;
 				}
 				.pop_out_btn[data-state="is_in"]:before {
 					content: "⇱";
@@ -107,13 +108,6 @@ const $panel = {
 				#credits a {
 					color: #0000ff;
 				}
-				#lyrical_icon {
-					position: absolute;
-					top: 6px;
-					right: 32px;
-					z-index: 191919191919;
-					height: 23px;
-				}
 				#words::-webkit-scrollbar {
 					width: 11px;
 					height: 10px;
@@ -154,7 +148,7 @@ const $panel = {
 					font-size: 2em;
 					position: absolute;
 					top: -2px;
-					right: 65px;
+					right: 32px;
 					margin: 0;
 				}
 				#show_hide_lyrics {
@@ -179,10 +173,21 @@ const $panel = {
 					right: 5px;
 				    top: 1px;
 				    font-size: 1.8em;
+				    transition: color .4s linear;
 				}
 				#close_btn:hover {
 					cursor: pointer;
 					color: #fff;
+				}
+				#translate_icon {
+					position: absolute;
+					left: 35px;
+					height: 25px;
+					z-index: 1919;
+					top: 5px;
+				}
+				#translate_icon:hover {
+					cursor: pointer;
 				}
 			</style>
 		`);
@@ -190,8 +195,10 @@ const $panel = {
 
 	// set the img src, and set up selector cache
 	set_up_items: function(){
-		let img = chrome.extension.getURL("img/icon-128.png");
-		$("#lyrical_icon").attr('src', img);
+		let img = chrome.extension.getURL("img/translate-icon.png");
+		$("#translate_icon").attr('src', img);
+		$("#translate_icon").click((e) => {Translator.show_hide(e)});
+		Translator.init_js();
 
 		$panel.$lyrical_panel = $("#lyrics");
 		$panel.$pop_btn = $(".pop_out_btn")
@@ -201,10 +208,12 @@ const $panel = {
 	get_panel_html: function(){
 		let panel = `<div id="lyrics">
 						<div class="btn_bar">
-							<a href="#" class="pop_out_btn" id="pop-in-out" data-state="is_in"></a>
+							<a href="#" class="pop_out_btn" id="pop-in-out" data-state="is_in" title="Pop in/out the lyrics panel"></a>
+							<img src="" id="translate_icon" title="Translate lyrics to another language"/>
+							${Translator.get_css()}
+							${Translator.get_html()}
 							<h2 id="lyrical_title">Lyrical</h2>
-							<img src="" id="lyrical_icon" />
-							<span id="close_btn">&#10006;</span>
+							<span id="close_btn" title="Hide lyrics panel">&#10006;</span>
 						</div>
 						<div id="words"><div id="err_msg">Play a song to see lyrics</div></div>
 					</div>`;

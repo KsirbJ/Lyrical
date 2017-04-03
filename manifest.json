@@ -57,6 +57,7 @@
 	},
 
 	"web_accessible_resources" : [
-		"img/*.png"
+		"img/*.png",
+		"img/*.gif"
 	]
 }
