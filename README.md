@@ -12,6 +12,7 @@ This chrome extension displays lyrics for songs on Youtube and Google Play Music
 * You can modify other default extension behavior
 * Use Ctrl + Shift + S to toggle the lyrics panel
 * Easily translate the lyrics to 80+ languages
+
 For a complete overview / guide click the "Options & How-To" button in the extension.
 
 ### How to install ###
