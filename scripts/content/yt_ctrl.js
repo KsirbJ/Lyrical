@@ -15,7 +15,6 @@ $(function(){
 		cur_song.gotLyrics = false;
 		
 		if(location.pathname === "/watch"){
-			console.log("Lyrical is running");
 
 			$(window).off('keydown');
 

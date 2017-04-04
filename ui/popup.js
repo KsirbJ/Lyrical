@@ -1,7 +1,6 @@
-$(function(){
 
-	// Open options page on-click
-	$("#options").click(function(){
-		chrome.tabs.create({ url: "ui/options.html" });
-	});
+
+// Open options page on-click
+document.getElementById("options").addEventListener("click", function(){
+	chrome.tabs.create({ url: "ui/options.html" });
 });

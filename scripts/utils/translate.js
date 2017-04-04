@@ -1,4 +1,5 @@
 // This file contains the base code for translating lyrics to another language
+import keys from "../utils/keys"
 
 const Translator = {
 	// contains the list of supported languages and their code
@@ -95,6 +96,7 @@ const Translator = {
 		"Japanese":	"ja"
 	},
 
+	// base html for the translate popup
 	get_html: function(){
 		let html = `<ul class="dropdown-menu">
 						<a href="#" id="close_translator">&#10006;</a>
@@ -113,45 +115,46 @@ const Translator = {
 		return html;
 	},
 
+	// base css for the translate popup
 	get_css: function(){
 		return `<style type="text/css" scoped>
 					.dropdown-menu:before {
 						content: "";
-					    width: 0;
-					    height: 0;
-					    position: absolute;
-					    border-left: 8px solid transparent;
-					    border-right: 8px solid transparent;
-					    border-bottom: 16px solid #FAFAFA;
-					    top: -15px;
-					    left: 20px;
-					    z-index: 2000;
+						width: 0;
+						height: 0;
+						position: absolute;
+						border-left: 8px solid transparent;
+						border-right: 8px solid transparent;
+						border-bottom: 16px solid #FAFAFA;
+						top: -15px;
+						left: 20px;
+						z-index: 2000;
 					}
 					#lyrics .dropdown-menu {
 						display: none;
 						padding: 10px;
-					    width: 100%;
-					    max-width: 200px;
-					    box-shadow: 1px -1px 1px 1px rgba(0,0,0,.2), 0px 1px 1px 1px rgba(0,0,0,.2);
-					    margin-top: 45px;
-					    position: absolute;
-					    z-index: 900000;
-					    background: #FAFAFA;
-					    left: 20px;
-					    border-radius: 5px;
-					    border: 1px solid #ee792c;
+						width: 100%;
+						max-width: 200px;
+						box-shadow: 1px -1px 1px 1px rgba(0,0,0,.2), 0px 1px 1px 1px rgba(0,0,0,.2);
+						margin-top: 45px;
+						position: absolute;
+						z-index: 900000;
+						background: #FAFAFA;
+						left: 20px;
+						border-radius: 5px;
+						border: 1px solid #ee792c;
 					}
 					#lyrics .dropdown-menu:after {
 						content: "";
-					    width: 0;
-					    height: 0;
-					    position: absolute;
-					    border-left: 8px solid transparent;
-					    border-right: 8px solid transparent;
-					    border-bottom: 17px solid rgba(0,0,0,.15);
-					    top: -17px;
-					    left: 21px;
-					    z-index: 1999;
+						width: 0;
+						height: 0;
+						position: absolute;
+						border-left: 8px solid transparent;
+						border-right: 8px solid transparent;
+						border-bottom: 17px solid rgba(0,0,0,.15);
+						top: -17px;
+						left: 21px;
+						z-index: 1999;
 					}
 					#lyrics input[type=text] {
 						outline: none;
@@ -176,10 +179,10 @@ const Translator = {
 					}
 					#translate_btn {
 						font-size: 30px;
-					    margin-top: -20px;
-					    margin-left: 5px;
-					    color: #ff9102;
-					    transition: all .4s linear;
+						margin-top: -20px;
+						margin-left: 5px;
+						color: #ff9102;
+						transition: all .4s linear;
 					}
 					#translate_btn:hover {
 						color: #ee792c;
@@ -188,12 +191,12 @@ const Translator = {
 						color: #fff;
 						position: absolute;
 						right: 0px;
-					    top: 0px;
-					    font-size: 16px;
-					    transition: color .4s linear;
-					    background: #ff0000;
-					    padding: 1px 4px;
-					    border-top-right-radius: 5px;
+						top: 0px;
+						font-size: 16px;
+						transition: color .4s linear;
+						background: #ff0000;
+						padding: 1px 4px;
+						border-top-right-radius: 5px;
 					}
 					#close_translator:hover {
 						cursor: pointer;
@@ -234,7 +237,7 @@ const Translator = {
 				}else{
 					throw new Error("No lyrics to translate");
 				}
-				let my_key = 'trnsl.1.1.20170403T152300Z.02e5a5a7f5157afc.205dbf1dfe700fdfeb6686a9599aa10c23ca817b';
+				let my_key = keys.yandex;
 
 				// perform the translation request
 				fetch(`https://translate.yandex.net/api/v1.5/tr.json/translate?key=${my_key}&text=${encodeURI(text)}&lang=${lang_code}&format=html`).then(

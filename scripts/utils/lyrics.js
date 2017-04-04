@@ -1,4 +1,4 @@
-
+import keys from "../utils/keys"
 // Find and pull lyrics from Genius
 const $lyrics = {
 
@@ -57,7 +57,7 @@ const $lyrics = {
 		// console.log(artist);
 
 		$lyrics.$words.empty();
-		let access_token = "6xTujcUZfJUiPAssUT1jMwkkeeYWhMzLAOgXc5fPaWAdY0tz-UzE-EyrtYcOjoWo";
+		let access_token = keys.genius;
 
 		fetch('https://api.genius.com/search?access_token=' + access_token + '&q=' + 
 			encodeURIComponent(title) + "%20" + encodeURIComponent(artist)).then(

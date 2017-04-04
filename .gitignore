@@ -2,3 +2,4 @@ scripts/content_compiled/*
 *.jar
 *.zip
 lyrical
+scripts/utils/keys.js
