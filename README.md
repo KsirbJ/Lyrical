@@ -19,7 +19,8 @@ For a complete overview / guide click the "Options & How-To" button in the exten
 
 You can get the live version of this extension [here](https://chrome.google.com/webstore/detail/lyrical/dkbbaocemdcnifbnpdbfklbnfoahmokg)
 
-Alternatively:	
+Alternatively:
+
 * Clone this project
 * Obtain a [Genius API key](https://genius.com/api-clients)
 * Obtain a [Yandex API key](https://tech.yandex.com/keys/)
