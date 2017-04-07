@@ -31,7 +31,7 @@ const $lyrics = {
 			});
 
 			// Finally, show the lyrics
-			$lyrics.$words.append(actual_lyrics);
+			$lyrics.$words.html(actual_lyrics);
 
 			parser = null
 			doc = null;
@@ -57,6 +57,7 @@ const $lyrics = {
 		// console.log(artist);
 
 		$lyrics.$words.empty();
+		$lyrics.$words.html(`<div id="err_msg">Working...<br><img src="${chrome.extension.getURL('img/loader.gif')}"></div>`);
 		let access_token = keys.genius;
 
 		fetch('https://api.genius.com/search?access_token=' + access_token + '&q=' + 
