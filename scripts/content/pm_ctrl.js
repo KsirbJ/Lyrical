@@ -26,6 +26,10 @@ $(function(){
 						right: 0;
 						top: 0;
 					}
+					#lyrics #words {
+						padding-right: 40px;
+						width: 85%;
+					}
 				</style>
 				`);
 			// add global styles
