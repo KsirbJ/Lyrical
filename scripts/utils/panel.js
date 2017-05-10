@@ -335,7 +335,7 @@ const $panel = {
 				<label for="song_name">Song Name</label>
 				<input type="text" required="required" id="song_name">
 				<br/>
-				<input type="submit" value="Submit" id="search_song">
+				<input type="submit" value="Get Lyrics" id="search_song">
 			</form>
 			`);
 	},

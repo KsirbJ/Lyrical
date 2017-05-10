@@ -13,6 +13,19 @@ $(function(){
 	chrome.storage.sync.get({'run_on_gp': true, 'autorun': false, 'auto_pop': false}, function(response){
 		if(response.run_on_gp){
 
+			$(document).on('submit', '#search_form', function(e){
+				let artist = $('#search_form').find("#artist_name").val();
+				let song = $('#search_form').find("#song_name").val();
+
+				$lyrics.get_lyrics(artist, song, false, null);
+				e.preventDefault();
+				e.stopPropagation();
+			});
+
+			function manual_search(){
+				$panel.add_search_box(); 
+			}
+
 			// Add site specific styles
 			$("head").append(`
 				<style type="text/css">
@@ -62,7 +75,7 @@ $(function(){
 						cur_song.gotLyrics = false;
 						console.log("updated - " + current_title + " " + current_artist);
 						if($panel.is_visible()){
-							$lyrics.get_lyrics(current_artist, current_title);
+							$lyrics.get_lyrics(current_artist, current_title, true, manual_search);
 							cur_song.gotLyrics = true;
 						}
 
@@ -88,7 +101,7 @@ $(function(){
 				}else {
 					if($panel.is_popped_in()) $mainContainer.addClass("lyrics_visible");
 					if(!cur_song.gotLyrics && cur_song.artist !== ""){
-						$lyrics.get_lyrics(cur_song.artist, cur_song.title);
+						$lyrics.get_lyrics(cur_song.artist, cur_song.title, true, manual_search);
 						cur_song.gotLyrics = true;
 					}
 				}

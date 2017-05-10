@@ -39,12 +39,13 @@ const $lyrics = {
 			// Credit website
 			$lyrics.$words.prepend(`<span id="credits">Lyrics from <a href="${url}" target="_blank">${domain}</a></span>`);
 		}).catch(function(e){
+			$lyrics.$words.html("<div id='err_msg'><h3>Whoops!</h3><p>Couldn't find lyrics, sorry :( </p></div>");
 			console.error("Fetch error: " + e.message);
 		});
 	},
 	
 	// Function to pull lyrics from Genius
-	get_lyrics: function(artist, title){	
+	get_lyrics: function(artist, title, first_search, callback){	
 
 		// Set cache
 		$lyrics.$words = $("#words");
@@ -100,13 +101,14 @@ const $lyrics = {
 			    	}
 			    	// Looped through all the data and no lyrics found.
 			    	if(!found){
-			    		
-			    		$lyrics.$words.html("<div id='err_msg'><h3>Whoops!</h3><p>Couldn't find lyrics, sorry :( </p></div>");
-
-			    		// TODO Search additional lyric databases
+			    		if(first_search)
+			    			callback();
+			    		else
+				    		$lyrics.$words.html("<div id='err_msg'><h3>Whoops!</h3><p>Couldn't find lyrics, sorry :( </p></div>");
 			    	}
 		      
 		  	}).catch(function(e){
+		  		$lyrics.$words.html("<div id='err_msg'><h3>Whoops!</h3><p>Couldn't find lyrics, sorry :( </p></div>");
 		  		console.error(e.message);
 		  	});
 	},

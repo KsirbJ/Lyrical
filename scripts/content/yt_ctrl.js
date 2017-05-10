@@ -63,10 +63,14 @@ $(function(){
 					let artist = $('#search_form').find("#artist_name").val();
 					let song = $('#search_form').find("#song_name").val();
 
-					$lyrics.get_lyrics(artist, song);
+					$lyrics.get_lyrics(artist, song, false, null);
 					e.preventDefault();
 					e.stopPropagation();
 				});
+
+				function manual_search(){
+					$panel.add_search_box(); 
+				}
 
 				// Try to find the song's info 
 				if($(".watch-extras-section .watch-meta-item").find(".title:contains('Music')").text().trim() === "Music"){
@@ -90,7 +94,7 @@ $(function(){
 					
 					// get the lyrics - only pull it if the panel is open
 					if($panel.is_visible()){
-						$lyrics.get_lyrics(artist, title);
+						$lyrics.get_lyrics(artist, title, true);
 						cur_song.gotLyrics = true;
 					}
 				}else{
@@ -110,7 +114,7 @@ $(function(){
 						cur_song.artist = artist;
 
 						if($panel.is_visible()){
-							$lyrics.get_lyrics(artist, title);
+							$lyrics.get_lyrics(artist, title, true);
 							cur_song.gotLyrics = true;
 						}
 					}catch(err){
@@ -136,7 +140,7 @@ $(function(){
 	function toggle_panel(e){
 		// If the user opens the panel and we didn't get the lyrics yet, pull it.
 		if(!cur_song.gotLyrics && cur_song.title !== ""){
-			$lyrics.get_lyrics(cur_song.artist, cur_song.title);
+			$lyrics.get_lyrics(cur_song.artist, cur_song.title, true);
 			cur_song.gotLyrics = true;
 		}
 		$panel.show_hide_panel(e);
