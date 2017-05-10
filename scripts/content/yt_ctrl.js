@@ -58,6 +58,16 @@ $(function(){
 					if(!autorun) $panel.$lyrical_panel.toggle();
 				}
 
+				// Submit handler for search form
+				$(document).on('submit', '#search_form', function(e){
+					let artist = $('#search_form').find("#artist_name").val();
+					let song = $('#search_form').find("#song_name").val();
+
+					$lyrics.get_lyrics(artist, song);
+					e.preventDefault();
+					e.stopPropagation();
+				});
+
 				// Try to find the song's info 
 				if($(".watch-extras-section .watch-meta-item").find(".title:contains('Music')").text().trim() === "Music"){
 
@@ -104,9 +114,8 @@ $(function(){
 							cur_song.gotLyrics = true;
 						}
 					}catch(err){
-						$("#words").html("<div id='err_msg'><h3>Whoops!</h3><p>Couldn't find lyrics, sorry :( </p></div>");
-						console.log(err);
-
+						// Couldn't figure out song info, let user enter it manually
+						$panel.add_search_box();
 					}
 
 				}

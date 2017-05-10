@@ -189,6 +189,47 @@ const $panel = {
 				#translate_icon:hover {
 					cursor: pointer;
 				}
+				#search_form {
+					margin: 0 auto;
+					padding-top: 30%;
+				}
+				#search_form input[type=text] {
+					outline: none;
+					border: none;
+					border-bottom: 1px solid #ff9102;
+					background: transparent !important;
+					height: 1.6rem;
+					width: 90%;
+					font-size: 1em;
+					margin: 0 0 15px 0;
+					padding: 0;
+					box-shadow: none;
+					transition: all 0.3s;
+				}
+				#search_form input[type=text]:focus {
+					border-bottom: 1px solid #ff9102;
+					box-shadow: 0 1px 0 0 #ff9102;
+				}
+				#search_song {
+				    display: block;
+					padding: .8em;
+					overflow: hidden;
+					border-radius: 2px;
+					box-shadow: 0 1px 4px rgba(0, 0, 0, .35);  
+					background-color: #ff9102;
+					color: #fff;		  
+					text-decoration: none;
+					transition: background-color .3s;
+					width: 90%;
+				}
+				#search_song:hover {
+				    background-color: #ee792c;
+				    transition: background-color .3s;
+				}
+				label {
+					font-size: .9em;
+					color: #ff9102;
+				}
 			</style>
 		`);
 	},
@@ -281,6 +322,22 @@ const $panel = {
 				e.stopPropagation();
 			}
 		})
+	},
+
+	add_search_box: function(){
+		$panel.$lyrical_panel.find("#words").empty();
+		$panel.$lyrical_panel.find("#words").append(`
+			<form name="search_form" id="search_form" >
+				<h3> Whoops! Lyrical couldn't identify this song. Try searching for it manually</h3>
+				<label for="artist_name">Artist</label>
+				<input type="text" required="required" id="artist_name">
+				<br/>
+				<label for="song_name">Song Name</label>
+				<input type="text" required="required" id="song_name">
+				<br/>
+				<input type="submit" value="Submit" id="search_song">
+			</form>
+			`);
 	},
 
 	// check whether the panel is visible
