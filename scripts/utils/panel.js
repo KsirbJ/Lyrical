@@ -199,7 +199,7 @@ const $panel = {
 					border-bottom: 1px solid #ff9102;
 					background: transparent !important;
 					height: 1.6rem;
-					width: 90%;
+					width: 95%;
 					font-size: 1em;
 					margin: 0 0 15px 0;
 					padding: 0;
@@ -220,7 +220,7 @@ const $panel = {
 					color: #fff;		  
 					text-decoration: none;
 					transition: background-color .3s;
-					width: 90%;
+					width: 95%;
 				}
 				#search_song:hover {
 				    background-color: #ee792c;
@@ -328,7 +328,8 @@ const $panel = {
 		$panel.$lyrical_panel.find("#words").empty();
 		$panel.$lyrical_panel.find("#words").append(`
 			<form name="search_form" id="search_form" >
-				<h3> Whoops! Lyrical couldn't identify this song. Try searching for it manually</h3>
+				<h3> Whoops! </h3>
+				<p> Lyrical couldn't identify this song. Try searching for it manually</p>
 				<label for="artist_name">Artist</label>
 				<input type="text" required="required" id="artist_name">
 				<br/>
