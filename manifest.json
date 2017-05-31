@@ -6,7 +6,8 @@
 
 	"permissions": [
 		"activeTab", "*://play.google.com/music/*", "*://www.youtube.com/watch*",
-		"*://youtube.com/*", "*://*.genius.com/*", "*://genius.com/*", "storage"
+		"*://youtube.com/*", "*://*.genius.com/*", "*://genius.com/*", "storage",
+		"*://open.spotify.com/*", "*://www.open.spotify.com/*"
 	],
 
 	"content_scripts" : [
@@ -29,7 +30,19 @@
 			"js" : [
 				"libs/jquery-3.1.1.min.js", "libs/interact.min.js", "scripts/content_compiled/resize_drag.js", "scripts/content_compiled/youtube.js"
 			]
+		},
+
+		{
+			"matches" : [
+				"*://www.open.spotify.com/*",
+				"*://open.spotify.com/*"
+			],
+
+			"js" : [
+				"libs/jquery-3.1.1.min.js", "libs/interact.min.js", "scripts/content_compiled/resize_drag.js", "scripts/content_compiled/spotify.js"
+			]
 		}
+
 	],
 
 

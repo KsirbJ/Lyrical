@@ -150,6 +150,7 @@ const $panel = {
 					top: -2px;
 					right: 32px;
 					margin: 0;
+					font-size: 26px;
 				}
 				#show_hide_lyrics {
 					display: block;
