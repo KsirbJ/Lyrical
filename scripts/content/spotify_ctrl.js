@@ -37,7 +37,7 @@ $(function(){
 					#lyrics {
 						width: 28%;
 						height: 100%;
-						position: absolute;
+						position: fixed;
 						right: 0;
 						top: 0;
 					}

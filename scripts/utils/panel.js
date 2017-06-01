@@ -60,13 +60,13 @@ const $panel = {
 				}
 				.pop_out_btn[data-state="is_in"]:before {
 					content: "⇱";
-					font-size: 2em;
+					font-size: 25px;
 					font-weight: 800;
     				padding: 0 .2em;
 				}
 				.pop_out_btn[data-state="is_out"]:before {
 					content: "⇲";
-					font-size: 2em;
+					font-size: 25px;
 					font-weight: 800;
     				padding: 0 .2em;
 				}
@@ -173,7 +173,7 @@ const $panel = {
 					position: absolute;
 					right: 5px;
 				    top: 1px;
-				    font-size: 1.8em;
+				    font-size: 25px;
 				    transition: color .4s linear;
 				}
 				#close_btn:hover {
@@ -282,6 +282,11 @@ const $panel = {
 
 	prepend_btn: function(toWhat){
 		$(toWhat).prepend('<a href="#" id="show_hide_lyrics">Hide Lyrics</a>');
+		$panel.$show_hide_btn = $("#show_hide_lyrics");
+	},
+
+	insert_btn_after: function(what){
+		$(what).after('<a href="#" id="show_hide_lyrics">Hide Lyrics</a>');
 		$panel.$show_hide_btn = $("#show_hide_lyrics");
 	},
 
