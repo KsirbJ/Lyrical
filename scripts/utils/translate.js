@@ -143,6 +143,9 @@ const Translator = {
 						left: 20px;
 						border-radius: 5px;
 						border: 1px solid #ee792c;
+						color: #000;
+						min-width: 150px;
+						font-size: 13px;
 					}
 					#lyrics .dropdown-menu:after {
 						content: "";
@@ -181,7 +184,7 @@ const Translator = {
 						font-size: 30px;
 						margin-top: -20px;
 						margin-left: 5px;
-						color: #ff9102;
+						color: #ff9102 !important;
 						transition: all .4s linear;
 					}
 					#translate_btn:hover {

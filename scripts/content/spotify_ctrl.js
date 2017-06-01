@@ -54,6 +54,15 @@ $(function(){
 					.now-playing-bar__right__inner {
 						width: auto !important;
 					}
+					#lyrics .dropdown-menu {
+						line-height: 25px !important;
+					}
+					#lyrics .dropdown-menu a {
+						color: #000;
+					}
+					#lyrics a:hover, #lyrics a:active {
+						text-decoration: none !important;
+					}
 				</style>
 				`);
 
