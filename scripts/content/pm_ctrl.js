@@ -80,7 +80,7 @@ $(function(){
 						}
 
 						if(!observer_attached){
-							$utils.create_observer("playerSongInfo", check_playing);
+							$utils.create_observer("#playerSongInfo", check_playing);
 							observer_attached = true;
 						}
 					}
@@ -91,7 +91,7 @@ $(function(){
 			
 			
 			// initialize observer
-			$utils.create_observer("player", check_playing);
+			$utils.create_observer("#player", check_playing);
 
 
 			// Toggle the lyrics panel when #show_hide_lyrics is clicked

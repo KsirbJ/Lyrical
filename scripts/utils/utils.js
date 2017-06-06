@@ -3,7 +3,7 @@ const $utils = {
 
 	/**
 	 *	Create a Mutation Observer
-	 *	@param	The id of the element to observe
+	 *	@param	The element to observe - Can be any valid jQuery selector
 	 *	@param	The function to call when a mutation is observed
 	 */
 	create_observer: function(target, call_this_function){
@@ -19,11 +19,9 @@ const $utils = {
 				characterData: false
 			};
 
-			let targetNode = document.getElementById(target);
+			let targetNode = $(target)[0];
 			observer.observe(targetNode, observerConfig);
 	},
-
-	
 
 }
 
