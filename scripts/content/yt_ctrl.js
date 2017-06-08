@@ -5,10 +5,12 @@ import $panel from '../utils/panel'
 // lyrics on youtube 
 $(function(){
 
-	// Tracks whether panel load has been initiated
-	let spf_simulated = false;
-	let timeout = null;
-	let executed = false;
+	// Tracks whether panel load has been initiated, used as a mutex
+	let spf_simulated = false;	
+	let timeout = null;	
+	let executed = false;  // Used as a mutex 
+	let nav_obs_attached = false;
+	let this_is_music = false;
 
 	// Info about the currently playing song
 	let cur_song = {
@@ -34,23 +36,25 @@ $(function(){
 
 	// For new youtube - Run this instead of spfdone
 	function check_for_panel(){
+
 		if($("#lyrics").length === 0 && !spf_simulated){
 
 			spf_simulated = true;
 			$("#show_hide_lyrics").remove();
 			chrome.storage.sync.get({'run_on_yt': true, 'autorun': false, 'auto_pop': false, 'panel_state': 'is_in', 'panel_visible': false}, 
 			(response) => {
-
+			
 				if(response.run_on_yt){
 					if(response.panel_state === 'is_out')
 						response.auto_pop = true;
 					if(response.panel_visible)
 						response.autorun = true;
 					
-					wait_and_do("h1.title.ytd-video-primary-info-renderer", "#items.ytd-watch-next-secondary-results-renderer",
+					wait_and_do("h1.title.ytd-video-primary-info-renderer", "#items.ytd-watch-next-secondary-results-renderer", "#more .more-button",
 			"#watch-header", ".watch-extras-section", init, response.autorun, response.auto_pop );
-				}
 
+				}
+				spf_simulated = false;
 			});
 		}		
 		
@@ -62,19 +66,46 @@ $(function(){
 	 *	@param wait1a,1b,2a,2b {string} - The elements to wait for
 	 *	@param execute_this {function} - The function to execute when the elements are available
 	 */
-	function wait_and_do(wait1a, wait1b, wait2a, wait2b, execute_this, param1, param2){
-		if(location.pathname === "/watch"){
-			if(($(wait1a).length === 0 || $(wait1b).length === 0  && !executed) && 
-				($(wait2a).length === 0 || $(wait2b).length === 0  && !executed)){
+	function wait_and_do(wait1a, wait1b, wait2a, wait1c, wait2b, execute_this, param1, param2){
+		if(location.pathname === "/watch" && !executed){
+
+			if(($(wait1a).length === 0 || $(wait1b).length === 0 || $(wait1c).length === 0) && 
+				($(wait2a).length === 0 || $(wait2b).length === 0)){
+
 				timeout = setTimeout(function(){
-					wait_and_do(wait1a, wait1b, wait2a, wait2b, execute_this, param1, param2);
+					wait_and_do(wait1a, wait1b, wait1c, wait2a, wait2b, execute_this, param1, param2);
 				}, 100);
-			}else{
-				clearTimeout(timeout);
+
+			}else if($("#lyrics").length === 0){
+
 				executed = true;
-				execute_this();
+				clearTimeout(timeout);
+				execute_this(param1, param2);
+				executed = false;
+
 			}
+
+		// Listen for transition from main or search pages to watch/ page
+		}else if(!nav_obs_attached && $(".ytd-page-manager").length > 0){
+			
+			$utils.create_observer(".ytd-page-manager[is=ytd-browse]", check_for_panel, [true, true, false, true]);
+			nav_obs_attached = true;
 		}
+	}
+
+	// Confirm that the current video is under the music category 
+	function check_if_music(autorun, auto_pop){
+		$("#more .more-button").click();
+		
+		setTimeout(function(){
+			if($(".ytd-metadata-row-container-renderer #content a:contains('Music')").text().includes("Music")){
+				this_is_music = true;
+				init(autorun, auto_pop);
+				this_is_music = false;
+			}	
+			$("#less .less-button").click();
+				
+		}, 100);
 	}
 
 	function init(autorun, auto_pop){
@@ -84,15 +115,12 @@ $(function(){
 		$(window).off('keydown');
 
 		// Listen for page changes on youtube material 
-		if($("#playlist #container").length > 0){
-			$utils.create_observer("#items.iron-list", check_for_panel);
-		}else if($("#page-manager").length > 0){
-			$utils.create_observer("#items", check_for_panel);
+		if($("#playlist #container").length > 0 || $("#page-manager").length > 0){
+			$utils.create_observer("h1.title.ytd-video-primary-info-renderer", check_for_panel, [false, false, true, true]);
 		}
 
 		// Only append the lyrics panel if it's under the music category
-		if($(".watch-extras-section").find(".watch-info-tag-list a:contains('Music')").text() === "Music"  ||
-			$(".ytd-page-manager").length > 0){
+		if($(".watch-extras-section").find(".watch-info-tag-list a:contains('Music')").text() === "Music" || this_is_music){
 
 			// Append youtube specific panel styles
 			$('body').append(`
@@ -116,7 +144,9 @@ $(function(){
 						line-height: 2em;
 						font-size: 13px;
 					}
-
+					#lyrics {
+						min-height: 300px;
+					}
 				`);
 			// add global panel styles
 			$panel.append_styles();
@@ -211,9 +241,10 @@ $(function(){
 			}, false);
 
 			$panel.register_keybd_shortcut(toggle_panel, null, 'S');
-		}
-		spf_simulated = false;
-		
+
+		}else if($(".ytd-page-manager").length > 0)	{
+			check_if_music(autorun, auto_pop);
+		}	
 	}
 	
 	function toggle_panel(e){
@@ -228,7 +259,7 @@ $(function(){
 	// On load pull the user specified options, and run extension accordingly
 	chrome.storage.sync.get({'run_on_yt': true, 'autorun': false, 'auto_pop': false}, (response) => {
 		if(response.run_on_yt){
-			wait_and_do("h1.title.ytd-video-primary-info-renderer", "#items.ytd-watch-next-secondary-results-renderer",
+			wait_and_do("h1.title.ytd-video-primary-info-renderer", "#items.ytd-watch-next-secondary-results-renderer", "#more .more-button",
 			"#watch-header", ".watch-extras-section", init, response.autorun, response.auto_pop );
 		}
 	});
@@ -238,13 +269,12 @@ $(function(){
 	document.addEventListener("spfdone", function(){
 		chrome.storage.sync.get({'run_on_yt': true, 'autorun': false, 'auto_pop': false, 'panel_state': 'is_in', 'panel_visible': false}, 
 		(response) => {
-
 			if(response.run_on_yt){
 				if(response.panel_state === 'is_out')
 					response.auto_pop = true;
 				if(response.panel_visible)
 					response.autorun = true;
-				wait_and_do("h1.title.ytd-video-primary-info-renderer", "#items.ytd-watch-next-secondary-results-renderer",
+				wait_and_do("h1.title.ytd-video-primary-info-renderer", "#items.ytd-watch-next-secondary-results-renderer", "#more .more-button",
 			"#watch-header", ".watch-extras-section", init, response.autorun, response.auto_pop );
 			}
 

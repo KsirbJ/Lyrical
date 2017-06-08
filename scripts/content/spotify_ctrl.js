@@ -120,7 +120,7 @@ $(function(){
 
 						if(!observer_attached){
 							setTimeout(function(){
-								$utils.create_observer(".track-info__name div a", check_playing);
+								$utils.create_observer(".track-info__name div a", check_playing, [true, true, true, true]);
 								observer_attached = true;
 							}, 500);
 							
