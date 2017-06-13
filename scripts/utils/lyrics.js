@@ -3,7 +3,7 @@ import keys from "../utils/keys"
 const $lyrics = {
 
 	// Function to pull the lyrics page and extract the lyrics from it
-	pull_page: function(url, domain){
+	pull_page: function(url, domain, in_milli){
 		let myHeaders = new Headers();
 		let myInit = {
 			method: 'GET',
@@ -38,6 +38,10 @@ const $lyrics = {
 
 			// Credit website
 			$lyrics.$words.prepend(`<span id="credits">Lyrics from <a href="${url}" target="_blank">${domain}</a></span>`);
+			$lyrics.$words.append('<div id="bottom"></div>');
+
+			$lyrics.autoscroll(in_milli);
+
 		}).catch(function(e){
 			$lyrics.$words.html("<div id='err_msg'><h3>Whoops!</h3><p>Couldn't find lyrics, sorry :( </p></div>");
 			console.error("Fetch error: " + e.message);
@@ -45,14 +49,16 @@ const $lyrics = {
 	},
 	
 	// Function to pull lyrics from Genius
-	get_lyrics: function(artist, title, first_search, callback){	
+	get_lyrics: function(song, first_search, callback){	
 
 		// Set cache
 		$lyrics.$words = $("#words");
 
 		// clean up the title 
-		title = this.clean_text(title);
-		artist = this.clean_text(artist);
+		let title = this.clean_text(song.title);
+		let artist = this.clean_text(song.artist);
+		let split_dur = song.duration.split(":");
+		let in_milli = Number(split_dur[0]) * 60000 + Number(split_dur[1]) * 1000;
 
 		// console.log(title);
 		// console.log(artist);
@@ -96,7 +102,7 @@ const $lyrics = {
 			    			// They have the song, now get the actual lyrics.
 			    			let url = hits[i].result.url;
 
-			    			$lyrics.pull_page(url, "Genius");
+			    			$lyrics.pull_page(url, "Genius", in_milli);
 			    		}
 			    	}
 			    	// Looped through all the data and no lyrics found.
@@ -157,6 +163,23 @@ const $lyrics = {
 		}
 
 		return text;
+	},
+
+	autoscroll: function(in_milli){
+		chrome.storage.sync.get({'autoscroll': false}, function(response){
+			if(response.autoscroll){
+				$lyrics.$words.stop();
+				$lyrics.$words.scrollTop(0);
+
+				$lyrics.$words.bind('scroll mousedown wheel DOMMouseScroll mousewheel keyup keydown', function(e){
+					if ( e.which > 0  || e.type == "mousedown" || e.type == "mousewheel"){
+						$lyrics.$words.stop();
+					}
+				});
+				$lyrics.$words.scroll();
+				$lyrics.$words.animate({ scrollTop: $("#words")[0].scrollHeight}, in_milli);
+			}
+		});
 	},
 
 	$words: null

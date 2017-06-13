@@ -16,6 +16,7 @@ $(function(){
 	let cur_song = {
 		artist: "",
 		title: "",
+		duration: 0,
 		gotLyrics: false
 	}
 
@@ -25,7 +26,7 @@ $(function(){
 		let artist = $('#search_form').find("#artist_name").val();
 		let song = $('#search_form').find("#song_name").val();
 
-		$lyrics.get_lyrics(artist, song, false, null);
+		$lyrics.get_lyrics(cur_song, false, null);
 		e.preventDefault();
 		e.stopPropagation();
 	});
@@ -165,6 +166,7 @@ $(function(){
 
 			// add the show-hide-lyrics button 
 			if($(".ytd-page-manager").length > 0){
+				$("#lyrics").css("height",  $("#player").css("height"));
 				$panel.insert_btn_after("h1.title.ytd-video-primary-info-renderer");
 			}
 			else
@@ -197,10 +199,11 @@ $(function(){
 
 				cur_song.title = title;
 				cur_song.artist = artist;
-				
+				cur_song.duration = $(".ytp-time-display .ytp-time-duration").text();
+
 				// get the lyrics - only pull it if the panel is open
 				if($panel.is_visible()){
-					$lyrics.get_lyrics(artist, title, true, manual_search);
+					$lyrics.get_lyrics(cur_song, true, manual_search);
 					cur_song.gotLyrics = true;
 				}
 			}else{
@@ -220,9 +223,10 @@ $(function(){
 
 					cur_song.title = title;
 					cur_song.artist = artist;
+					cur_song.duration = $(".ytp-time-display .ytp-time-duration").text();
 
 					if($panel.is_visible()){
-						$lyrics.get_lyrics(artist, title, true, manual_search);
+						$lyrics.get_lyrics(cur_song, true, manual_search);
 						cur_song.gotLyrics = true;
 					}
 				}catch(err){
@@ -250,7 +254,7 @@ $(function(){
 	function toggle_panel(e){
 		// If the user opens the panel and we didn't get the lyrics yet, pull it.
 		if(!cur_song.gotLyrics && cur_song.title !== ""){
-			$lyrics.get_lyrics(cur_song.artist, cur_song.title, true, manual_search);
+			$lyrics.get_lyrics(cur_song, true, manual_search);
 			cur_song.gotLyrics = true;
 		}
 		$panel.show_hide_panel(e);

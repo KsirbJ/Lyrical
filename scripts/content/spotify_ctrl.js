@@ -22,7 +22,7 @@ $(function(){
 					timeout = setTimeout(function(){
 						wait_and_do(wait_on, execute_this);
 					}, 100);
-				}else{
+				}else if(!executed){
 					clearTimeout(timeout);
 					executed = true;
 					execute_this();
@@ -98,6 +98,7 @@ $(function(){
 				let cur_song = {
 					title: "",
 					artist: "",
+					duration: 0,
 					gotLyrics: false
 				}
 				
@@ -111,10 +112,12 @@ $(function(){
 
 						cur_song.title = current_title;
 						cur_song.artist = current_artist;
+						cur_song.duration = $(".playback-bar__progress-time").eq(1).text();
+
 						cur_song.gotLyrics = false;
 						console.log("updated - " + current_title + " " + current_artist);
 						if($panel.is_visible()){
-							$lyrics.get_lyrics(current_artist, current_title, true, manual_search);
+							$lyrics.get_lyrics(cur_song, true, manual_search);
 							cur_song.gotLyrics = true;
 						}
 
@@ -137,7 +140,7 @@ $(function(){
 					}else {
 						if($panel.is_popped_in()) $mainContainer.addClass("lyrics_visible");
 						if(!cur_song.gotLyrics && cur_song.artist !== ""){
-							$lyrics.get_lyrics(cur_song.artist, cur_song.title, true, manual_search);
+							$lyrics.get_lyrics(cur_song, true, manual_search);
 							cur_song.gotLyrics = true;
 						}
 					}
