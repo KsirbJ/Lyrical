@@ -254,7 +254,6 @@ $(function(){
 		}	
 
 		$("#words").on('keydown', function(e){
-			console.log("called");
 			switch(e.which) {
 		        case 37:
 		            $lyrics.prev();

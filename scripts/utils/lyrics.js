@@ -1,7 +1,36 @@
-import keys from "../utils/keys"
+import keys from "./keys"
+import Cache from "./cache"
+
 // Find and pull lyrics from Genius
 const $lyrics = {
 
+	/**
+	 *	Check if the lyrics are cached
+	 *	
+	 *	@param song {Object} - The song to find the lyrics for
+	 */
+	check_cache: function(song){
+		if(!$lyrics.init_cache){
+			Cache.init();
+			init_cache = true;
+		}
+
+		Cache.get_item(song.title+song.artist, 
+			function(response){
+				if(response !== null){
+					let lyrics = LZString.decompressFromUTF16(response.lyrics);
+					$lyrics.display_lyrics(lyrics, response.url, response.domain, song);
+				}else{
+					$lyrics.find_lyrics(song);
+				}
+			}
+		)
+	},
+
+
+	/**
+	 *	Display the lyrics on the page
+	 */
 	display_lyrics: function(lyrics, url, domain, song){
 
 		// add html tags to lyrics
@@ -19,6 +48,68 @@ const $lyrics = {
 
 		$lyrics.autoscroll(song.duration);
 	},
+
+
+	/**
+	 *	Search Genius for lyrics 
+	 *
+	 *	@param song {object} - The song to find
+	 */
+	find_lyrics: function(song){
+		let access_token = keys.genius;
+
+		fetch('https://api.genius.com/search?access_token=' + access_token + '&q=' + 
+			encodeURIComponent(song.title) + "%20" + encodeURIComponent(song.artist)).then(
+			function (response) {
+				if(response.ok)
+					return response.json();
+				throw new Error("Couldn't make Genius request :(");
+		}).then(
+			function (data) {
+
+	    		// Go through the data returned by Genius and check whether they have lyrics for this song.
+		    	let hits = data.response.hits || 0;
+		    	let found = false;
+		    	for(let i = 0; i < hits.length && !found; ++i){
+
+		    		//console.log(hits[i].result.title);
+		    		//console.log(hits[i].result.primary_artist.name);
+		    		
+		    		let g_title = hits[i].result.title.trim().toUpperCase();
+		    		let g_artist = hits[i].result.primary_artist.name.trim().toUpperCase();
+		    		
+		    		// replace fancy curly quotes
+		    		g_title = g_title.replace(/[\u2018\u2019]/g, "'").replace(/[\u201C\u201D]/g, '"');
+		    		g_artist = g_artist.replace(/[\u2018\u2019]/g, "'").replace(/[\u201C\u201D]/g, '"');
+
+		    		if((g_title.indexOf(song.title) !== -1 && g_artist.indexOf(song.artist) !== -1) || 
+		    			(title.indexOf(g_title) !== -1 && artist.indexOf(g_artist) !== -1) ){
+
+		    			found = true;
+
+		    			// They have the song, now get the actual lyrics.
+		    			let url = hits[i].result.url;
+		    			song["url"] = url;
+
+		    			$lyrics.pull_page(url, "Genius", song);
+		    		}
+		    	}
+		    	// Looped through all the data and no lyrics found.
+		    	if(!found){
+		    		if(song.first_search)
+		    			song.callback();
+		    		else
+			    		$lyrics.$words.html("<div id='err_msg'><h3>Whoops!</h3><p>Couldn't find lyrics, sorry :( </p></div>");
+		    	}
+	      
+		}).catch(function(e){
+	  		$lyrics.$words.html(`<div id='err_msg'><h3>Whoops!</h3><p>Couldn't find lyrics, sorry :( </p>
+				${e.message === "Couldn't make Genius request :(" ? `<p>Lyrical couldn't pull the lyrics from Genius. 
+				This could be caused by a VPN, Proxy, or Firewall</p>`: ""}</div>`);
+	  		console.error(e.message);
+		});
+	},
+
 
 	// Function to pull the lyrics page and extract the lyrics from it
 	pull_page: function(url, domain, song){
@@ -46,15 +137,12 @@ const $lyrics = {
 
 			$lyrics.display_lyrics(actual_lyrics, url, domain, song);
 			
-			let key_val = song.title+song.artist;
-			let key = {};
-			key[key_val] = LZString.compressToUTF16(actual_lyrics);
+			let key = song.title+song.artist;
+			let compressed = LZString.compressToUTF16(actual_lyrics);
 			//console.log(actual_lyrics);
-			chrome.storage.local.getBytesInUse(function(bytesInUse){
-				console.log(bytesInUse);
-				if(bytesInUse < 5000000)
-					chrome.storage.local.set(key);
-			});
+			
+			// Cache the lyrics for next time
+			Cache.add_item({id: key, lyrics: compressed, url: url, domain: domain, num_played: 1, scroll_stamps: []});
 			
 			parser = null
 			doc = null;
@@ -67,8 +155,9 @@ const $lyrics = {
 			console.error("Fetch error: " + e.message);
 		});
 	},
+
 	
-	// Function to pull lyrics from Genius
+	// Init function - Sets up data needed to get lyrics
 	get_lyrics: function(song, first_search, callback){	
 
 		// Make copy to avoid changing original
@@ -91,74 +180,16 @@ const $lyrics = {
 		my_song.title = title;
 		my_song.artist = artist;
 		my_song.duration = in_milli;
+		my_song.first_search = first_search;
+		my_song.callback = callback;
 
-		$lyrics.$words.empty();
-		$lyrics.$words.html(`<div id="err_msg">Working...<br><img src="${chrome.extension.getURL('img/loader.gif')}"></div>`);
+		this.$words.empty();
+		this.$words.html(`<div id="err_msg">Working...<br><img src="${chrome.extension.getURL('img/loader.gif')}"></div>`);
 
-		let key_val = title+artist;
-		let key = {};
-		key[key_val] = null;
-		chrome.storage.local.get(key, function(response){
-			if(response[key_val]){
-				let lyrics = LZString.decompressFromUTF16(response[key_val]);
-				$lyrics.display_lyrics(lyrics, "#", "Genius", my_song);
-				console.log("Lyrics from storage");
-			}else{
-				let access_token = keys.genius;
-
-				fetch('https://api.genius.com/search?access_token=' + access_token + '&q=' + 
-					encodeURIComponent(title) + "%20" + encodeURIComponent(artist)).then(
-					function (response) {
-						if(response.ok)
-							return response.json();
-						throw new Error("Couldn't make Genius request :(");
-				}).then(
-					function (data) {
-
-			    		// Go through the data returned by Genius and check whether they have lyrics for this song.
-				    	let hits = data.response.hits || 0;
-				    	let found = false;
-				    	for(let i = 0; i < hits.length && !found; ++i){
-
-				    		//console.log(hits[i].result.title);
-				    		//console.log(hits[i].result.primary_artist.name);
-				    		
-				    		let g_title = hits[i].result.title.trim().toUpperCase();
-				    		let g_artist = hits[i].result.primary_artist.name.trim().toUpperCase();
-				    		
-				    		// replace fancy curly quotes
-				    		g_title = g_title.replace(/[\u2018\u2019]/g, "'").replace(/[\u201C\u201D]/g, '"');
-				    		g_artist = g_artist.replace(/[\u2018\u2019]/g, "'").replace(/[\u201C\u201D]/g, '"');
-
-				    		if((g_title.indexOf(title) !== -1 && g_artist.indexOf(artist) !== -1) || 
-				    			(title.indexOf(g_title) !== -1 && artist.indexOf(g_artist) !== -1) ){
-
-				    			found = true;
-
-				    			// They have the song, now get the actual lyrics.
-				    			let url = hits[i].result.url;
-
-				    			$lyrics.pull_page(url, "Genius", my_song);
-				    		}
-				    	}
-				    	// Looped through all the data and no lyrics found.
-				    	if(!found){
-				    		if(first_search)
-				    			callback();
-				    		else
-					    		$lyrics.$words.html("<div id='err_msg'><h3>Whoops!</h3><p>Couldn't find lyrics, sorry :( </p></div>");
-				    	}
-			      
-				}).catch(function(e){
-			  		$lyrics.$words.html(`<div id='err_msg'><h3>Whoops!</h3><p>Couldn't find lyrics, sorry :( </p>
-						${e.message === "Couldn't make Genius request :(" ? `<p>Lyrical couldn't pull the lyrics from Genius. 
-						This could be caused by a VPN, Proxy, or Firewall</p>`: ""}</div>`);
-			  		console.error(e.message);
-				});
-			}
-		});
-		
+		// Pull the lyrics
+		this.check_cache(my_song);
 	},
+
 
 	/**
 	 *	Clean up text
@@ -206,6 +237,11 @@ const $lyrics = {
 		return text;
 	},
 
+	/**
+	 *	Autoscroll the lyrics 
+	 *
+	 *	@param in_milli {int} - The length of the song in milliseconds
+	 */
 	autoscroll: function(in_milli){
 		chrome.storage.sync.get({'autoscroll': false}, function(response){
 			if(response.autoscroll){
@@ -223,8 +259,13 @@ const $lyrics = {
 		});
 	},
 
+	/**
+	 *	Highlight a line of lyrics 
+	 *
+	 * @param index {int} - The line to highlight
+	 */
 	hightlight: function(index){
-		console.log("index :" + index);
+		//console.log("index :" + index);
 
 		if(index >= $("#words p").length || index < 0)
 			index = 1;
@@ -239,18 +280,20 @@ const $lyrics = {
 		}
 	},
 
+	// highlight previous line
 	prev: function(){
-		console.log("prev : " + $("#words p.highlight").index());
+		//console.log("prev : " + $("#words p.highlight").index());
 		$lyrics.hightlight($("#words p.highlight").index() - 2);
 	},
 
+	// Highlight next line
 	next: function(){
-		console.log("next : " + $("#words p.highlight").index());
+		//console.log("next : " + $("#words p.highlight").index());
 		$lyrics.hightlight($("#words p.highlight").index());
 	},
 
 	$words: null,
-	in_focus: false	
+	init_cache: false
 
 }
 

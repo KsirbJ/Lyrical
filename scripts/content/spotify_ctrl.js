@@ -187,19 +187,17 @@ $(function(){
 
 				check_playing();
 
-				$(document).on('keydown', function(e){
-					if($lyrics.$words.is(':focus')){
-						console.log("called");
-						switch(e.which) {
-					        case 37:
-					            $lyrics.prev();
-					            break;
-					        case 39:
-					            $lyrics.next();
-					            break;
-					    }
-					}
-					
+				$("#words").on('keydown', function(e){
+					switch(e.which) {
+				        case 37:
+				            $lyrics.prev();
+				            e.preventDefault();
+				            break;
+				        case 39:
+				            $lyrics.next();
+				            e.preventDefault();
+				            break;
+				    }			
 				});
 			}
 

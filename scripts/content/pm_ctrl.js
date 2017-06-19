@@ -162,9 +162,7 @@ $(function(){
 			            e.stopImmediatePropagation();
 			            $lyrics.next();
 			            break;
-			    }
-				
-				
+			    }				
 			});
 
 			$panel.register_keybd_shortcut(show_hide_panel, null, 'S');
