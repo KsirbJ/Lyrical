@@ -2,8 +2,26 @@ import keys from "../utils/keys"
 // Find and pull lyrics from Genius
 const $lyrics = {
 
+	display_lyrics: function(lyrics, url, domain, song){
+
+		// add html tags to lyrics
+		lyrics = lyrics.split(/\r?\n/);
+		lyrics.forEach(function(element, index, arr){
+			if(arr[index].trim() !== "")
+				arr[index] = "<p>" + arr[index] + "</p>";
+		});
+
+		// Finally, show the lyrics
+		$lyrics.$words.html(lyrics);
+
+		// Credit website
+		$lyrics.$words.prepend(`<span id="credits">Lyrics from <a href="${url}" target="_blank">${domain}</a></span>`);
+
+		$lyrics.autoscroll(song.duration);
+	},
+
 	// Function to pull the lyrics page and extract the lyrics from it
-	pull_page: function(url, domain, in_milli){
+	pull_page: function(url, domain, song){
 		let myHeaders = new Headers();
 		let myInit = {
 			method: 'GET',
@@ -19,31 +37,33 @@ const $lyrics = {
 			throw new Error("Couldn't make request :(");
 
 		}).then(function(text){
+
+
 			// find the lyrics
 			let parser = new DOMParser();
 			let doc = parser.parseFromString(text, 'text/html');
 			let actual_lyrics = $(doc).find(".lyrics").text();
 
-			// add html tags to lyrics
-			actual_lyrics = actual_lyrics.split(/\r?\n/);
-			actual_lyrics.forEach(function(element, index, arr){
-				arr[index] = "<p>" + arr[index] + "</p>";
+			$lyrics.display_lyrics(actual_lyrics, url, domain, song);
+			
+			let key_val = song.title+song.artist;
+			let key = {};
+			key[key_val] = LZString.compressToUTF16(actual_lyrics);
+			//console.log(actual_lyrics);
+			chrome.storage.local.getBytesInUse(function(bytesInUse){
+				console.log(bytesInUse);
+				if(bytesInUse < 5000000)
+					chrome.storage.local.set(key);
 			});
-
-			// Finally, show the lyrics
-			$lyrics.$words.html(actual_lyrics);
-
+			
 			parser = null
 			doc = null;
 
-			// Credit website
-			$lyrics.$words.prepend(`<span id="credits">Lyrics from <a href="${url}" target="_blank">${domain}</a></span>`);
-			$lyrics.$words.append('<div id="bottom"></div>');
-
-			$lyrics.autoscroll(in_milli);
 
 		}).catch(function(e){
-			$lyrics.$words.html("<div id='err_msg'><h3>Whoops!</h3><p>Couldn't find lyrics, sorry :( </p></div>");
+			$lyrics.$words.html(`<div id='err_msg'><h3>Whoops!</h3><p>Couldn't find lyrics, sorry :( </p>
+					${e.message === "Couldn't make request :(" ? `<p>Lyrical couldn't pull the lyrics from Genius. 
+					This could be caused by a VPN, Proxy, or Firewall</p>`: ""}</div>`);
 			console.error("Fetch error: " + e.message);
 		});
 	},
@@ -51,72 +71,93 @@ const $lyrics = {
 	// Function to pull lyrics from Genius
 	get_lyrics: function(song, first_search, callback){	
 
+		// Make copy to avoid changing original
+		let my_song = $.extend(true, {}, song);
 		// Set cache
 		$lyrics.$words = $("#words");
 
 		// clean up the title 
-		let title = this.clean_text(song.title);
-		let artist = this.clean_text(song.artist);
-		let split_dur = song.duration.split(":");
+		let title = this.clean_text(my_song.title);
+		let artist = this.clean_text(my_song.artist);
+		title = title.trim().toUpperCase();
+		artist = artist.trim().toUpperCase();
+
+		let split_dur = my_song.duration.split(":");
 		let in_milli = Number(split_dur[0]) * 60000 + Number(split_dur[1]) * 1000;
+
 
 		// console.log(title);
 		// console.log(artist);
+		my_song.title = title;
+		my_song.artist = artist;
+		my_song.duration = in_milli;
 
 		$lyrics.$words.empty();
 		$lyrics.$words.html(`<div id="err_msg">Working...<br><img src="${chrome.extension.getURL('img/loader.gif')}"></div>`);
-		let access_token = keys.genius;
 
-		fetch('https://api.genius.com/search?access_token=' + access_token + '&q=' + 
-			encodeURIComponent(title) + "%20" + encodeURIComponent(artist)).then(
-			function (response) {
-				if(response.ok)
-					return response.json();
-				throw new Error("Couldn't make Genius request :(");
-			}).then(
-			function (data) {
+		let key_val = title+artist;
+		let key = {};
+		key[key_val] = null;
+		chrome.storage.local.get(key, function(response){
+			if(response[key_val]){
+				let lyrics = LZString.decompressFromUTF16(response[key_val]);
+				$lyrics.display_lyrics(lyrics, "#", "Genius", my_song);
+				console.log("Lyrics from storage");
+			}else{
+				let access_token = keys.genius;
 
-		    		// Go through the data returned by Genius and check whether they have lyrics for this song.
-			    	let hits = data.response.hits || 0;
-			    	let found = false;
-			    	for(let i = 0; i < hits.length && !found; ++i){
+				fetch('https://api.genius.com/search?access_token=' + access_token + '&q=' + 
+					encodeURIComponent(title) + "%20" + encodeURIComponent(artist)).then(
+					function (response) {
+						if(response.ok)
+							return response.json();
+						throw new Error("Couldn't make Genius request :(");
+				}).then(
+					function (data) {
 
-			    		//console.log(hits[i].result.title);
-			    		//console.log(hits[i].result.primary_artist.name);
-			    		
-			    		title = title.trim().toUpperCase();
-			    		artist = artist.trim().toUpperCase();
-			    		let g_title = hits[i].result.title.trim().toUpperCase();
-			    		let g_artist = hits[i].result.primary_artist.name.trim().toUpperCase();
-			    		
-			    		// replace fancy curly quotes
-			    		g_title = g_title.replace(/[\u2018\u2019]/g, "'").replace(/[\u201C\u201D]/g, '"');
-			    		artist = artist.replace(/[\u2018\u2019]/g, "'").replace(/[\u201C\u201D]/g, '"');
-			    		g_artist = g_artist.replace(/[\u2018\u2019]/g, "'").replace(/[\u201C\u201D]/g, '"');
+			    		// Go through the data returned by Genius and check whether they have lyrics for this song.
+				    	let hits = data.response.hits || 0;
+				    	let found = false;
+				    	for(let i = 0; i < hits.length && !found; ++i){
 
-			    		if((g_title.indexOf(title) !== -1 && g_artist.indexOf(artist) !== -1) || 
-			    			(title.indexOf(g_title) !== -1 && artist.indexOf(g_artist) !== -1) ){
+				    		//console.log(hits[i].result.title);
+				    		//console.log(hits[i].result.primary_artist.name);
+				    		
+				    		let g_title = hits[i].result.title.trim().toUpperCase();
+				    		let g_artist = hits[i].result.primary_artist.name.trim().toUpperCase();
+				    		
+				    		// replace fancy curly quotes
+				    		g_title = g_title.replace(/[\u2018\u2019]/g, "'").replace(/[\u201C\u201D]/g, '"');
+				    		g_artist = g_artist.replace(/[\u2018\u2019]/g, "'").replace(/[\u201C\u201D]/g, '"');
 
-			    			found = true;
+				    		if((g_title.indexOf(title) !== -1 && g_artist.indexOf(artist) !== -1) || 
+				    			(title.indexOf(g_title) !== -1 && artist.indexOf(g_artist) !== -1) ){
 
-			    			// They have the song, now get the actual lyrics.
-			    			let url = hits[i].result.url;
+				    			found = true;
 
-			    			$lyrics.pull_page(url, "Genius", in_milli);
-			    		}
-			    	}
-			    	// Looped through all the data and no lyrics found.
-			    	if(!found){
-			    		if(first_search)
-			    			callback();
-			    		else
-				    		$lyrics.$words.html("<div id='err_msg'><h3>Whoops!</h3><p>Couldn't find lyrics, sorry :( </p></div>");
-			    	}
-		      
-		  	}).catch(function(e){
-		  		$lyrics.$words.html("<div id='err_msg'><h3>Whoops!</h3><p>Couldn't find lyrics, sorry :( </p></div>");
-		  		console.error(e.message);
-		  	});
+				    			// They have the song, now get the actual lyrics.
+				    			let url = hits[i].result.url;
+
+				    			$lyrics.pull_page(url, "Genius", my_song);
+				    		}
+				    	}
+				    	// Looped through all the data and no lyrics found.
+				    	if(!found){
+				    		if(first_search)
+				    			callback();
+				    		else
+					    		$lyrics.$words.html("<div id='err_msg'><h3>Whoops!</h3><p>Couldn't find lyrics, sorry :( </p></div>");
+				    	}
+			      
+				}).catch(function(e){
+			  		$lyrics.$words.html(`<div id='err_msg'><h3>Whoops!</h3><p>Couldn't find lyrics, sorry :( </p>
+						${e.message === "Couldn't make Genius request :(" ? `<p>Lyrical couldn't pull the lyrics from Genius. 
+						This could be caused by a VPN, Proxy, or Firewall</p>`: ""}</div>`);
+			  		console.error(e.message);
+				});
+			}
+		});
+		
 	},
 
 	/**
@@ -182,7 +223,34 @@ const $lyrics = {
 		});
 	},
 
-	$words: null
+	hightlight: function(index){
+		console.log("index :" + index);
+
+		if(index >= $("#words p").length || index < 0)
+			index = 1;
+
+		if($(`#words p:eq(${index})`).length >= 0){
+			$("#words p").removeClass("highlight");
+
+			$(`#words p:eq(${index})`).addClass('highlight');
+			
+			let offset = $(".highlight")[0].offsetTop;
+			$lyrics.$words[0].scrollTop = offset - 40;
+		}
+	},
+
+	prev: function(){
+		console.log("prev : " + $("#words p.highlight").index());
+		$lyrics.hightlight($("#words p.highlight").index() - 2);
+	},
+
+	next: function(){
+		console.log("next : " + $("#words p.highlight").index());
+		$lyrics.hightlight($("#words p.highlight").index());
+	},
+
+	$words: null,
+	in_focus: false	
 
 }
 

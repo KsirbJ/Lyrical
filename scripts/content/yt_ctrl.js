@@ -17,6 +17,7 @@ $(function(){
 		artist: "",
 		title: "",
 		duration: 0,
+		cur_time: 0,
 		gotLyrics: false
 	}
 
@@ -200,6 +201,7 @@ $(function(){
 				cur_song.title = title;
 				cur_song.artist = artist;
 				cur_song.duration = $(".ytp-time-display .ytp-time-duration").text();
+				cur_song.cur_time = $(".ytp-time-display .ytp-time-current").text();
 
 				// get the lyrics - only pull it if the panel is open
 				if($panel.is_visible()){
@@ -248,12 +250,28 @@ $(function(){
 
 		}else if($(".ytd-page-manager").length > 0)	{
 			check_if_music(autorun, auto_pop);
+			return;
 		}	
+
+		$("#words").on('keydown', function(e){
+			console.log("called");
+			switch(e.which) {
+		        case 37:
+		            $lyrics.prev();
+		            e.preventDefault();
+		            break;
+		        case 39:
+		            $lyrics.next();
+		            e.preventDefault();
+		            break;
+		    }			
+		});
 	}
 	
 	function toggle_panel(e){
 		// If the user opens the panel and we didn't get the lyrics yet, pull it.
 		if(!cur_song.gotLyrics && cur_song.title !== ""){
+			cur_song.cur_time = $(".ytp-time-display .ytp-time-current").text();
 			$lyrics.get_lyrics(cur_song, true, manual_search);
 			cur_song.gotLyrics = true;
 		}
