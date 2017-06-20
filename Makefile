@@ -1,9 +1,10 @@
 
 compiler = closure-compiler.jar
-common_files =  scripts/utils/lyrics.js scripts/utils/translate.js scripts/utils/keys.js scripts/utils/panel.js scripts/utils/cache.js
+common_files =  scripts/utils/lyrics.js scripts/utils/translate.js scripts/utils/keys.js scripts/utils/panel.js
 play_music_files = scripts/content/pm_ctrl.js scripts/utils/utils.js  
 youtube_files = scripts/content/yt_ctrl.js scripts/utils/utils.js  
 spotify_files = scripts/content/spotify_ctrl.js scripts/utils/utils.js
+background_files = scripts/background/background.js scripts/utils/cache.js
 flags = --js
 
 all: compile
@@ -14,6 +15,7 @@ compile:
 	java -jar $(compiler) $(flags) $(common_files) $(youtube_files) --js_output_file scripts/content_compiled/youtube.js
 	java -jar $(compiler) $(flags) $(common_files) $(spotify_files) --js_output_file scripts/content_compiled/spotify.js
 	java -jar $(compiler) $(flags) scripts/utils/resize_drag.js --js_output_file scripts/content_compiled/resize_drag.js
+	java -jar $(compiler) $(flags) $(background_files) --js_output_file scripts/background_compiled/background.js
 
 deploy:	clean compile
 	mkdir lyrical

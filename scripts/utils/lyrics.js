@@ -1,8 +1,21 @@
 import keys from "./keys"
-import Cache from "./cache"
 
 // Find and pull lyrics from Genius
 const $lyrics = {
+	init: function(){
+
+		chrome.runtime.onMessage.addListener(function(request, sender){
+			console.log(request);
+			if(request.message !== null){
+				let lyrics = LZString.decompressFromUTF16(request.message.lyrics);
+				$lyrics.display_lyrics(lyrics, request.message.url, request.message.domain, $lyrics.cur_song);
+				console.log("Lyrics from storage");
+			}else{
+				$lyrics.find_lyrics($lyrics.cur_song);
+			}
+		});
+	},
+	
 
 	/**
 	 *	Check if the lyrics are cached
@@ -10,21 +23,14 @@ const $lyrics = {
 	 *	@param song {Object} - The song to find the lyrics for
 	 */
 	check_cache: function(song){
-		if(!$lyrics.init_cache){
-			Cache.init();
-			init_cache = true;
-		}
-
-		Cache.get_item(song.title+song.artist, 
-			function(response){
-				if(response !== null){
-					let lyrics = LZString.decompressFromUTF16(response.lyrics);
-					$lyrics.display_lyrics(lyrics, response.url, response.domain, song);
-				}else{
-					$lyrics.find_lyrics(song);
-				}
+		
+		let id = song.title + song.artist;
+		chrome.runtime.sendMessage(
+			{
+				message: 'get-song', 
+				id: id, 
 			}
-		)
+		);
 	},
 
 
@@ -139,10 +145,10 @@ const $lyrics = {
 			
 			let key = song.title+song.artist;
 			let compressed = LZString.compressToUTF16(actual_lyrics);
-			//console.log(actual_lyrics);
 			
 			// Cache the lyrics for next time
-			Cache.add_item({id: key, lyrics: compressed, url: url, domain: domain, num_played: 1, scroll_stamps: []});
+			let cache_song = {id: key, lyrics: compressed, url: url, domain: domain, num_played: 1, scroll_stamps: []};
+			chrome.runtime.sendMessage({message: 'store-song', song: cache_song});
 			
 			parser = null
 			doc = null;
@@ -160,10 +166,15 @@ const $lyrics = {
 	// Init function - Sets up data needed to get lyrics
 	get_lyrics: function(song, first_search, callback){	
 
+		if(!$lyrics.init_done){
+			$lyrics.init();
+			$lyrics.init_done = true;
+		}
+
 		// Make copy to avoid changing original
 		let my_song = $.extend(true, {}, song);
 		// Set cache
-		$lyrics.$words = $("#words");
+		this.$words = $("#words");
 
 		// clean up the title 
 		let title = this.clean_text(my_song.title);
@@ -182,6 +193,8 @@ const $lyrics = {
 		my_song.duration = in_milli;
 		my_song.first_search = first_search;
 		my_song.callback = callback;
+
+		$lyrics.cur_song = my_song;
 
 		this.$words.empty();
 		this.$words.html(`<div id="err_msg">Working...<br><img src="${chrome.extension.getURL('img/loader.gif')}"></div>`);
@@ -293,7 +306,8 @@ const $lyrics = {
 	},
 
 	$words: null,
-	init_cache: false
+	cur_song: null,
+	init_done: false
 
 }
 

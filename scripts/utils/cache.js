@@ -2,7 +2,7 @@
 const Cache = {
 	max_items: 3000,
 	max_size: 1000000,
-	cache: null, 
+	cache: null, // The actual storage 
 	cache_item: {
 		id: '',
 		lyrics: '',
@@ -11,14 +11,10 @@ const Cache = {
 		num_played: 0,
 		scroll_stamps: []
 	},
-	// Locks
+	// Locks - Prevent DB operations until it's initialized
 	events: {
 		init_complete: false,
-		init_started: false,
-		put_started: false,
-		put_complete: false,
-		get_started: false,
-		get_complete: false
+		init_started: false
 	},
 	
 
@@ -40,7 +36,7 @@ const Cache = {
 		let request = indexedDB.open('LyricCache', 1);
 
 		request.onerror = function(event) {
-			console.log(event.target.error.message)
+			console.log(event.target.error.message);
 		};
 
 		request.onsuccess = function(event) {
@@ -71,7 +67,8 @@ const Cache = {
 	add_item: function(cache_item){
 
 		if(Cache.events.init_complete){
-			console.log("in add " + cache_item.id);
+
+			//console.log("in add " + cache_item.id);
 			let transaction = Cache.cache.transaction(["lyrics"], "readwrite");
 
 			transaction.oncomplete = function(e){
@@ -79,14 +76,15 @@ const Cache = {
 			};
 
 			transaction.onerror = function(e){
-				console.log(e.target.error.message)
+				console.log(e.target.error.message);
 			};
 
 			let obj_store = transaction.objectStore('lyrics');
 			let req = obj_store.add(cache_item);
 			req.onsuccess = function(e){
-
+				//console.log(e.target)
 			};
+
 		}else if(Cache.events.init_started){
 			setTimeout(function(){
 				Cache.add_item(cache_item);
@@ -106,15 +104,14 @@ const Cache = {
 	 */
 	get_item: function(id, callback){
 
-		console.log(callback);
 		if(Cache.events.init_complete){
-			console.log("in get");
+			//console.log("in get");
 			let transaction = Cache.cache.transaction(["lyrics"], "readwrite");
 			let obj_store = transaction.objectStore("lyrics");
 			let request = obj_store.get(id);
 
 			request.onerror = function(event) {
-				console.log(event.target.error.message)
+				console.log(event.target.error.message);
 				callback(null);
 			};
 
@@ -129,9 +126,7 @@ const Cache = {
 					let update_req = obj_store.put(data);
 				}else{
 					callback(null);
-					console.log("not found");
 				}
-
 			  
 			};
 
@@ -147,24 +142,49 @@ const Cache = {
 		
 	},
 
+	/**
+	 *	Update a record in tha cache
+	 *
+	 *	@param obj {Object} - The updated record
+	 *	@param callback {function} - An optional callback function
+	 */
 	update_item: function(obj, callback){
 		let req = Cache.cache.transaction(["lyrics"], "readwrite").objectStore("lyrics").put(obj);
 
 		req.onsuccess = function(e){
 			if(callback)
-				callback("success");
+				callback(true);
 		};
 
 		req.onerror = function(e){
 			if(callback)
-				callback(e.target.error.message);
+				callback(false);
+			console.log(e.target.error.message);
 		};
 	},
 
-	delete_item: function(id){
+	/**
+	 *	Delete a record from the cache
+	 *
+	 *	@param id {string} - The ID of the record to delete
+	 *	@param callback {function} - An optional callback function
+	 */
+	delete_item: function(id, callback){
 		let request = cache.transaction(["lyrics"], "readwrite").objectStore("lyrics").delete(id);
+
+		request.onsucces = function(e){
+			if(callback)
+				callback(true);
+		};
+
+		request.onerror = function(e){
+			if(callback)
+				callback(false);
+			console.log(e.target.error.message);
+		};
 	},
 
+	// Remove the least frequently accessed item in the cache
 	eject_lowest: function(){
 
 	}
