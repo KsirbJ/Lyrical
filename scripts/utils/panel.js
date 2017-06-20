@@ -77,13 +77,13 @@ const $panel = {
 				#words {
 					background: #fff;
 					margin: 0;
-					padding: 5% 3% 5% 0;
+					padding: 5% 3% 5% 3%;
 					color: #000;
 					overflow-y: scroll;
 					position: absolute;
 					top: 35px;
 					right: 0;
-					width: 93%;
+					left: 0;
 					height: 85.5%;
 				}
 				#err_msg {
@@ -231,6 +231,15 @@ const $panel = {
 					font-size: .9em;
 					color: #ff9102;
 				}
+				#words p.highlight {
+					background: #ADD8E6;
+				    padding: 10px;
+				    margin: 0;
+				}
+				#words:focus {
+					border: none !important;
+					outline: none !important;
+				}
 			</style>
 		`);
 	},
@@ -243,7 +252,7 @@ const $panel = {
 		Translator.init_js();
 
 		$panel.$lyrical_panel = $("#lyrics");
-		$panel.$pop_btn = $(".pop_out_btn")
+		$panel.$pop_btn = $(".pop_out_btn");
 	},
 
 	// Set up the panel HTML 
@@ -257,7 +266,7 @@ const $panel = {
 							<h2 id="lyrical_title">Lyrical</h2>
 							<span id="close_btn" title="Hide lyrics panel">&#10006;</span>
 						</div>
-						<div id="words"><div id="err_msg">Play a song to see lyrics</div></div>
+						<div id="words" tabindex="1"><div id="err_msg">Play a song to see lyrics</div></div>
 					</div>`;
 		return panel;
 	},

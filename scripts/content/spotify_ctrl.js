@@ -99,6 +99,7 @@ $(function(){
 					title: "",
 					artist: "",
 					duration: 0,
+					cur_time: 0,
 					gotLyrics: false
 				}
 				
@@ -113,6 +114,7 @@ $(function(){
 						cur_song.title = current_title;
 						cur_song.artist = current_artist;
 						cur_song.duration = $(".playback-bar__progress-time").eq(1).text();
+						cur_song.cur_time = $(".playback-bar__progress-time").eq(0).text();
 
 						cur_song.gotLyrics = false;
 						console.log("updated - " + current_title + " " + current_artist);
@@ -140,6 +142,7 @@ $(function(){
 					}else {
 						if($panel.is_popped_in()) $mainContainer.addClass("lyrics_visible");
 						if(!cur_song.gotLyrics && cur_song.artist !== ""){
+							cur_song.cur_time = $("#time_container_current").text();
 							$lyrics.get_lyrics(cur_song, true, manual_search);
 							cur_song.gotLyrics = true;
 						}
@@ -183,6 +186,19 @@ $(function(){
 				$panel.register_keybd_shortcut(show_hide_panel, null, 'S');
 
 				check_playing();
+
+				$("#words").on('keydown', function(e){
+					switch(e.which) {
+				        case 37:
+				            $lyrics.prev();
+				            e.preventDefault();
+				            break;
+				        case 39:
+				            $lyrics.next();
+				            e.preventDefault();
+				            break;
+				    }			
+				});
 			}
 
 
