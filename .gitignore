@@ -1,4 +1,5 @@
 scripts/content_compiled/*
+scripts/background_compiled/*
 *.jar
 *.zip
 lyrical
