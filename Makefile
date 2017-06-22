@@ -14,7 +14,6 @@ compile:
 	java -jar $(compiler) $(flags) $(common_files) $(play_music_files) --js_output_file scripts/content_compiled/play_music.js
 	java -jar $(compiler) $(flags) $(common_files) $(youtube_files) --js_output_file scripts/content_compiled/youtube.js
 	java -jar $(compiler) $(flags) $(common_files) $(spotify_files) --js_output_file scripts/content_compiled/spotify.js
-	java -jar $(compiler) $(flags) scripts/utils/resize_drag.js --js_output_file scripts/content_compiled/resize_drag.js
 	java -jar $(compiler) $(flags) $(background_files) --js_output_file scripts/background_compiled/background.js
 
 deploy:	clean compile

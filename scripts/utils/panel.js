@@ -41,12 +41,9 @@ const $panel = {
 					font-family: 'Libre Franklin', sans-serif;
 				}
 				#lyrics.can_drag {
-					position: fixed;
-					top: 0;
-					right: 0;
+					position: absolute;
 					z-index: 199999000000;
 					width: 300px;
-					max-width: 350px;
 				}
 				.pop_out_btn {
 					position: absolute;
@@ -250,6 +247,16 @@ const $panel = {
 		$("#translate_icon").attr('src', img);
 		$("#translate_icon").click((e) => {Translator.show_hide(e)});
 		Translator.init_js();
+		$("#lyrics").draggable({
+			containment: "document",
+            
+		}).resizable({
+			containment: "document",
+			handles: "e, se, s, sw, w",
+			minWidth: 100,
+			maxWidth: 350
+		});
+		$("#lyrics").draggable("disable").resizable("disable");
 
 		$panel.$lyrical_panel = $("#lyrics");
 		$panel.$pop_btn = $(".pop_out_btn");
@@ -313,8 +320,9 @@ const $panel = {
 
 	// Pop the panel in and out of the page
 	pop_in_out: function(player_height, e){	
-		$panel.$lyrical_panel.toggleClass("can_drag").toggleClass("resize-drag");
+		$panel.$lyrical_panel.toggleClass("can_drag");
 		let state = $panel.$pop_btn.attr('data-state');
+		$("#lyrics").draggable(state === "is_in" ? "enable" : "disable").resizable(state === "is_in" ? "enable" : "disable");
 		$panel.$pop_btn.attr('data-state', state === 'is_in' ? 'is_out' : 'is_in' );
 		$panel.$lyrical_panel.removeAttr("style").removeAttr("data-x").removeAttr("data-y").css('height', player_height);
 		// save the new state of the panel
