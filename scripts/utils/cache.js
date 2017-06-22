@@ -37,6 +37,7 @@ const Cache = {
 
 		request.onerror = function(event) {
 			console.log(event.target.error.message);
+			Cache.events.init_started = false;
 		};
 
 		request.onsuccess = function(event) {
@@ -64,25 +65,25 @@ const Cache = {
 	 *
 	 *	@param cache_item {Object} - The song to add
 	 */
-	add_item: function(cache_item){
+	add_item: function(cache_item, callback){
 
 		if(Cache.events.init_complete){
 
 			//console.log("in add " + cache_item.id);
-			let transaction = Cache.cache.transaction(["lyrics"], "readwrite");
+			let req = Cache.cache.transaction(["lyrics"], "readwrite")
+									.objectStore('lyrics')
+									.add(cache_item);
 
-			transaction.oncomplete = function(e){
-
-			};
-
-			transaction.onerror = function(e){
-				console.log(e.target.error.message);
-			};
-
-			let obj_store = transaction.objectStore('lyrics');
-			let req = obj_store.add(cache_item);
 			req.onsuccess = function(e){
 				//console.log(e.target)
+				if(callback)
+					callback(true);
+			};
+
+			req.onerror = function(e){
+				if(callback)
+					callback(false);
+				console.log(e.target.error.message);
 			};
 
 		}else if(Cache.events.init_started){
@@ -185,7 +186,19 @@ const Cache = {
 	},
 
 	// Remove the least frequently accessed item in the cache
-	eject_lowest: function(){
+	eject_lowest: function(callback){
+		let obj_store = Cache.cache.transaction(["lyrics"]).objectStore("lyrics");
+
+		let index = obj_store.index('num_played');
+
+		index.openCursor().onsuccess = function(e){
+			let cursor = e.target.result;
+
+			if(cursor){
+				console.log("got lowest value : " + cursor.key + " " + cursor.value.num_played);
+				Cache.delete_item(cursor.value.id, callback);
+			}
+		}
 
 	}
 	

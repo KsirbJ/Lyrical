@@ -44,6 +44,8 @@ const $panel = {
 					position: absolute;
 					z-index: 199999000000;
 					width: 300px;
+					top: 0; 
+					right: 0;
 				}
 				.pop_out_btn {
 					position: absolute;
@@ -237,6 +239,13 @@ const $panel = {
 					border: none !important;
 					outline: none !important;
 				}
+				.resize-fix.can_drag {
+					position: fixed !important;
+					z-index: 2147483647;
+					height: 400px;
+					width: 300px;
+					right: 0 !important;
+				}
 			</style>
 		`);
 	},
@@ -247,24 +256,30 @@ const $panel = {
 		$("#translate_icon").attr('src', img);
 		$("#translate_icon").click((e) => {Translator.show_hide(e)});
 		Translator.init_js();
-		$("#lyrics").draggable({
-			containment: "document",
-            
-		}).resizable({
+		$("#lyrics").resizable({
 			containment: "document",
 			handles: "e, se, s, sw, w",
 			minWidth: 100,
 			maxWidth: 350
 		});
-		$("#lyrics").draggable("disable").resizable("disable");
+		$(".resize-fix").draggable({
+			containment: "document",   
+		});
+		$("#lyrics").resizable("disable");
+		$(".resize-fix").draggable("disable");
+		$("#lyrics").on('resize', function(event, ui){
+			console.log(ui.originalPosition);
+			console.log(ui.position);
+		})
 
 		$panel.$lyrical_panel = $("#lyrics");
 		$panel.$pop_btn = $(".pop_out_btn");
+		$lyrical_wrapper = $(".resize-fix");
 	},
 
 	// Set up the panel HTML 
 	get_panel_html: function(){
-		let panel = `<div id="lyrics">
+		let panel = `<div class="resize-fix"><div id="lyrics">
 						<div class="btn_bar">
 							<a href="#" class="pop_out_btn" id="pop-in-out" data-state="is_in" title="Pop in/out the lyrics panel"></a>
 							<img src="" id="translate_icon" title="Translate lyrics to another language"/>
@@ -274,7 +289,7 @@ const $panel = {
 							<span id="close_btn" title="Hide lyrics panel">&#10006;</span>
 						</div>
 						<div id="words" tabindex="1"><div id="err_msg">Play a song to see lyrics</div></div>
-					</div>`;
+					</div></div>`;
 		return panel;
 	},
 
@@ -320,11 +335,21 @@ const $panel = {
 
 	// Pop the panel in and out of the page
 	pop_in_out: function(player_height, e){	
+		// Hackiness to keep styles consistent
 		$panel.$lyrical_panel.toggleClass("can_drag");
+		$panel.$lyrical_wrapper.toggleClass("can_drag");
+
+		// Use panel state to determine which rules to apply
 		let state = $panel.$pop_btn.attr('data-state');
-		$("#lyrics").draggable(state === "is_in" ? "enable" : "disable").resizable(state === "is_in" ? "enable" : "disable");
+		$panel.$lyrical_panel.resizable(state === "is_in" ? "enable" : "disable");
+		if(state === "is_in")
+			$panel.$lyrical_wrapper.css({"top": "0", "right": "0"});
+		else
+			$panel.$lyrical_wrapper.css({"top": "0", "left": "0"});
+		$panel.$lyrical_wrapper.draggable(state === "is_in" ? "enable" : "disable");
 		$panel.$pop_btn.attr('data-state', state === 'is_in' ? 'is_out' : 'is_in' );
 		$panel.$lyrical_panel.removeAttr("style").removeAttr("data-x").removeAttr("data-y").css('height', player_height);
+		
 		// save the new state of the panel
 		state = $panel.$pop_btn.attr('data-state');
 		chrome.storage.sync.set({'panel_state': state});
@@ -383,7 +408,8 @@ const $panel = {
 	// Used for selector cache
 	$lyrical_panel: null,
 	$show_hide_btn: null,
-	$pop_btn: null
+	$pop_btn: null,
+	$lyrical_wrapper: null
 
 }
 
