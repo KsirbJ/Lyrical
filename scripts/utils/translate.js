@@ -102,7 +102,7 @@ const Translator = {
 						<a href="#" id="close_translator">&#10006;</a>
 						<p>Translate lyrics to...</p>
 						<span id="form">
-							<input list="languages" type="text" id="lang_chooser" placeholder="Enter a language...">
+							<input list="languages" type="text" id="lang_chooser" placeholder="Enter a language..." tabindex="0">
 							<datalist id="languages">`;
 							for(language in this.languages){
 								html += `<option value="${language}" data-val="${this.languages[language]}" >`;
@@ -223,6 +223,12 @@ const Translator = {
 
 	init_js: function(){
 		$("#close_translator").click((e) => {this.show_hide(e)});
+
+		$("#lang_chooser").click( (e) => {
+			$(this).focus(); 
+			e.preventDefault();
+			e.stopPropagation();
+		});
 
 		// translate lyrics
 		$("#translate_btn").click(function(e){

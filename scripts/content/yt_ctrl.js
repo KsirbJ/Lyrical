@@ -90,7 +90,7 @@ $(function(){
 		// Listen for transition from main or search pages to watch/ page
 		}else if(!nav_obs_attached && $(".ytd-page-manager").length > 0){
 			
-			$utils.create_observer(".ytd-page-manager[is=ytd-browse]", check_for_panel, [true, true, false, true]);
+			$utils.create_observer(".ytd-page-manager:eq(0)", check_for_panel, [true, true, false, true]);
 			nav_obs_attached = true;
 		}
 	}

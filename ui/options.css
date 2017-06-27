@@ -184,3 +184,12 @@ input[type="checkbox"]+label:before {
     backface-visibility: hidden;
     transform-origin: 100% 100%;
   }
+
+#new_opt {
+  background: #EF5350;
+  color: #fff;
+  padding: 5px;
+  margin-right: 5px;
+  border-radius: 5px;
+  text-align: center;
+}

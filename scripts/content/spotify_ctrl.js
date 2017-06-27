@@ -53,18 +53,19 @@ $(function(){
 						.root.lyrics_visible {
 							width: 70%;
 						}
-						#lyrics {
+						.resize-fix {
 							width: 28%;
+						}
+						#lyrics {
+							width: inherit;
 							height: 100%;
 							position: fixed;
 							right: 0;
 							top: 0;
+							margin: 0;
 						}
 						#lyrical_title {
 							top: 4px !important;
-						}
-						#words {
-							width: 97% !important;
 						}
 						#words p {
 							font-size: 14px !important;
