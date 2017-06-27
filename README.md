@@ -2,7 +2,7 @@
 
 ## Chrome Lyrics Extension ##
 
-This chrome extension displays lyrics for songs on Youtube, Google Play Music, and Spotify Web Player(for now)
+This chrome extension displays lyrics for songs on Youtube, Google Play Music, and Spotify Web Player (for now)
 
 ### Features ###
 * Instantly get lyrics for songs on YouTube and Google Play Music
@@ -12,7 +12,7 @@ This chrome extension displays lyrics for songs on Youtube, Google Play Music, a
 * You can modify other default extension behavior
 * Use Ctrl + Shift + S to toggle the lyrics panel
 * Easily translate the lyrics to 80+ languages
-* You can move to and highlight the next or previous line using right and left arrow keys
+* Move to and highlight the next or previous line using right and left arrow keys
 
 For a complete overview / guide click the "Options & How-To" button in the extension.
 
