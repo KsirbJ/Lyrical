@@ -281,7 +281,7 @@ const $lyrics = {
 		//console.log("index :" + index);
 
 		if(index >= $("#words p").length || index < 0)
-			index = 1;
+			index = 0;
 
 		if($(`#words p:eq(${index})`).length >= 0){
 			$("#words p").removeClass("highlight");
