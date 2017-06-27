@@ -243,8 +243,11 @@ const $panel = {
 					position: fixed !important;
 					z-index: 2147483647;
 					height: 400px;
-					width: 300px;
+					width: 400px;
 					right: 0 !important;
+				}
+				.resize-fix {
+					position: static !important;
 				}
 			</style>
 		`);
@@ -260,21 +263,21 @@ const $panel = {
 			containment: "document",
 			handles: "e, se, s, sw, w",
 			minWidth: 100,
-			maxWidth: 350
+			maxWidth: 400
 		});
 		$(".resize-fix").draggable({
 			containment: "document",   
 		});
 		$("#lyrics").resizable("disable");
 		$(".resize-fix").draggable("disable");
-		$("#lyrics").on('resize', function(event, ui){
-			console.log(ui.originalPosition);
-			console.log(ui.position);
-		})
+
 
 		$panel.$lyrical_panel = $("#lyrics");
 		$panel.$pop_btn = $(".pop_out_btn");
-		$lyrical_wrapper = $(".resize-fix");
+		$panel.$lyrical_wrapper = $(".resize-fix");
+
+		// Hack for arrow key lyric selection
+		$("#lyrics, .resize-fix, .btn_bar, #words, #words p").click(function(e){ $("#words")[0].focus();});
 	},
 
 	// Set up the panel HTML 
@@ -288,7 +291,7 @@ const $panel = {
 							<h2 id="lyrical_title">Lyrical</h2>
 							<span id="close_btn" title="Hide lyrics panel">&#10006;</span>
 						</div>
-						<div id="words" tabindex="1"><div id="err_msg">Play a song to see lyrics</div></div>
+						<div id="words" tabindex="0"><div id="err_msg">Play a song to see lyrics</div></div>
 					</div></div>`;
 		return panel;
 	},
@@ -342,14 +345,17 @@ const $panel = {
 		// Use panel state to determine which rules to apply
 		let state = $panel.$pop_btn.attr('data-state');
 		$panel.$lyrical_panel.resizable(state === "is_in" ? "enable" : "disable");
+		$panel.$lyrical_wrapper.removeAttr("style");
 		if(state === "is_in")
 			$panel.$lyrical_wrapper.css({"top": "0", "right": "0"});
 		else
 			$panel.$lyrical_wrapper.css({"top": "0", "left": "0"});
+
 		$panel.$lyrical_wrapper.draggable(state === "is_in" ? "enable" : "disable");
 		$panel.$pop_btn.attr('data-state', state === 'is_in' ? 'is_out' : 'is_in' );
 		$panel.$lyrical_panel.removeAttr("style").removeAttr("data-x").removeAttr("data-y").css('height', player_height);
-		
+
+		$("#words")[0].focus();
 		// save the new state of the panel
 		state = $panel.$pop_btn.attr('data-state');
 		chrome.storage.sync.set({'panel_state': state});

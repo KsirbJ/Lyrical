@@ -5,7 +5,7 @@ const $lyrics = {
 	init: function(){
 
 		chrome.runtime.onMessage.addListener(function(request, sender){
-			console.log(request);
+			//console.log(request);
 			if(request.message !== null){
 				let lyrics = LZString.decompressFromUTF16(request.message.lyrics);
 				$lyrics.display_lyrics(lyrics, request.message.url, request.message.domain, $lyrics.cur_song);
