@@ -9,7 +9,7 @@ const $lyrics = {
 			if(request.message !== null){
 				let lyrics = LZString.decompressFromUTF16(request.message.lyrics);
 				$lyrics.display_lyrics(lyrics, request.message.url, request.message.domain, $lyrics.cur_song);
-				console.log("Lyrics from storage");
+				//console.log("Lyrics from storage");
 			}else{
 				$lyrics.find_lyrics($lyrics.cur_song);
 			}
