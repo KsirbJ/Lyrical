@@ -36,8 +36,10 @@ $(function(){
 
 			function run(){
 				$(document).on('submit', '#search_form', function(e){
-					let artist = $('#search_form').find("#artist_name").val();
-					let song = $('#search_form').find("#song_name").val();
+					cur_song.artist = $('#search_form').find("#artist_name").val();
+					cur_song.title = $('#search_form').find("#song_name").val();
+					cur_song.duration = $("#time_container_duration").text();
+					cur_song.cur_time = $("#time_container_current").text();
 
 					$lyrics.get_lyrics(cur_song, false, null);
 					e.preventDefault();
