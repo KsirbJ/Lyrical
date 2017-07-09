@@ -277,7 +277,10 @@ const $panel = {
 		$panel.$lyrical_wrapper = $(".resize-fix");
 
 		// Hack for arrow key lyric selection
-		$("#lyrics, .resize-fix, .btn_bar, #words, #words p").click(function(e){ $("#words")[0].focus();});
+		$("#lyrics, .resize-fix, .btn_bar, #words, #words p").click(function(e){ 
+			if($("#search_form").length === 0) 
+				$("#words")[0].focus();
+		});
 	},
 
 	// Set up the panel HTML 
@@ -344,14 +347,16 @@ const $panel = {
 
 		// Use panel state to determine which rules to apply
 		let state = $panel.$pop_btn.attr('data-state');
-		$panel.$lyrical_panel.resizable(state === "is_in" ? "enable" : "disable");
+		let action = state === "is_in" ? "enable" : "disable";
+		
+		$panel.$lyrical_panel.resizable(action);
 		$panel.$lyrical_wrapper.removeAttr("style");
 		if(state === "is_in")
 			$panel.$lyrical_wrapper.css({"top": "0", "right": "0"});
 		else
 			$panel.$lyrical_wrapper.css({"top": "0", "left": "0"});
 
-		$panel.$lyrical_wrapper.draggable(state === "is_in" ? "enable" : "disable");
+		$panel.$lyrical_wrapper.draggable(action);
 		$panel.$pop_btn.attr('data-state', state === 'is_in' ? 'is_out' : 'is_in' );
 		$panel.$lyrical_panel.removeAttr("style").removeAttr("data-x").removeAttr("data-y").css('height', player_height);
 

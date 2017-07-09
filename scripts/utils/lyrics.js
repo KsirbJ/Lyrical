@@ -49,10 +49,14 @@ const $lyrics = {
 		// Finally, show the lyrics
 		$lyrics.$words.html(lyrics);
 
+		// Kill any animations and scroll to the top
+		$lyrics.$words.stop();
+		$lyrics.$words.scrollTop(0);
+
 		// Credit website
 		$lyrics.$words.prepend(`<span id="credits">Lyrics from <a href="${url}" target="_blank">${domain}</a></span>`);
 
-		$lyrics.autoscroll(song.duration);
+		//$lyrics.autoscroll(song.duration);
 	},
 
 
@@ -281,7 +285,7 @@ const $lyrics = {
 		//console.log("index :" + index);
 
 		if(index >= $("#words p").length || index < 0)
-			index = 1;
+			index = 0;
 
 		if($(`#words p:eq(${index})`).length >= 0){
 			$("#words p").removeClass("highlight");

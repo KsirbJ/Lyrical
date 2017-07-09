@@ -24,8 +24,10 @@ $(function(){
 
 	// Submit handler for search form
 	$(document).on('submit', '#search_form', function(e){
-		let artist = $('#search_form').find("#artist_name").val();
-		let song = $('#search_form').find("#song_name").val();
+		cur_song.artist = $('#search_form').find("#artist_name").val();
+		cur_song.title = $('#search_form').find("#song_name").val();
+		cur_song.duration = $(".ytp-time-display .ytp-time-duration").text();
+		cur_song.cur_time = $(".ytp-time-display .ytp-time-current").text();
 
 		$lyrics.get_lyrics(cur_song, false, null);
 		e.preventDefault();

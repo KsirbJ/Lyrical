@@ -35,10 +35,12 @@ $(function(){
 					$player = $(".now-playing-bar");
 
 				$(document).on('submit', '#search_form', function(e){
-					let artist = $('#search_form').find("#artist_name").val();
-					let song = $('#search_form').find("#song_name").val();
+					cur_song.artist = $('#search_form').find("#artist_name").val();
+					cur_song.title = $('#search_form').find("#song_name").val();
+					cur_song.duration = $(".playback-bar__progress-time").eq(1).text();
+					cur_song.cur_time = $(".playback-bar__progress-time").eq(0).text();
 
-					$lyrics.get_lyrics(artist, song, false, null);
+					$lyrics.get_lyrics(cur_song, false, null);
 					e.preventDefault();
 					e.stopPropagation();
 				});

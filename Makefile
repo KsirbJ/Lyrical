@@ -22,8 +22,8 @@ deploy:	clean compile
 	cp -rf libs/ lyrical/
 	cp -rf img/ lyrical/
 	mkdir lyrical/scripts
-	cp -rf scripts/background lyrical/scripts/
 	cp -rf scripts/content_compiled/ lyrical/scripts/
+	cp -rf scripts/background_compiled lyrical/scripts/background_compiled/
 	cp -rf ui/ lyrical/ui/
 	cd lyrical && zip -r ../lyrical.zip *
 	rm -rf lyrical
