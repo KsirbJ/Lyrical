@@ -148,9 +148,7 @@ $(function(){
 						line-height: 2em;
 						font-size: 13px;
 					}
-					#lyrics {
-						min-height: 300px;
-					}
+				</style>
 				`);
 			// add global panel styles
 			$panel.append_styles();
