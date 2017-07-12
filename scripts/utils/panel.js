@@ -249,6 +249,37 @@ const $panel = {
 				.resize-fix {
 					position: static !important;
 				}
+				#lyrics.dark-mode {
+					color: #fff;
+					background: rgb(17, 17, 17);
+					border-color: rgb(35,35,35);
+				}
+				#lyrics.dark-mode .btn_bar {
+					background: rgb(35,35,35);
+				}
+				#lyrics.dark-mode .pop_out_btn {
+					background: inherit;
+				}
+				.dark-mode #words::-webkit-scrollbar-thumb {
+					background: rgb(35,35,35);
+					border: 1px solid #fff;
+					border-radius: 10px;
+				}
+				.dark-mode #words::-webkit-scrollbar-thumb:hover {
+					background: rgb(35,35,35);
+				}
+				.dark-mode #words::-webkit-scrollbar-thumb:active {
+					background: rgb(35,35,35);
+				}
+				.dark-mode #words::-webkit-scrollbar-track {
+					background: #ffffff;
+					border-right: 1px solid rgb(35,35,35);
+					border-left: 1px solid rgb(35,35,35);
+				}
+				.dark-mode #words {
+					color: inherit;
+					background: inherit;
+				}
 			</style>
 		`);
 	},
@@ -414,6 +445,17 @@ const $panel = {
 	add_toggle_handler: function(call_this){
 		document.getElementById("show_hide_lyrics").addEventListener("click", function(e){call_this(e)}, false);
 		document.getElementById("close_btn").addEventListener("click", function(e){call_this(e)}, false);
+	},
+
+	go_dark(){
+		if(!$panel.$lyrical_panel.hasClass('dark-mode')){
+			$panel.$lyrical_panel.addClass('dark-mode');
+		}
+		
+	},
+
+	go_light(){
+		$panel.$lyrical_panel.removeClass('dark-mode');
 	},
 
 	// Used for selector cache

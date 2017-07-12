@@ -10,6 +10,7 @@ $(function(){
 	let timeout = null;	
 	let executed = false;  // Used as a mutex 
 	let nav_obs_attached = false;
+	let mode_obs_attached = false;
 	let this_is_music = false;
 
 	// Info about the currently playing song
@@ -153,6 +154,7 @@ $(function(){
 			// add global panel styles
 			$panel.append_styles();
 
+
 			// Append the lyrics panel to the side
 			if($("#watch7-sidebar-modules").length > 0)
 				$panel.prepend_panel("#watch7-sidebar-modules");
@@ -160,10 +162,6 @@ $(function(){
 				$panel.prepend_panel("#watch7-sidebar-contents");
 			else if( $("#items.ytd-watch-next-secondary-results-renderer").length > 0 )
 				$panel.prepend_panel("#items.ytd-watch-next-secondary-results-renderer");
-
-			// Make the lyrics div as tall as the Youtube player
-			let player_height = $(".player-height").css("height");
-			$("#lyrics").css('height', player_height);
 
 			// add the show-hide-lyrics button 
 			if($(".ytd-page-manager").length > 0){
@@ -173,6 +171,10 @@ $(function(){
 			else
 				$panel.append_btn("#watch-header");
 
+			// Make the lyrics div as tall as the Youtube player
+			let player_height = $(".player-height").css("height");
+			$("#lyrics").css('height', player_height);
+
 			// Hide panel by default on page load
 			if(!autorun)
 				$panel.show_hide_panel(new Event('click'));
@@ -180,6 +182,21 @@ $(function(){
 				$panel.pop_in_out(player_height, new Event('click'));
 				if(!autorun) $panel.$lyrical_panel.toggle();
 			}
+
+			function toggle_dark_mode(){
+				if($('body').attr('dark') === "true"){
+					$panel.go_dark();
+				}else{
+					$panel.go_light();
+				}
+
+				if(!mode_obs_attached){
+					$utils.create_observer('body', toggle_dark_mode, [true, false, true, false]);
+					mode_obs_attached = true;
+				}
+			}
+			
+			toggle_dark_mode();		
 
 			// Try to find the song's info 
 			if($(".watch-extras-section .watch-meta-item").find(".title:contains('Music')").text().trim() === "Music"){
@@ -268,6 +285,12 @@ $(function(){
 	}
 	
 	function toggle_panel(e){
+		if($panel.is_popped_in()){
+			let player_height = $(".player-height").css("height");
+			console.log(player_height);
+			if(player_height < 300) player_height = 300;
+			$("#lyrics").css('height', player_height);
+		}
 		// If the user opens the panel and we didn't get the lyrics yet, pull it.
 		if(!cur_song.gotLyrics && cur_song.title !== ""){
 			cur_song.cur_time = $(".ytp-time-display .ytp-time-current").text();
