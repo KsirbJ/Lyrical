@@ -12,6 +12,7 @@ $(function(){
 	let nav_obs_attached = false;
 	let mode_obs_attached = false;
 	let this_is_music = false;
+	let player_height = "0px";
 
 	// Info about the currently playing song
 	let cur_song = {
@@ -39,13 +40,29 @@ $(function(){
 		$panel.add_search_box(); 
 	}
 
-	// For new youtube - Run this instead of spfdone
+	function heightFix(){
+		// Make the lyrics div as tall as the Youtube player
+		player_height = $(".player-height").css("height");
+		if(player_height !== "0px"){
+			$("#lyrics").css('height', player_height);
+		}else{
+			player_height = $("#player").css("height"); // (NEW YT)
+			if(player_height === "0px")
+				player_height = '360px';
+			$("#lyrics").css('height', player_height);
+		}
+		// Backup's backup
+		if($("#lyrics").css('height') === "0px")
+			$("#lyrics").css('height', '360px');
+	}
+
+	// (NEW YT) When the page loads check if the panel is already there and add it if not
 	function check_for_panel(){
 
 		if($("#lyrics").length === 0 && !spf_simulated){
 
 			spf_simulated = true;
-			$("#show_hide_lyrics").remove();
+			$("#show_hide_lyrics").remove(); // Prevents duplicate buttons
 			chrome.storage.sync.get({'run_on_yt': true, 'autorun': false, 'auto_pop': false, 'panel_state': 'is_in', 'panel_visible': false}, 
 			(response) => {
 			
@@ -98,7 +115,7 @@ $(function(){
 		}
 	}
 
-	// Confirm that the current video is under the music category 
+	// (NEW YT) Confirm that the current video is under the music category 
 	function check_if_music(autorun, auto_pop){
 		$("#more .more-button").click();
 		
@@ -119,7 +136,7 @@ $(function(){
 
 		$(window).off('keydown');
 
-		// Listen for page changes on youtube material 
+		// (NEW YT) Listen for page changes on youtube material 
 		if($("#playlist #container").length > 0 || $("#page-manager").length > 0){
 			$utils.create_observer("h1.title.ytd-video-primary-info-renderer", check_for_panel, [false, false, true, true]);
 		}
@@ -151,35 +168,21 @@ $(function(){
 					}
 				</style>
 				`);
-			// add global panel styles
-			$panel.append_styles();
-
 
 			// Append the lyrics panel to the side
 			if($("#watch7-sidebar-modules").length > 0)
 				$panel.prepend_panel("#watch7-sidebar-modules");
 			else if($("#watch7-sidebar-contents").length > 0)
 				$panel.prepend_panel("#watch7-sidebar-contents");
-			else if( $("#items.ytd-watch-next-secondary-results-renderer").length > 0 )
+			else if( $("#items.ytd-watch-next-secondary-results-renderer").length > 0 ) // (NEW YT)
 				$panel.prepend_panel("#items.ytd-watch-next-secondary-results-renderer");
 
 			// add the show-hide-lyrics button 
-			if($(".ytd-page-manager").length > 0){
+			if($(".ytd-page-manager").length > 0){ // (NEW YT)
 				$panel.insert_btn_after("h1.title.ytd-video-primary-info-renderer");
 			}
 			else
 				$panel.append_btn("#watch-header");
-
-			// Make the lyrics div as tall as the Youtube player
-			let player_height = $(".player-height").css("height");
-			if(player_height !== "0px"){
-				$("#lyrics").css('height', player_height);
-			}else{
-				player_height = $("#player").css("height");
-				if(player_height === "0px")
-					player_height = '360px';
-				$("#lyrics").css('height', player_height);
-			}
 
 			// Hide panel by default on page load
 			if(!autorun)
@@ -189,6 +192,7 @@ $(function(){
 				if(!autorun) $panel.$lyrical_panel.toggle();
 			}
 
+			// (NEW YT) Toggle panel's dark mode when the page's dark mode is toggled
 			function toggle_dark_mode(){
 				if($('body').attr('dark') === "true"){
 					$panel.go_dark();
@@ -201,8 +205,10 @@ $(function(){
 					mode_obs_attached = true;
 				}
 			}
-			
-			toggle_dark_mode();		
+
+			// Run 
+			heightFix();
+			toggle_dark_mode();	
 
 			// Try to find the song's info 
 			if($(".watch-extras-section .watch-meta-item").find(".title:contains('Music')").text().trim() === "Music"){
@@ -234,6 +240,7 @@ $(function(){
 			}else{
 				// Less accurate method. Try to find song info from the title
 				// Assumes "Artist - Song Title", "Artist | song title", or "Artist : song title" format
+				// Only method that works on new YT
 				try{
 					let song_info = $("h1.watch-title-container").text();
 					if(song_info === "")
@@ -271,7 +278,7 @@ $(function(){
 
 			$panel.register_keybd_shortcut(toggle_panel, null, 'S');
 
-		}else if($(".ytd-page-manager").length > 0)	{
+		}else if($(".ytd-page-manager").length > 0)	{ // (NEW YT)
 			check_if_music(autorun, auto_pop);
 			return;
 		}	
@@ -288,23 +295,12 @@ $(function(){
 		            break;
 		    }			
 		});
-
-		if($("#lyrics").css('height') === "0px")
-			$("#lyrics").css('height', '360px');
 	}
 	
+	// Toggle the lyrics panel
 	function toggle_panel(e){
 		if($panel.is_popped_in()){
-			// Make the lyrics div as tall as the Youtube player
-			player_height = $(".player-height").css("height");
-			if(player_height !== "0px"){
-				$("#lyrics").css('height', player_height);
-			}else{
-				player_height = $("#player").css("height");
-				if(player_height === "0px")
-					player_height = '360px';
-				$("#lyrics").css('height', player_height);
-			}
+			heightFix();
 		}
 		// If the user opens the panel and we didn't get the lyrics yet, pull it.
 		if(!cur_song.gotLyrics && cur_song.title !== ""){

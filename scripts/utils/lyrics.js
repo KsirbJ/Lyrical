@@ -2,8 +2,8 @@ import keys from "./keys"
 
 // Find and pull lyrics from Genius
 const $lyrics = {
-	init: function(){
-
+	// initialize the message handler
+	init_handler(){
 		chrome.runtime.onMessage.addListener(function(request, sender){
 			//console.log(request);
 			if(request.message !== null){
@@ -16,13 +16,12 @@ const $lyrics = {
 		});
 	},
 	
-
 	/**
 	 *	Check if the lyrics are cached
 	 *	
 	 *	@param song {Object} - The song to find the lyrics for
 	 */
-	check_cache: function(song){
+	check_cache(song){
 		
 		let id = song.title + song.artist;
 		chrome.runtime.sendMessage(
@@ -33,11 +32,15 @@ const $lyrics = {
 		);
 	},
 
-
 	/**
 	 *	Display the lyrics on the page
+	 *	
+	 *	@param lyrics {string} - The lyrics to display
+	 *	@param url {string} - The URL where we got the lyrics
+	 *	@param domain {string} - The domain where we got the lyrics
+	 *	@param song {Object} - The song we're working with
 	 */
-	display_lyrics: function(lyrics, url, domain, song){
+	display_lyrics(lyrics, url, domain, song){
 
 		// add html tags to lyrics
 		lyrics = lyrics.split(/\r?\n/);
@@ -65,7 +68,7 @@ const $lyrics = {
 	 *
 	 *	@param song {object} - The song to find
 	 */
-	find_lyrics: function(song){
+	find_lyrics(song){
 		let access_token = keys.genius;
 
 		fetch('https://api.genius.com/search?access_token=' + access_token + '&q=' + 
@@ -121,8 +124,14 @@ const $lyrics = {
 	},
 
 
-	// Function to pull the lyrics page and extract the lyrics from it
-	pull_page: function(url, domain, song){
+	/**
+	 * Function to pull the lyrics page and extract the lyrics from it
+	 *
+	 * @param url {string} - The page to pull
+	 * @param domain {string} - The domain of the page
+	 * @param song {Object} - The song we're working on
+	 */
+	pull_page(url, domain, song){
 		let myHeaders = new Headers();
 		let myInit = {
 			method: 'GET',
@@ -139,7 +148,6 @@ const $lyrics = {
 
 		}).then(function(text){
 
-
 			// find the lyrics
 			let parser = new DOMParser();
 			let doc = parser.parseFromString(text, 'text/html');
@@ -147,10 +155,9 @@ const $lyrics = {
 
 			$lyrics.display_lyrics(actual_lyrics, url, domain, song);
 			
+			// Cache the lyrics for next time
 			let key = song.title+song.artist;
 			let compressed = LZString.compressToUTF16(actual_lyrics);
-			
-			// Cache the lyrics for next time
 			let cache_song = {id: key, lyrics: compressed, url: url, domain: domain, num_played: 1, scroll_stamps: []};
 			chrome.runtime.sendMessage({message: 'store-song', song: cache_song});
 			
@@ -167,11 +174,17 @@ const $lyrics = {
 	},
 
 	
-	// Init function - Sets up data needed to get lyrics
-	get_lyrics: function(song, first_search, callback){	
+	/**
+	 *	Init function - Sets up data needed to get lyrics
+	 *
+	 *	@param song {Object} - The song to get lyrics for
+	 *	@param  first_search {boolean} - If this is the first search for the lyrics
+	 *	@param callback {function} (optional) - A callback function 
+	 */
+	get_lyrics(song, first_search, callback){	
 
 		if(!$lyrics.init_done){
-			$lyrics.init();
+			$lyrics.init_handler();
 			$lyrics.init_done = true;
 		}
 
@@ -180,7 +193,7 @@ const $lyrics = {
 		// Set cache
 		this.$words = $("#words");
 
-		// clean up the title 
+		// clean up the title and artist text
 		let title = this.clean_text(my_song.title);
 		let artist = this.clean_text(my_song.artist);
 		title = title.trim().toUpperCase();
@@ -211,10 +224,10 @@ const $lyrics = {
 	/**
 	 *	Clean up text
 	 *
-	 *	@param text - The text to clean up
+	 *	@param text {string} - The text to clean up
 	 *	@return {string} the clean text 
 	 */
-	clean_text: function(text){
+	clean_text(text){
 		text = text.toLowerCase();
 
 		// remove anything in parentheses or brackets
@@ -259,7 +272,7 @@ const $lyrics = {
 	 *
 	 *	@param in_milli {int} - The length of the song in milliseconds
 	 */
-	autoscroll: function(in_milli){
+	autoscroll(in_milli){
 		chrome.storage.sync.get({'autoscroll': false}, function(response){
 			if(response.autoscroll){
 				$lyrics.$words.stop();
@@ -281,9 +294,7 @@ const $lyrics = {
 	 *
 	 * @param index {int} - The line to highlight
 	 */
-	hightlight: function(index){
-		//console.log("index :" + index);
-
+	hightlight(index){
 		if(index >= $("#words p").length || index < 0)
 			index = 0;
 
@@ -298,13 +309,13 @@ const $lyrics = {
 	},
 
 	// highlight previous line
-	prev: function(){
+	prev(){
 		//console.log("prev : " + $("#words p.highlight").index());
 		$lyrics.hightlight($("#words p.highlight").index() - 2);
 	},
 
 	// Highlight next line
-	next: function(){
+	next(){
 		//console.log("next : " + $("#words p.highlight").index());
 		$lyrics.hightlight($("#words p.highlight").index());
 	},

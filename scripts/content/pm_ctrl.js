@@ -33,7 +33,7 @@ $(function(){
 				}
 			}
 
-
+			// Main function
 			function run(){
 				$(document).on('submit', '#search_form', function(e){
 					cur_song.artist = $('#search_form').find("#artist_name").val();
@@ -68,8 +68,7 @@ $(function(){
 						}
 					</style>
 					`);
-				// add global styles
-				$panel.append_styles();
+
 				// add the lyrics div
 				$panel.append_panel("#mainPanel")
 				// add the show-hide-lyrics button
@@ -116,12 +115,9 @@ $(function(){
 
 					}
 				}
-
-				
 				
 				// initialize observer
 				$utils.create_observer("#player", check_playing);
-
 
 				// Toggle the lyrics panel when #show_hide_lyrics is clicked
 				function show_hide_panel(e){
@@ -199,7 +195,6 @@ $(function(){
 
 			wait_and_do("#mainPanel", "#mainContainer", run);
 		}
-
 
 	});	
 });

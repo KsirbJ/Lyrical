@@ -84,9 +84,7 @@ $(function(){
 						}
 					</style>
 					`);
-
-				// add global styles
-				$panel.append_styles();
+				
 				// add the lyrics div
 				$panel.append_panel("#main")
 				// add the show-hide-lyrics button
