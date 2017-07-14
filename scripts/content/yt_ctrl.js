@@ -165,7 +165,6 @@ $(function(){
 
 			// add the show-hide-lyrics button 
 			if($(".ytd-page-manager").length > 0){
-				$("#lyrics").css("height",  $("#player").css("height"));
 				$panel.insert_btn_after("h1.title.ytd-video-primary-info-renderer");
 			}
 			else
@@ -173,7 +172,14 @@ $(function(){
 
 			// Make the lyrics div as tall as the Youtube player
 			let player_height = $(".player-height").css("height");
-			$("#lyrics").css('height', player_height);
+			if(player_height !== "0px"){
+				$("#lyrics").css('height', player_height);
+			}else{
+				player_height = $("#player").css("height");
+				if(player_height === "0px")
+					player_height = '360px';
+				$("#lyrics").css('height', player_height);
+			}
 
 			// Hide panel by default on page load
 			if(!autorun)
@@ -282,14 +288,23 @@ $(function(){
 		            break;
 		    }			
 		});
+
+		if($("#lyrics").css('height') === "0px")
+			$("#lyrics").css('height', '360px');
 	}
 	
 	function toggle_panel(e){
 		if($panel.is_popped_in()){
-			let player_height = $(".player-height").css("height");
-			console.log(player_height);
-			if(player_height < 300) player_height = 300;
-			$("#lyrics").css('height', player_height);
+			// Make the lyrics div as tall as the Youtube player
+			player_height = $(".player-height").css("height");
+			if(player_height !== "0px"){
+				$("#lyrics").css('height', player_height);
+			}else{
+				player_height = $("#player").css("height");
+				if(player_height === "0px")
+					player_height = '360px';
+				$("#lyrics").css('height', player_height);
+			}
 		}
 		// If the user opens the panel and we didn't get the lyrics yet, pull it.
 		if(!cur_song.gotLyrics && cur_song.title !== ""){
