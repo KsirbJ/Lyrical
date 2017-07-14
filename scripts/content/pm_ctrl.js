@@ -57,7 +57,7 @@ $(function(){
 							width: 75%;
 						}
 						#lyrics {
-							width: 22%;
+							width: 26%;
 							height: 100%;
 							position: absolute;
 							right: 0;
@@ -152,7 +152,7 @@ $(function(){
 					}else {
 						$mainContainer.addClass("lyrics_visible");
 					}
-					$panel.pop_in_out('100%', e);
+					$panel.pop_in_out($panel.is_popped_in() ? '400px' : '100%', e);
 				}
 				$(document).on('click', '.pop_out_btn', pop_in_out);
 
