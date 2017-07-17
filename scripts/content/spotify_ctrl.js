@@ -66,10 +66,6 @@ $(function(){
 							top: 0;
 							margin: 0;
 						}
-						#words p {
-							font-size: 14px !important;
-							line-height: 25px !important;
-						}
 						.now-playing-bar__right__inner {
 							width: auto !important;
 						}

@@ -24,11 +24,30 @@ const $panel = {
 		$panel.$lyrical_panel = $("#lyrics");
 		$panel.$pop_btn = $(".pop_out_btn");
 		$panel.$lyrical_wrapper = $(".resize-fix");
+		$panel.$options = $("#options");
 
 		// Hack for arrow key lyric selection
 		$("#lyrics, .resize-fix, .btn_bar, #words, #words p").click(function(e){ 
 			if($("#search_form").length === 0) 
 				$("#words")[0].focus();
+		});
+
+		$panel.$options.hide();
+		$panel.$lyrical_panel.find('#options-btn').click(function(e){
+			if($panel._state.is_dark) $("#mode-toggle-btn").prop('checked', true);
+			$panel.$options.toggle();
+			$(this).text($(this).text() === "☰" ? "✖" : "☰");
+		});
+
+		// Toggle dark mode on-click
+		$(document).on('change', '#mode-toggle-btn', function(e){
+			if(this.checked){
+				$panel.go_dark();
+				$("#toggle-label").text('on');
+			}else{
+				$panel.go_light();
+				$("#toggle-label").text('off');
+			}
 		});
 	},
 
@@ -36,12 +55,29 @@ const $panel = {
 	get_panel_html(){
 		let panel = `<div class="resize-fix"><div id="lyrics">
 						<div class="btn_bar">
-							<a href="#" class="pop_out_btn" id="pop-in-out" data-state="is_in" title="Pop in/out the lyrics panel"></a>
-							<img src="" id="translate_icon" title="Translate lyrics to another language"/>
+							<div id="left">
+								<a href="#" class="pop_out_btn" id="pop-in-out" data-state="is_in" title="Pop in/out the lyrics panel">⇱</a>
+								<img src="" id="translate_icon" title="Translate lyrics to another language"/>
+							</div>
 							${Translator.get_css()}
 							${Translator.get_html()}
-							<h2 id="lyrical_title">Lyrical</h2>
-							<span id="close_btn" title="Hide lyrics panel">&#10006;</span>
+							<div id="right">
+								<h2 id="lyrical_title">Lyrical</h2>
+								<span id="options-btn" title="Options">&#x2630;</span>
+							</div>
+							<div id="options">
+								<span id="close_btn">Close Panel</span>
+								<span id="mode-toggle">
+									Dark Mode
+									<input type="checkbox" id="mode-toggle-btn" />
+									<label for="mode-toggle-btn" id="toggle-label">off</label>
+    							</span>
+    							<a href="${chrome.extension.getURL("ui/options.html")}" target="_blank">
+	    							<span id="moreOptions">
+	    								More Options
+	    							</span>
+	    						</a>
+							</div>
 						</div>
 						<div id="words" tabindex="0"><div id="err_msg">Play a song to see lyrics</div></div>
 					</div></div>`;
@@ -90,6 +126,10 @@ const $panel = {
 
 	// Pop the panel in and out of the page
 	pop_in_out(player_height, e){	
+		if($panel.$pop_btn.css("transform") === 'none')
+		    $panel.$pop_btn.css("transform", "rotate(180deg)");
+		else
+		    $panel.$pop_btn.css("transform", "");
 		// Hackiness to keep styles consistent
 		$panel.$lyrical_panel.toggleClass("can_drag");
 		$panel.$lyrical_wrapper.toggleClass("can_drag");
@@ -163,19 +203,23 @@ const $panel = {
 	// register a handler for the open / close button
 	add_toggle_handler(call_this){
 		document.getElementById("show_hide_lyrics").addEventListener("click", function(e){call_this(e)}, false);
-		document.getElementById("close_btn").addEventListener("click", function(e){call_this(e)}, false);
+		document.getElementById("close_btn").addEventListener("click", function(e){
+			call_this(e); $("#options-btn").trigger('click');
+		}, false);
 	},
 
 	// Turn on dark mode
 	go_dark(){
-		if(!$panel.$lyrical_panel.hasClass('dark-mode')){
+		if(!$panel._state.is_dark){
 			$panel.$lyrical_panel.addClass('dark-mode');
+			$panel._state.is_dark = true;
 		}	
 	},
 
 	// Go to default/light mode
 	go_light(){
 		$panel.$lyrical_panel.removeClass('dark-mode');
+		$panel._state.is_dark = false;
 	},
 
 	// Used for selector cache
@@ -183,9 +227,11 @@ const $panel = {
 	$show_hide_btn: null,
 	$pop_btn: null,
 	$lyrical_wrapper: null,
+	$options: null,
 	_state: {
 		is_in: true,
-		is_visible: true
+		is_visible: true,
+		is_dark: false,
 	}
 
 }

@@ -86,6 +86,7 @@
 
 	"web_accessible_resources" : [
 		"img/*.png",
-		"img/*.gif"
+		"img/*.gif",
+		"ui/options.html"
 	]
 }

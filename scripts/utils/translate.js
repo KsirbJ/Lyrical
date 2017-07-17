@@ -141,6 +141,7 @@ const Translator = {
 						z-index: 900000;
 						background: #FAFAFA;
 						left: 20px;
+						top: 0;
 						border-radius: 5px;
 						border: 1px solid #ee792c;
 						color: #000;

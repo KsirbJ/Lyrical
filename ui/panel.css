@@ -1,7 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Libre+Franklin|Kalam:400,700');
-html, body {
-	cursor: default;
-}
+@import url('https://fonts.googleapis.com/css?family=Kalam:400,700|Lato');
 #lyrics a {
 	text-decoration: none;
 }
@@ -18,11 +15,15 @@ html, body {
 	border-bottom: 1px solid #FFCF90;
 	border-left: 1px solid #FFCF90;
 	margin: 0 0 1em .7em;
+	font-family: 'Lato', sans-serif;
 }
 #lyrics p{
 	backface-visibility: hidden; 
 	perspective: 1000px;
-	font-family: 'Libre Franklin', sans-serif;
+	font-family: 'Lato', sans-serif;
+	font-size: 14px;
+	margin: 10px 0;
+	line-height: 1.2;
 }
 #lyrics.can_drag {
 	position: absolute;
@@ -32,30 +33,16 @@ html, body {
 	right: 5px;
 }
 .pop_out_btn {
-	position: absolute;
-	top: 0;     
-	left: 0;
-	background: #FFCF90;
 	color: #fff;
 	display: inline-block;
 	height: 35px;
+	line-height: 35px;
+	width: 25px;
 	transition: all .4s linear;
-}
-.pop_out_btn[data-state="is_in"]:before {
-	content: "⇱";
 	font-size: 25px;
 	font-weight: 800;
 	padding: 0 .2em;
-}
-.pop_out_btn[data-state="is_out"]:before {
-	content: "⇲";
-	font-size: 25px;
-	font-weight: 800;
-	padding: 0 .2em;
-}
-.pop_out_btn:hover{
-	background: #fff;
-	color: #FFCF90;
+	text-align: center;
 }
 #words {
 	background: #fff;
@@ -81,16 +68,22 @@ html, body {
 	position: relative;
 	right: 0;
 	margin: 0;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 }
 #credits {
 	position: absolute;
 	top: 5px;
 	right: 10px;
-	font-size: .9em;
+	font-size: 12px;
 }
 #credits a {
-	color: #0000ff;
+	color: inherit;
+	text-decoration: underline;
 }
+
+/*------------- Styles for the scrollbar ---------------*/
 #words::-webkit-scrollbar {
 	width: 11px;
 	height: 10px;
@@ -124,17 +117,20 @@ html, body {
 #words::-webkit-scrollbar-corner {
 	background: transparent;
 }
+/*-------------------- End scrollbar styles --------------------*/
+
 #lyrical_title {
 	font-family: 'Kalam', cursive;
+	position: relative;
+	top: -3px;
 	font-weight: 700;
 	color: #fff;
-	font-size: 2em;
-	position: absolute;
-	top: -2px;
-	right: 32px;
-	margin: 0;
-	font-size: 26px;
+	margin: 0 10px 0 0;
+	padding: 0;
+	font-size: 25px;
 }
+
+/*------------- Main control button ---------------*/
 #show_hide_lyrics {
 	display: block;
 	padding: .8em;
@@ -151,28 +147,26 @@ html, body {
 	text-decoration: none;
 	transition: background-color .3s;
 }
-#close_btn {
-	color: #ff0000;
-	position: absolute;
-	right: 5px;
-    top: 1px;
-    font-size: 25px;
-    transition: color .4s linear;
-}
-#close_btn:hover {
-	cursor: pointer;
+/*------------- end ----------------*/
+
+#options-btn {
 	color: #fff;
+    font-size: 25px;
+    font-weight: 800;
+    transition: 0.5s ease-in-out;
+    margin-right: 5px;
+    line-height: 35px;
+    width: 25px;
 }
 #translate_icon {
-	position: absolute;
-	left: 35px;
 	height: 25px;
 	z-index: 1919;
-	top: 5px;
 }
 #translate_icon:hover {
 	cursor: pointer;
 }
+
+/*----------------------- Styles for the search form --------------------*/
 #search_form {
 	margin: 0 auto;
 	padding-top: 30%;
@@ -209,15 +203,19 @@ html, body {
 #search_song:hover {
     background-color: #ee792c;
     transition: background-color .3s;
+    cursor: pointer;
 }
 label {
 	font-size: .9em;
 	color: #ff9102;
 }
+/*--------------------- End search form styles --------------------*/
+
 #words p.highlight {
 	background: #ADD8E6;
     padding: 10px;
     margin: 0;
+    color: #000;
 }
 #words:focus {
 	border: none !important;
@@ -231,8 +229,10 @@ label {
 	width: 400px;
 }
 .resize-fix {
-	position: static !important;
+	position: static !important; /* Prevents issues on GP */
 }
+
+/*-------------------- Styles for the dark mode -----------------*/
 #lyrics.dark-mode {
 	color: #fff;
 	background: rgb(17, 17, 17);
@@ -246,7 +246,7 @@ label {
 }
 .dark-mode #words::-webkit-scrollbar-thumb {
 	background: rgb(35,35,35);
-	border: 1px solid #fff;
+	border: 1px solid rgba(136, 136, 136, 0.4);
 	border-radius: 10px;
 }
 .dark-mode #words::-webkit-scrollbar-thumb:hover {
@@ -256,7 +256,7 @@ label {
 	background: rgb(35,35,35);
 }
 .dark-mode #words::-webkit-scrollbar-track {
-	background: #ffffff;
+	background: rgba(136, 136, 136, 0.2);
 	border-right: 1px solid rgb(35,35,35);
 	border-left: 1px solid rgb(35,35,35);
 }
@@ -264,3 +264,88 @@ label {
 	color: inherit;
 	background: inherit;
 }
+#search_form input[type=text] {
+	color: #fff;
+}
+/*----------------- End dark mode styles -------------------*/
+
+/*----------------- Styles for the dropdown menu -------------------*/
+#options {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 35px;
+    right: 0px;
+    z-index: 22222222;
+    background: #fff;
+    border-left: 1px solid #f5f5f5;
+    border-right: 1px solid #f5f5f5;
+    border-bottom: 1px solid #f5f5f5;
+    color: #000;
+    width: 150px;
+}
+#mode-toggle input{
+	height: 0;
+	width: 0;
+	visibility: hidden;
+	margin-left: 6px;
+}
+#mode-toggle label {
+	cursor: pointer;
+	text-indent: 23px;
+	line-height: 20px;
+	color: #fff;
+	width: 45px;
+	height: 20px;
+	background: #999;
+	display: block;
+	border-radius: 50px;
+	position: relative;
+	font-size: 12px;
+}
+#mode-toggle label:after {
+	content: '';
+	position: absolute;
+	top: -2px;
+	left: -1px;
+	width: 22px;
+	height: 22px;
+	background: #F1F1F1;;
+	border-radius: 20px;
+	transition: 0.3s;
+	box-shadow: -2px 2px 4px #ccc;
+}
+#mode-toggle input:checked + label {
+	background: #ffcf90;
+	text-indent: 6px;
+}
+#mode-toggle input:checked + label:after {
+	left: 46px;
+	transform: translateX(-100%);
+	box-shadow: 2px 2px 4px #ccc;
+	background-color: rgb(255, 145, 2);
+}
+#options span {
+	display: flex;
+	align-items: center;
+	padding: 10px;
+	border-bottom: 1px solid #f5f5f5;
+	font-size: 14px;
+	transition: background 0.4s linear;
+	color: rgba(0,0,0,0.8);
+}
+#options-btn:active {
+	transform: rotate(360deg);
+}
+#options-btn:hover {
+	cursor: pointer;
+}
+#right, #left {
+	display: flex;
+	align-items: center;
+}
+#options span:hover {
+	background-color: #f5f5f5;
+    cursor: pointer;
+}
+/*----------------- End dropdown menu styles -------------------*/
