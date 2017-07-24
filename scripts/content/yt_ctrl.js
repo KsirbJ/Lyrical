@@ -207,7 +207,7 @@ $(function(){
 			$panel.add_mode_handler('yt');
 			heightFix();
 			chrome.storage.sync.get({'yt_detect_mode': true}, (response) => {
-				if(response.yt_detect_mode)
+				if(response.yt_detect_mode && $(".ytd-page-manager").length > 0 ) // NEW YT
 					toggle_dark_mode();	
 				else{
 					if(params.yt_dark)

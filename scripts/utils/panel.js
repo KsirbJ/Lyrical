@@ -212,7 +212,7 @@ const $panel = {
 
 	// Turn on dark mode
 	go_dark(site){
-		if(!$panel._state.is_dark){
+		if(!$panel._state.is_dark || site === "yt"){
 			$panel.$lyrical_panel.addClass('dark-mode');
 			$panel._state.is_dark = true;
 			let key = site+"_dark";
