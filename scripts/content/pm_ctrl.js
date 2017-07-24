@@ -11,7 +11,8 @@ $(function(){
 		$player = $("#player");
 
 	// pull the user specified options from storage and react accordingly
-	chrome.storage.sync.get({'run_on_gp': true, 'autorun': false, 'auto_pop': false}, function(response){
+	chrome.storage.sync.get({'run_on_gp': true, 'autorun': false, 'auto_pop': false, 'pm_dark': false}, 
+		function(response){
 		if(response.run_on_gp){
 
 			/**
@@ -33,7 +34,7 @@ $(function(){
 				}
 			}
 
-
+			// Main function
 			function run(){
 				$(document).on('submit', '#search_form', function(e){
 					cur_song.artist = $('#search_form').find("#artist_name").val();
@@ -63,13 +64,12 @@ $(function(){
 							right: 0;
 							top: 0;
 						}
-						#lyrics #words {
-							padding-right: 40px;
+						.lyrics_visible #pageIndicatorContainer {
+							right: 27% !important;
 						}
 					</style>
 					`);
-				// add global styles
-				$panel.append_styles();
+
 				// add the lyrics div
 				$panel.append_panel("#mainPanel")
 				// add the show-hide-lyrics button
@@ -109,19 +109,16 @@ $(function(){
 							}
 
 							if(!observer_attached){
-								$utils.create_observer("#playerSongInfo", check_playing);
+								$utils.create_observer("title", check_playing);
 								observer_attached = true;
 							}
 						}
 
 					}
 				}
-
-				
 				
 				// initialize observer
 				$utils.create_observer("#player", check_playing);
-
 
 				// Toggle the lyrics panel when #show_hide_lyrics is clicked
 				function show_hide_panel(e){
@@ -168,6 +165,8 @@ $(function(){
 				 	}
 				}
 
+				$panel.add_mode_handler('pm');
+
 				// Hide panel by default on page load
 				if(!response.autorun)
 					show_hide_panel(new Event('click'));
@@ -176,6 +175,8 @@ $(function(){
 					pop_in_out(new Event('click'));
 					if(!response.autorun) $panel.$lyrical_panel.toggle();
 				}
+				if(response.pm_dark)
+					$panel.go_dark('pm');
 
 				$("#lyrics").find("#words").on('keydown', function(e){
 					switch(e.which) {
@@ -199,7 +200,6 @@ $(function(){
 
 			wait_and_do("#mainPanel", "#mainContainer", run);
 		}
-
 
 	});	
 });

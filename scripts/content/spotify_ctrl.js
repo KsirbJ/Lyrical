@@ -8,7 +8,8 @@ $(function(){
 	let executed = false;
 
 	// pull the user specified options from storage and react accordingly
-	chrome.storage.sync.get({'run_on_sp': true, 'autorun': false, 'auto_pop': false}, function(response){
+	chrome.storage.sync.get({'run_on_sp': true, 'autorun': false, 'auto_pop': false, 'sp_dark': false}, 
+		function(response){
 		if(response.run_on_sp){
 
 			/**
@@ -66,10 +67,6 @@ $(function(){
 							top: 0;
 							margin: 0;
 						}
-						#words p {
-							font-size: 14px !important;
-							line-height: 25px !important;
-						}
 						.now-playing-bar__right__inner {
 							width: auto !important;
 						}
@@ -79,14 +76,21 @@ $(function(){
 						#lyrics .dropdown-menu a {
 							color: #000;
 						}
-						#lyrics a:hover, #lyrics a:active {
+						#lyrics a:hover, #lyrics a:active, #lyrics a:hover {
 							text-decoration: none !important;
+							outline: none !important;
+							border: none !important;
+						}
+						.pop_out_btn {
+							width: 30px;
+						}
+						#show_hide_lyrics {
+							padding: 10px;
+    						font-size: 15px;
 						}
 					</style>
 					`);
-
-				// add global styles
-				$panel.append_styles();
+				
 				// add the lyrics div
 				$panel.append_panel("#main")
 				// add the show-hide-lyrics button
@@ -174,6 +178,9 @@ $(function(){
 				 	}
 				}
 
+				// Dark mode handler
+				$panel.add_mode_handler('sp');
+
 				// Hide panel by default on page load
 				if(!response.autorun)
 					show_hide_panel(new Event('click'));
@@ -182,6 +189,8 @@ $(function(){
 					pop_in_out(new Event('click'));
 					if(!response.autorun) $panel.$lyrical_panel.toggle();
 				}
+				if(response.sp_dark)
+					$panel.go_dark('sp');
 
 				$panel.register_keybd_shortcut(show_hide_panel, null, 'S');
 
