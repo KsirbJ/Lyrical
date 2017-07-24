@@ -230,3 +230,34 @@ input[type="checkbox"]+label:before {
   font-size: .9em;
   padding: 2px;
 }
+
+@media only screen and (max-width: 1220px){
+  .opt {
+    flex-basis: 25%;
+  }
+  #global_options {
+    border-top: 1px solid #f5f5f5;
+  }
+}
+
+@media only screen and (max-width: 830px){
+  #sp_options {
+    border-top: 1px solid #f5f5f5;
+  }
+  #gp_options {
+    border-right: none;
+  }
+}
+
+@media only screen and (max-width: 660px){
+  .opt {
+    flex-basis: 50%;
+  }
+  #gp_options, #sp_options {
+    border-top: 1px solid #f5f5f5;
+    border-right: none;
+  }
+  #yt_options {
+    border-right: none;
+  }
+}
