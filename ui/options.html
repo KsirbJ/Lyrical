@@ -16,38 +16,70 @@
 			</ul>
 
 			<div id="options">
-				<h3>Options</h3>
-				<div id="where_to_run">
-					<span class="input_set">
-						<input type="checkbox" name="run_on_gp" id="run_on_gp">
-						<label for="run_on_gp">Run on Google Play Music</label>
-					</span>
-					<span class="input_set">
-						<input type="checkbox" name="run_on_yt" id="run_on_yt">
-						<label for="run_on_yt">Run on Youtube</label>
-					</span>
-					<span class="input_set">
-						<input type="checkbox" name="run_on_sp" id="run_on_sp">
-						<label for="run_on_sp">Run on Spotify</label>
-					</span>
-					<span class="input_set" title="When this is selected the lyrics panel will be visible as soon as the page loads.">
-						<input type="checkbox" name="autorun" id="autorun" >
-						<label for="autorun">Show lyrics section when the page loads</label>
-					</span>
-					<span class="input_set" title="When this is selected the lyrics panel will pop out over the page instead of being integrated.">
-						<input type="checkbox" name="auto_pop" id="auto_pop">
-						<label for="auto_pop">Pop out lyrics panel by default </label>
-					</span>	
-					<span class="input_set" title="When this is selected the lyrics will scroll automatically with the song." style="display: none;">
-						<input type="checkbox" name="autoscroll" id="autoscroll">
-						<label for="autoscroll">Auto-scroll the lyrics with the song <span style="color:#f00">WARNING: This feature is still unstable. 
-						Read the "How to Use" guide</span> </label>
-					</span>					
+				<div id="content">
+					<div id="yt_options" class="opt">
+						<h3>On YouTube:</h3>
+						<span class="input_set">
+							<input type="checkbox" name="run_on_yt" id="run_on_yt">
+							<label for="run_on_yt">Run Lyrical</label>
+						</span>
+						<span class="input_set">
+							<input type="checkbox" name="yt_detect_mode" id="yt_detect_mode">
+							<label for="yt_detect_mode">Auto detect dark mode </label>
+						</span>
+						<span class="input_set">
+							<input type="checkbox" name="run_all" id="run_all">
+							<label for="run_all">Run on all vidoes <span class="more">&#128712;</span></label>
+						</span>
+						<span class="more-text">By default Lyrical only runs on videos that are under the Music category. When this option is selected Lyrical will run on all youtube videos</span>
+					</div>
+					<div id="gp_options" class="opt">
+						<h3>On Google Play Music:</h3>
+						<span class="input_set">
+							<input type="checkbox" name="run_on_gp" id="run_on_gp">
+							<label for="run_on_gp">Run Lyrical</label>
+						</span>
+
+					</div>
+					<div id="sp_options" class="opt">
+						<h3>On Spotify Web Player:</h3>
+						<span class="input_set">
+							<input type="checkbox" name="run_on_sp" id="run_on_sp">
+							<label for="run_on_sp">Run Lyrical</label>
+						</span>
+					</div>
+					<div id="global_options" class="opt">
+						<h3>Global Settings</h3>
+						<span class="input_set">
+							<input type="checkbox" name="autorun" id="autorun" >
+							<label for="autorun">Show lyrics automatically <span class="more">&#128712;</span></label>
+						</span>
+						<span class="more-text">When this is selected the lyrics panel will be visible as soon as the page loads.</span>
+						<span class="input_set" >
+							<input type="checkbox" name="auto_pop" id="auto_pop">
+							<label for="auto_pop">Pop out lyrics panel by default <span class="more">&#128712;</span></label>
+						</span>	
+						<span class="more-text">When this is selected the lyrics panel will pop out over the page instead of being integrated.</span>
+						<span class="input_set" >
+							<input type="checkbox" name="prefer_dark" id="prefer_dark">
+							<label for="auto_pop">Pop out lyrics panel by default <span class="more">&#128712;</span></label>
+						</span>	
+						<span class="more-text">When this is selected the lyrics panel will pop out over the page instead of being integrated.</span>
+						<span class="input_set" title="When this is selected the lyrics will scroll automatically with the song." style="display: none;">
+							<input type="checkbox" name="autoscroll" id="autoscroll">
+							<label for="autoscroll">Auto-scroll the lyrics with the song <span style="color:#f00">WARNING: This feature is still unstable. 
+							Read the "How to Use" guide</span> </label>
+						</span>		
+					</div>
+				</div>
+				<div id="action-btns">	
+					<a href="#" class="btn"  id="reset">Reset to Default</a>		
 					<span id="submit_btn">
-						<a href="#" id="_btn" >Save</a>
+						<a href="#" class="btn" id="save">Save Options</a>
 						<p id="response_msg"></p>
 					</span>
 				</div>
+
 			</div>
 
 			<div id="howTo">

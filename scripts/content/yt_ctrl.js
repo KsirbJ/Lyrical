@@ -13,6 +13,7 @@ $(function(){
 	let mode_obs_attached = false;
 	let this_is_music = false;
 	let player_height = "0px";
+	let params = null;
 
 	// Info about the currently playing song
 	let cur_song = {
@@ -40,6 +41,7 @@ $(function(){
 		$panel.add_search_box(); 
 	}
 
+	// Fix panel height issues
 	function heightFix(){
 		// Make the lyrics div as tall as the Youtube player
 		player_height = $(".player-height").css("height");
@@ -59,21 +61,23 @@ $(function(){
 	// (NEW YT) When the page loads check if the panel is already there and add it if not
 	function check_for_panel(){
 
-		if($("#lyrics").length === 0 && !spf_simulated){
-
+		if(location.pathname === "/watch" && $("#lyrics").length === 0 && !spf_simulated){
+			
 			spf_simulated = true;
 			$("#show_hide_lyrics").remove(); // Prevents duplicate buttons
-			chrome.storage.sync.get({'run_on_yt': true, 'autorun': false, 'auto_pop': false, 'panel_state': 'is_in', 'panel_visible': false}, 
+			chrome.storage.sync.get({'run_on_yt': true, 'autorun': false, 'auto_pop': false, 
+				'panel_state_yt': 'is_in', 'panel_visible_yt': false, 'yt_dark': false, 'run_all': false}, 
 			(response) => {
 			
+				params = response;
 				if(response.run_on_yt){
-					if(response.panel_state === 'is_out')
-						response.auto_pop = true;
-					if(response.panel_visible)
-						response.autorun = true;
+					if(response.panel_state_yt === 'is_out')
+						params.auto_pop = true;
+					if(response.panel_visible_yt)
+						params.autorun = true;
 					
 					wait_and_do("h1.title.ytd-video-primary-info-renderer", "#items.ytd-watch-next-secondary-results-renderer", "#more .more-button",
-			"#watch-header", ".watch-extras-section", init, response.autorun, response.auto_pop );
+			"#watch-header", ".watch-extras-section", init);
 
 				}
 				spf_simulated = false;
@@ -88,41 +92,42 @@ $(function(){
 	 *	@param wait1a,1b,2a,2b {string} - The elements to wait for
 	 *	@param execute_this {function} - The function to execute when the elements are available
 	 */
-	function wait_and_do(wait1a, wait1b, wait2a, wait1c, wait2b, execute_this, param1, param2){
+	function wait_and_do(wait1a, wait1b, wait2a, wait1c, wait2b, execute_this){
 		if(location.pathname === "/watch" && !executed){
 
 			if(($(wait1a).length === 0 || $(wait1b).length === 0 || $(wait1c).length === 0) && 
 				($(wait2a).length === 0 || $(wait2b).length === 0)){
 
 				timeout = setTimeout(function(){
-					wait_and_do(wait1a, wait1b, wait1c, wait2a, wait2b, execute_this, param1, param2);
+					wait_and_do(wait1a, wait1b, wait1c, wait2a, wait2b, execute_this);
 				}, 100);
 
 			}else if($("#lyrics").length === 0){
 
 				executed = true;
 				clearTimeout(timeout);
-				execute_this(param1, param2);
+				execute_this();
 				executed = false;
 
-			}
+			}		
+		}
 
-		// Listen for transition from main or search pages to watch/ page
-		}else if(!nav_obs_attached && $(".ytd-page-manager").length > 0){
+		// Listen for transition from main or search pages to watch page
+		if(!nav_obs_attached && $(".ytd-page-manager").length > 0){
 			
-			$utils.create_observer(".ytd-page-manager:eq(0)", check_for_panel, [true, true, false, true]);
+			$utils.create_observer("title", check_for_panel, [true, true, false, true]);
 			nav_obs_attached = true;
 		}
 	}
 
 	// (NEW YT) Confirm that the current video is under the music category 
-	function check_if_music(autorun, auto_pop){
+	function check_if_music(){
 		$("#more .more-button").click();
 		
 		setTimeout(function(){
 			if($(".ytd-metadata-row-container-renderer #content a:contains('Music')").text().includes("Music")){
 				this_is_music = true;
-				init(autorun, auto_pop);
+				init();
 				this_is_music = false;
 			}	
 			$("#less .less-button").click();
@@ -130,19 +135,15 @@ $(function(){
 		}, 100);
 	}
 
-	function init(autorun, auto_pop){
+	function init(){
 
 		cur_song.gotLyrics = false;
 
 		$(window).off('keydown');
 
-		// (NEW YT) Listen for page changes on youtube material 
-		if($("#playlist #container").length > 0 || $("#page-manager").length > 0){
-			$utils.create_observer("h1.title.ytd-video-primary-info-renderer", check_for_panel, [false, false, true, true]);
-		}
-
 		// Only append the lyrics panel if it's under the music category
-		if($(".watch-extras-section").find(".watch-info-tag-list a:contains('Music')").text() === "Music" || this_is_music){
+		if($(".watch-extras-section").find(".watch-info-tag-list a:contains('Music')").text() === "Music" 
+			|| this_is_music || params.run_all ){
 
 			// Append youtube specific panel styles
 			$('body').append(`
@@ -161,10 +162,6 @@ $(function(){
 						top: -1em !important;
 						right: .5em;
 						font-size: 14px;
-					}
-					#lyrics p {
-						line-height: 2em;
-						font-size: 13px;
 					}
 				</style>
 				`);
@@ -185,19 +182,19 @@ $(function(){
 				$panel.append_btn("#watch-header");
 
 			// Hide panel by default on page load
-			if(!autorun)
+			if(!params.autorun)
 				$panel.show_hide_panel(new Event('click'));
-			if(auto_pop){
-				$panel.pop_in_out(player_height, new Event('click'));
-				if(!autorun) $panel.$lyrical_panel.toggle();
+			if(params.auto_pop){
+				$panel.pop_in_out(player_height, new Event('click'), 'yt');
+				if(!params.autorun) $panel.$lyrical_panel.toggle();
 			}
 
 			// (NEW YT) Toggle panel's dark mode when the page's dark mode is toggled
 			function toggle_dark_mode(){
 				if($('body').attr('dark') === "true"){
-					$panel.go_dark();
+					$panel.go_dark('yt');
 				}else{
-					$panel.go_light();
+					$panel.go_light('yt');
 				}
 
 				if(!mode_obs_attached){
@@ -207,8 +204,17 @@ $(function(){
 			}
 
 			// Run 
+			$panel.add_mode_handler('yt');
 			heightFix();
-			toggle_dark_mode();	
+			chrome.storage.sync.get({'yt_detect_mode': true}, (response) => {
+				if(response.yt_detect_mode)
+					toggle_dark_mode();	
+				else{
+					if(params.yt_dark)
+						$panel.go_dark('yt');
+				}
+			});
+			
 
 			// Try to find the song's info 
 			if($(".watch-extras-section .watch-meta-item").find(".title:contains('Music')").text().trim() === "Music"){
@@ -273,16 +279,17 @@ $(function(){
 
 			// listen for clicks on the pop-in-out button
 			document.getElementById("pop-in-out").addEventListener("click", function(e){
-				$panel.pop_in_out(player_height, e);
+				$panel.pop_in_out(player_height, e, 'yt');
 			}, false);
 
 			$panel.register_keybd_shortcut(toggle_panel, null, 'S');
 
 		}else if($(".ytd-page-manager").length > 0)	{ // (NEW YT)
-			check_if_music(autorun, auto_pop);
+			check_if_music();
 			return;
 		}	
 
+		// Listen for arrow key press
 		$("#words").on('keydown', function(e){
 			switch(e.which) {
 		        case 37:
@@ -308,29 +315,33 @@ $(function(){
 			$lyrics.get_lyrics(cur_song, true, manual_search);
 			cur_song.gotLyrics = true;
 		}
-		$panel.show_hide_panel(e);
+		$panel.show_hide_panel(e, 'yt');
 	}
 
 	// On load pull the user specified options, and run extension accordingly
-	chrome.storage.sync.get({'run_on_yt': true, 'autorun': false, 'auto_pop': false}, (response) => {
+	chrome.storage.sync.get({'run_on_yt': true, 'autorun': false, 'auto_pop': false, 'run_all': false,
+	'yt_dark': false}, (response) => {
 		if(response.run_on_yt){
+			params = response;
 			wait_and_do("h1.title.ytd-video-primary-info-renderer", "#items.ytd-watch-next-secondary-results-renderer", "#more .more-button",
-			"#watch-header", ".watch-extras-section", init, response.autorun, response.auto_pop );
+			"#watch-header", ".watch-extras-section", init);
 		}
 	});
 
 
 	// Listen to youtube's spfdone event to detect page changes
 	document.addEventListener("spfdone", function(){
-		chrome.storage.sync.get({'run_on_yt': true, 'autorun': false, 'auto_pop': false, 'panel_state': 'is_in', 'panel_visible': false}, 
+		chrome.storage.sync.get({'run_on_yt': true, 'autorun': false, 'auto_pop': false, 
+			'panel_state_yt': 'is_in', 'panel_visible_yt': false, 'yt_dark': false, 'run_all': false}, 
 		(response) => {
 			if(response.run_on_yt){
-				if(response.panel_state === 'is_out')
+				if(response.panel_state_yt === 'is_out')
 					response.auto_pop = true;
-				if(response.panel_visible)
+				if(response.panel_visible_yt)
 					response.autorun = true;
+				params = response;
 				wait_and_do("h1.title.ytd-video-primary-info-renderer", "#items.ytd-watch-next-secondary-results-renderer", "#more .more-button",
-			"#watch-header", ".watch-extras-section", init, response.autorun, response.auto_pop );
+			"#watch-header", ".watch-extras-section", init);
 			}
 
 		});

@@ -141,6 +141,7 @@
 	color: #fff;		  
 	text-decoration: none;
 	transition: background-color .3s;
+	text-align: center;
 }
 #show_hide_lyrics:hover {
 	background-color: #ee792c;

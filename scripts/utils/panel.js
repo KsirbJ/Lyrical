@@ -10,7 +10,7 @@ const $panel = {
 		Translator.init_js();
 		$("#lyrics").resizable({
 			containment: "document",
-			handles: "e, se, s, sw, w",
+			handles: "e, se, s, sw, w, n, ne, nw",
 			minWidth: 200,
 			maxWidth: 400,
 			minHeight: 80
@@ -39,15 +39,11 @@ const $panel = {
 			$(this).text($(this).text() === "☰" ? "✖" : "☰");
 		});
 
-		// Toggle dark mode on-click
-		$(document).on('change', '#mode-toggle-btn', function(e){
-			if(this.checked){
-				$panel.go_dark();
-				$("#toggle-label").text('on');
-			}else{
-				$panel.go_light();
-				$("#toggle-label").text('off');
-			}
+		// toggle checkbox on span click
+		$panel.$lyrical_panel.on('click', "#mode-toggle", function(e) {
+			let cb = $(this).find('#mode-toggle-btn');
+			cb.prop('checked', !cb.prop('checked'));
+			cb.trigger('change');
 		});
 	},
 
@@ -112,20 +108,23 @@ const $panel = {
 	},
 
 	// Show or hide the panel
-	show_hide_panel(e){
+	show_hide_panel(e, site = ""){
 		$panel.$lyrical_panel.toggle();
 		let txt = $panel.$show_hide_btn.text();
 		$panel.$show_hide_btn.text(txt === "Hide Lyrics" ? "Show Lyrics" : "Hide Lyrics");
 		// rememeber the panel state
 		txt = $panel.$show_hide_btn.text();
-		chrome.storage.sync.set({'panel_visible': (txt === "Hide Lyrics" ? true : false) });
+		if(site !== ""){
+			let key = 'panel_visible_'+site;
+			chrome.storage.sync.set({[key]: (txt === "Hide Lyrics" ? true : false) });
+		}
 		$panel._state.is_visible = txt === "Hide Lyrics" ? true : false;
 		e.preventDefault();
 		e.stopPropagation();
 	},
 
 	// Pop the panel in and out of the page
-	pop_in_out(player_height, e){	
+	pop_in_out(player_height, e, site = ""){	
 		if($panel.$pop_btn.css("transform") === 'none')
 		    $panel.$pop_btn.css("transform", "rotate(180deg)");
 		else
@@ -152,7 +151,10 @@ const $panel = {
 		$panel.$lyrical_panel.find("#words")[0].focus();
 		// save the new state of the panel
 		state = $panel.$pop_btn.attr('data-state');
-		chrome.storage.sync.set({'panel_state': state});
+		if(site !== ""){
+			let key = 'panel_state_'+site;
+			chrome.storage.sync.set({[key]: state});
+		}
 		$panel._state.is_in = state === "is_in" ? true : false;
 		e.preventDefault();
 		e.stopPropagation();
@@ -209,17 +211,34 @@ const $panel = {
 	},
 
 	// Turn on dark mode
-	go_dark(){
+	go_dark(site){
 		if(!$panel._state.is_dark){
 			$panel.$lyrical_panel.addClass('dark-mode');
 			$panel._state.is_dark = true;
+			let key = site+"_dark";
+			chrome.storage.sync.set({[key]: true});
 		}	
 	},
 
 	// Go to default/light mode
-	go_light(){
+	go_light(site){
 		$panel.$lyrical_panel.removeClass('dark-mode');
 		$panel._state.is_dark = false;
+		let key = site+"_dark";
+		chrome.storage.sync.set({[key]: false});
+	},
+
+	add_mode_handler(site){	
+		// Toggle dark mode on-click
+		$(document).on('change', '#mode-toggle-btn', function(e){
+			if(this.checked){
+				$panel.go_dark(site);
+				$("#toggle-label").text('on');
+			}else{
+				$panel.go_light(site);
+				$("#toggle-label").text('off');
+			}
+		});
 	},
 
 	// Used for selector cache

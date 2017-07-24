@@ -85,18 +85,21 @@ const $lyrics = {
 		    	let found = false;
 		    	for(let i = 0; i < hits.length && !found; ++i){
 
-		    		//console.log(hits[i].result.title);
-		    		//console.log(hits[i].result.primary_artist.name);
+		    		// console.log(hits[i].result.title);
+		    		// console.log(hits[i].result.primary_artist.name);
 		    		
 		    		let g_title = hits[i].result.title.trim().toUpperCase();
 		    		let g_artist = hits[i].result.primary_artist.name.trim().toUpperCase();
+		    		// console.log("title: " + g_title);
+		    		// console.log("artist: " + g_artist);
 		    		
 		    		// replace fancy curly quotes
 		    		g_title = g_title.replace(/[\u2018\u2019]/g, "'").replace(/[\u201C\u201D]/g, '"');
 		    		g_artist = g_artist.replace(/[\u2018\u2019]/g, "'").replace(/[\u201C\u201D]/g, '"');
 
 		    		if((g_title.indexOf(song.title) !== -1 && g_artist.indexOf(song.artist) !== -1) || 
-		    			(title.indexOf(g_title) !== -1 && artist.indexOf(g_artist) !== -1) ){
+		    			(song.title.indexOf(g_title) !== -1 && song.artist.indexOf(g_artist) !== -1)  || 
+		    			(song.artist.includes(g_title) && song.title.includes(g_artist))){
 
 		    			found = true;
 
@@ -210,6 +213,9 @@ const $lyrics = {
 		my_song.duration = in_milli;
 		my_song.first_search = first_search;
 		my_song.callback = callback;
+
+		// console.log(my_song.title);
+		// console.log(my_song.artist);
 
 		$lyrics.cur_song = my_song;
 
