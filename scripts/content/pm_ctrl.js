@@ -11,7 +11,7 @@ $(function(){
 		$player = $("#player");
 
 	// pull the user specified options from storage and react accordingly
-	chrome.storage.sync.get({'run_on_gp': true, 'autorun': false, 'auto_pop': false, 'pm_dark': false}, 
+	chrome.storage.sync.get({'run_on_gp': true, 'pm_dark': false, "panel_state_pm": 'is_in', "panel_visible_pm": false}, 
 		function(response){
 		if(response.run_on_gp){
 
@@ -135,12 +135,12 @@ $(function(){
 							cur_song.gotLyrics = true;
 						}
 					}
-					$panel.show_hide_panel(e);
+					$panel.show_hide_panel(e, "pm");
 				}
 
+				// Add handlers
 				$panel.add_toggle_handler(show_hide_panel);
-
-
+				$panel.add_resize_move_hanler('pm');
 
 				// pop the panel in / out on click
 				function pop_in_out(e){
@@ -149,7 +149,7 @@ $(function(){
 					}else {
 						$mainContainer.addClass("lyrics_visible");
 					}
-					$panel.pop_in_out($panel.is_popped_in() ? '400px' : '100%', e);
+					$panel.pop_in_out($panel.is_popped_in() ? '400px' : '100%', e, "pm");
 				}
 				$(document).on('click', '.pop_out_btn', pop_in_out);
 
@@ -168,12 +168,11 @@ $(function(){
 				$panel.add_mode_handler('pm');
 
 				// Hide panel by default on page load
-				if(!response.autorun)
-					show_hide_panel(new Event('click'));
+				if(!response.panel_visible_pm)
+					show_hide_panel(new Event('click'), "pm");
 				// pop panel out if option is selected
-				if(response.auto_pop){
-					pop_in_out(new Event('click'));
-					if(!response.autorun) $panel.$lyrical_panel.toggle();
+				if(response.panel_state_pm === "is_out"){
+					pop_in_out(new Event('click'), "pm");
 				}
 				if(response.pm_dark)
 					$panel.go_dark('pm');

@@ -8,7 +8,7 @@ $(function(){
 	let executed = false;
 
 	// pull the user specified options from storage and react accordingly
-	chrome.storage.sync.get({'run_on_sp': true, 'autorun': false, 'auto_pop': false, 'sp_dark': false}, 
+	chrome.storage.sync.get({'run_on_sp': true, 'sp_dark': false, "panel_state_sp": "is_in", "panel_visible_sp": false}, 
 		function(response){
 		if(response.run_on_sp){
 
@@ -111,7 +111,7 @@ $(function(){
 				// title and artist with the stored version
 				function check_playing(){
 					let current_title = $(".track-info__name div a ").text();
-					let current_artist = $(".track-info__artists span span a").text();
+					let current_artist = $(".track-info__artists span span a:eq(0)").text();					
 
 					if(cur_song.title !== current_title || cur_song.artist !== current_artist){
 
@@ -151,7 +151,7 @@ $(function(){
 							cur_song.gotLyrics = true;
 						}
 					}
-					$panel.show_hide_panel(e);
+					$panel.show_hide_panel(e, "sp");
 				}
 				$panel.add_toggle_handler(show_hide_panel);
 
@@ -162,7 +162,7 @@ $(function(){
 					}else {
 						$mainContainer.addClass("lyrics_visible");
 					}
-					$panel.pop_in_out($panel.is_popped_in() ? '400px' : '100%', e);
+					$panel.pop_in_out($panel.is_popped_in() ? '400px' : '100%', e, "sp");
 				}
 				$(document).on('click', '.pop_out_btn', pop_in_out);
 
@@ -178,16 +178,16 @@ $(function(){
 				 	}
 				}
 
-				// Dark mode handler
+				// Add handlers
 				$panel.add_mode_handler('sp');
+				$panel.add_resize_move_hanler('sp');
 
 				// Hide panel by default on page load
-				if(!response.autorun)
-					show_hide_panel(new Event('click'));
-				// pop panel out if option is selected
-				if(response.auto_pop){
+				if(!response.panel_visible_sp)
+					show_hide_panel(new Event('click'), "sp");
+				// pop panel out if it was popped out last time
+				if(response.panel_state_sp === "is_out"){
 					pop_in_out(new Event('click'));
-					if(!response.autorun) $panel.$lyrical_panel.toggle();
 				}
 				if(response.sp_dark)
 					$panel.go_dark('sp');

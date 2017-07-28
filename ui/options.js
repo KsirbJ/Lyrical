@@ -3,8 +3,8 @@
 $(function(){
 	// Restore saved settings on page load
 	function pull_options(){
-		chrome.storage.sync.get({'run_on_gp': true, 'run_on_yt': true, 'run_on_sp': true, 'autorun': false, 
-		'auto_pop': false, 'autoscroll': false, 'run_all': false, 'yt_detect_mode': true}, function(response){
+		chrome.storage.sync.get({'run_on_gp': true, 'run_on_yt': true, 'run_on_sp': true,
+		 'autoscroll': false, 'run_all': false, 'yt_detect_mode': true}, function(response){
 			console.log(response);
 			for(opt in response){
 				if(response[opt]){
@@ -21,14 +21,12 @@ $(function(){
 		let run_on_gp = $("#run_on_gp").prop('checked');
 		let run_on_yt = $("#run_on_yt").prop('checked');
 		let run_on_sp = $("#run_on_sp").prop('checked');
-		let autorun = $("#autorun").prop('checked');
-		let auto_pop = $("#auto_pop").prop('checked');
 		let autoscroll = $("#autoscroll").prop('checked');
 		let run_all = $('#run_all').prop('checked');
 		let yt_detect_mode = $("#yt_detect_mode").prop('checked');
 
-		chrome.storage.sync.set({'run_on_gp': run_on_gp, 'run_on_yt': run_on_yt, 'run_on_sp': run_on_sp, 'autorun': autorun, 
-			'auto_pop': auto_pop, 'autoscroll': autoscroll, 'run_all': run_all, 'yt_detect_mode': yt_detect_mode},
+		chrome.storage.sync.set({'run_on_gp': run_on_gp, 'run_on_yt': run_on_yt, 'run_on_sp': run_on_sp, 
+			'autoscroll': autoscroll, 'run_all': run_all, 'yt_detect_mode': yt_detect_mode},
 			function(){
 			$("#response_msg").text("Options saved");
 			setTimeout(function(){
@@ -41,8 +39,8 @@ $(function(){
 
 	// Restore default options
 	function restore_defaults(e){
-		chrome.storage.sync.set({'run_on_gp': true, 'run_on_yt': true, 'run_on_sp': true, 'autorun': false, 
-			'auto_pop': false, 'autoscroll': false, 'run_all': false, 'yt_detect_mode': true}, function(){
+		chrome.storage.sync.set({'run_on_gp': true, 'run_on_yt': true, 'run_on_sp': true, 
+			'autoscroll': false, 'run_all': false, 'yt_detect_mode': true}, function(){
 				pull_options();
 				$("#response_msg").text("Options restored to defaults");
 				setTimeout(function(){

@@ -13,7 +13,16 @@ const $panel = {
 			handles: "e, se, s, sw, w, n, ne, nw",
 			minWidth: 200,
 			maxWidth: 400,
-			minHeight: 80
+			minHeight: 80,
+
+			stop(event, ui){
+				// Hack to fix movement after resizing 
+				let top_pos = $panel.$lyrical_panel.css('top');
+				if(top_pos.length > 1 && top_pos !== "0px"){
+					$panel.$lyrical_panel.css('top', '0');
+					$panel.$lyrical_wrapper.css('top', top_pos);
+				}
+			}
 		});
 		$(".resize-fix").draggable({
 			containment: "document",   
@@ -109,6 +118,7 @@ const $panel = {
 
 	// Show or hide the panel
 	show_hide_panel(e, site = ""){
+		console.log("called");
 		$panel.$lyrical_panel.toggle();
 		let txt = $panel.$show_hide_btn.text();
 		$panel.$show_hide_btn.text(txt === "Hide Lyrics" ? "Show Lyrics" : "Hide Lyrics");
@@ -125,10 +135,21 @@ const $panel = {
 
 	// Pop the panel in and out of the page
 	pop_in_out(player_height, e, site = ""){	
+
+		// The first time pull the css 
+		if(!$panel._state.height && !$panel._state.top){
+			$panel._pull_css($panel.pop_in_out, [player_height, e, site], site);
+			e.preventDefault();
+			e.stopPropagation();
+			return;
+		}
+		
+		// Rotate the pop-in-out button
 		if($panel.$pop_btn.css("transform") === 'none')
 		    $panel.$pop_btn.css("transform", "rotate(180deg)");
 		else
 		    $panel.$pop_btn.css("transform", "");
+
 		// Hackiness to keep styles consistent
 		$panel.$lyrical_panel.toggleClass("can_drag");
 		$panel.$lyrical_wrapper.toggleClass("can_drag");
@@ -139,14 +160,19 @@ const $panel = {
 		
 		$panel.$lyrical_panel.resizable(action);
 		$panel.$lyrical_wrapper.removeAttr("style");
-		if(state === "is_in")
-			$panel.$lyrical_wrapper.css({"top": "0", "right": "0"});
-		else
+		if(state === "is_in"){
+			$panel.$lyrical_wrapper.css({"top": $panel._state.top, "right": '0'});
+			if($panel._state.left)
+				$panel.$lyrical_wrapper.css("left", $panel._state.left);
+			$panel.$lyrical_panel.css({'height': $panel._state.height || player_height, 'width': $panel._state.width});
+		}else{
 			$panel.$lyrical_wrapper.css({"top": "0", "left": "0"});
+			$panel.$lyrical_panel.removeAttr("style").css('height', player_height);
+		}
 
 		$panel.$lyrical_wrapper.draggable(action);
 		$panel.$pop_btn.attr('data-state', state === 'is_in' ? 'is_out' : 'is_in' );
-		$panel.$lyrical_panel.removeAttr("style").removeAttr("data-x").removeAttr("data-y").css('height', player_height);
+		
 
 		$panel.$lyrical_panel.find("#words")[0].focus();
 		// save the new state of the panel
@@ -156,6 +182,7 @@ const $panel = {
 			chrome.storage.sync.set({[key]: state});
 		}
 		$panel._state.is_in = state === "is_in" ? true : false;
+
 		e.preventDefault();
 		e.stopPropagation();
 	}, 
@@ -228,6 +255,7 @@ const $panel = {
 		chrome.storage.sync.set({[key]: false});
 	},
 
+	// Add an event handler to toggle dark / light mode
 	add_mode_handler(site){	
 		// Toggle dark mode on-click
 		$(document).on('change', '#mode-toggle-btn', function(e){
@@ -241,6 +269,45 @@ const $panel = {
 		});
 	},
 
+	// Add event handlers for the resize and move events - used to store CSS
+	add_resize_move_hanler(site){
+		$panel.$lyrical_panel.on('resizestop', (event, ui) => {
+			$panel._state.height = $panel.$lyrical_panel.css('height');
+			$panel._state.width = $panel.$lyrical_panel.css('width');
+			let key1 = site+'_height', key2 = site+'_width';
+			// Store new CSS
+			chrome.storage.sync.set({[key1]: $panel._state.height, [key2]: $panel._state.width});
+		});
+		$panel.$lyrical_wrapper.on('dragstop', (event, ui) => {
+			$panel._state.left = $panel.$lyrical_wrapper.css('left');
+			$panel._state.top = $panel.$lyrical_wrapper.css('top');
+			// Prevent panel going under window
+			if(Number($panel._state.top.substr(0, 3)) > $(window).height())
+				$panel._state.top = $(window).height() - 100 + "px";
+			// Store new CSS
+			let key1 = site+'_left', key2 = site+'_top';
+			chrome.storage.sync.set({[key1]: $panel._state.left, [key2]: $panel._state.top});
+		});
+	},
+
+	// Pull the CSS for the panel when it's popped out
+	_pull_css(callback, params, site){
+		// Init CSS if it hasn't been yet
+		let keys = [site+'_height', site+'_width', site+'_top', site+'_left'];
+		chrome.storage.sync.get({[keys[0]]: null, [keys[1]]: '400px', [keys[2]]: '0px', [keys[3]]: null},
+			function(response){
+				console.log(response);
+				$panel._state.height = response[keys[0]];
+				$panel._state.width = response[keys[1]];
+				$panel._state.top = response[keys[2]];
+				$panel._state.left = response[keys[3]];
+
+				callback(...params)
+			}
+		);
+		
+	},
+
 	// Used for selector cache
 	$lyrical_panel: null,
 	$show_hide_btn: null,
@@ -251,8 +318,12 @@ const $panel = {
 		is_in: true,
 		is_visible: true,
 		is_dark: false,
-	}
-
+		height: null,
+		width: null,
+		top: null,
+		left: null,
+		right: null
+	},
 }
 
 export default $panel;
