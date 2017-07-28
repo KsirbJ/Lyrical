@@ -4,17 +4,18 @@ import $panel from '../utils/panel'
 
 // Lyrics on google play music
 $(function(){
-	let executed = false, timeout = null;
+	let executed = false, timeout = null, site = null;
 
 	// Selector cache 
 	let $mainContainer = $("#mainContainer"),
 		$player = $("#player");
 
 	// pull the user specified options from storage and react accordingly
-	chrome.storage.sync.get({'run_on_gp': true, 'pm_dark': false, "panel_state_pm": 'is_in', "panel_visible_pm": false}, 
+	chrome.storage.sync.get({'run_on_gp': true, 'pm_dark': false, "panel_state_pm": 'is_in', "panel_visible_pm": false, 
+		'pm_mem': true}, 
 		function(response){
 		if(response.run_on_gp){
-
+			site = response.pm_mem ? "pm" : null;
 			/**
 			 * Wait for a part of the page to load before initializing lyrical
 			 *
@@ -135,12 +136,12 @@ $(function(){
 							cur_song.gotLyrics = true;
 						}
 					}
-					$panel.show_hide_panel(e, "pm");
+					$panel.show_hide_panel(e, site);
 				}
 
 				// Add handlers
 				$panel.add_toggle_handler(show_hide_panel);
-				$panel.add_resize_move_hanler('pm');
+				$panel.add_resize_move_hanler(site);
 
 				// pop the panel in / out on click
 				function pop_in_out(e){
@@ -149,7 +150,7 @@ $(function(){
 					}else {
 						$mainContainer.addClass("lyrics_visible");
 					}
-					$panel.pop_in_out($panel.is_popped_in() ? '400px' : '100%', e, "pm");
+					$panel.pop_in_out($panel.is_popped_in() ? '400px' : '100%', e, site);
 				}
 				$(document).on('click', '.pop_out_btn', pop_in_out);
 
@@ -165,17 +166,17 @@ $(function(){
 				 	}
 				}
 
-				$panel.add_mode_handler('pm');
+				$panel.add_mode_handler("pm");
 
 				// Hide panel by default on page load
-				if(!response.panel_visible_pm)
-					show_hide_panel(new Event('click'), "pm");
+				if(!response.panel_visible_pm || !response.pm_mem)
+					show_hide_panel(new Event('click'), site);
 				// pop panel out if option is selected
-				if(response.panel_state_pm === "is_out"){
-					pop_in_out(new Event('click'), "pm");
+				if(response.panel_state_pm === "is_out" && response.pm_mem){
+					pop_in_out(new Event('click'), site);
 				}
 				if(response.pm_dark)
-					$panel.go_dark('pm');
+					$panel.go_dark("pm");
 
 				$("#lyrics").find("#words").on('keydown', function(e){
 					switch(e.which) {

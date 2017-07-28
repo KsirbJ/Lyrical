@@ -4,13 +4,14 @@ import $panel from '../utils/panel'
 
 // Lyrics on Spotify
 $(function(){
-	let timeout = null;
-	let executed = false;
+	let timeout = null, executed = false, site = null;
 
 	// pull the user specified options from storage and react accordingly
-	chrome.storage.sync.get({'run_on_sp': true, 'sp_dark': false, "panel_state_sp": "is_in", "panel_visible_sp": false}, 
+	chrome.storage.sync.get({'run_on_sp': true, 'sp_dark': false, "panel_state_sp": "is_in", "panel_visible_sp": false,
+		'sp_mem': true}, 
 		function(response){
 		if(response.run_on_sp){
+			site = response.sp_mem ? "sp" : null;
 
 			/**
 			 * Wait for a part of the page to load before initializing lyrical
@@ -151,7 +152,7 @@ $(function(){
 							cur_song.gotLyrics = true;
 						}
 					}
-					$panel.show_hide_panel(e, "sp");
+					$panel.show_hide_panel(e, site);
 				}
 				$panel.add_toggle_handler(show_hide_panel);
 
@@ -162,7 +163,7 @@ $(function(){
 					}else {
 						$mainContainer.addClass("lyrics_visible");
 					}
-					$panel.pop_in_out($panel.is_popped_in() ? '400px' : '100%', e, "sp");
+					$panel.pop_in_out($panel.is_popped_in() ? '400px' : '100%', e, site);
 				}
 				$(document).on('click', '.pop_out_btn', pop_in_out);
 
@@ -180,13 +181,13 @@ $(function(){
 
 				// Add handlers
 				$panel.add_mode_handler('sp');
-				$panel.add_resize_move_hanler('sp');
+				$panel.add_resize_move_hanler(site);
 
 				// Hide panel by default on page load
-				if(!response.panel_visible_sp)
-					show_hide_panel(new Event('click'), "sp");
+				if(!response.panel_visible_sp || !response.sp_mem)
+					show_hide_panel(new Event('click'), site);
 				// pop panel out if it was popped out last time
-				if(response.panel_state_sp === "is_out"){
+				if(response.panel_state_sp === "is_out" && response.sp_mem){
 					pop_in_out(new Event('click'));
 				}
 				if(response.sp_dark)

@@ -8,6 +8,8 @@ const $panel = {
 		$("#translate_icon").attr('src', img);
 		$("#translate_icon").click((e) => {Translator.show_hide(e)});
 		Translator.init_js();
+		$panel.$window_height = $(window).height() - 100;
+
 		$("#lyrics").resizable({
 			containment: "document",
 			handles: "e, se, s, sw, w, n, ne, nw",
@@ -25,7 +27,15 @@ const $panel = {
 			}
 		});
 		$(".resize-fix").draggable({
-			containment: "document",   
+			containment: "document",
+
+			stop(event, ui){
+				let top_pos = $panel.$lyrical_wrapper.css('top');
+				if(Number(top_pos.replace('px', '')) >= $panel.$window_height){
+					top_pos = $panel.$window_height - 100 + "px";
+					$panel.$lyrical_wrapper.css('top', top_pos);
+				}		
+			}   
 		});
 		$("#lyrics").resizable("disable");
 		$(".resize-fix").draggable("disable");
@@ -117,14 +127,14 @@ const $panel = {
 	},
 
 	// Show or hide the panel
-	show_hide_panel(e, site = ""){
-		console.log("called");
+	show_hide_panel(e, site = null){
+
 		$panel.$lyrical_panel.toggle();
 		let txt = $panel.$show_hide_btn.text();
 		$panel.$show_hide_btn.text(txt === "Hide Lyrics" ? "Show Lyrics" : "Hide Lyrics");
 		// rememeber the panel state
 		txt = $panel.$show_hide_btn.text();
-		if(site !== ""){
+		if(site){
 			let key = 'panel_visible_'+site;
 			chrome.storage.sync.set({[key]: (txt === "Hide Lyrics" ? true : false) });
 		}
@@ -134,10 +144,10 @@ const $panel = {
 	},
 
 	// Pop the panel in and out of the page
-	pop_in_out(player_height, e, site = ""){	
+	pop_in_out(player_height, e, site = null){	
 
 		// The first time pull the css 
-		if(!$panel._state.height && !$panel._state.top){
+		if(!$panel._state.height && !$panel._state.top && site){
 			$panel._pull_css($panel.pop_in_out, [player_height, e, site], site);
 			e.preventDefault();
 			e.stopPropagation();
@@ -161,10 +171,15 @@ const $panel = {
 		$panel.$lyrical_panel.resizable(action);
 		$panel.$lyrical_wrapper.removeAttr("style");
 		if(state === "is_in"){
-			$panel.$lyrical_wrapper.css({"top": $panel._state.top, "right": '0'});
-			if($panel._state.left)
-				$panel.$lyrical_wrapper.css("left", $panel._state.left);
-			$panel.$lyrical_panel.css({'height': $panel._state.height || player_height, 'width': $panel._state.width});
+			if(site){
+				$panel.$lyrical_wrapper.css({"top": $panel._state.top, "right": '0'});
+				if($panel._state.left)
+					$panel.$lyrical_wrapper.css("left", $panel._state.left);
+				$panel.$lyrical_panel.css({'height': $panel._state.height || player_height, 'width': $panel._state.width});
+			}else{
+				$panel.$lyrical_wrapper.css({"top": '0', "right": '0'});
+				$panel.$lyrical_panel.css('height', player_height);
+			}
 		}else{
 			$panel.$lyrical_wrapper.css({"top": "0", "left": "0"});
 			$panel.$lyrical_panel.removeAttr("style").css('height', player_height);
@@ -177,7 +192,7 @@ const $panel = {
 		$panel.$lyrical_panel.find("#words")[0].focus();
 		// save the new state of the panel
 		state = $panel.$pop_btn.attr('data-state');
-		if(site !== ""){
+		if(site){
 			let key = 'panel_state_'+site;
 			chrome.storage.sync.set({[key]: state});
 		}
@@ -270,23 +285,27 @@ const $panel = {
 	},
 
 	// Add event handlers for the resize and move events - used to store CSS
-	add_resize_move_hanler(site){
+	add_resize_move_hanler(site = null){
 		$panel.$lyrical_panel.on('resizestop', (event, ui) => {
 			$panel._state.height = $panel.$lyrical_panel.css('height');
 			$panel._state.width = $panel.$lyrical_panel.css('width');
-			let key1 = site+'_height', key2 = site+'_width';
-			// Store new CSS
-			chrome.storage.sync.set({[key1]: $panel._state.height, [key2]: $panel._state.width});
+			if(site){
+				let key1 = site+'_height', key2 = site+'_width';
+				// Store new CSS
+				chrome.storage.sync.set({[key1]: $panel._state.height, [key2]: $panel._state.width});
+			}
 		});
 		$panel.$lyrical_wrapper.on('dragstop', (event, ui) => {
 			$panel._state.left = $panel.$lyrical_wrapper.css('left');
 			$panel._state.top = $panel.$lyrical_wrapper.css('top');
 			// Prevent panel going under window
-			if(Number($panel._state.top.substr(0, 3)) > $(window).height())
-				$panel._state.top = $(window).height() - 100 + "px";
-			// Store new CSS
-			let key1 = site+'_left', key2 = site+'_top';
-			chrome.storage.sync.set({[key1]: $panel._state.left, [key2]: $panel._state.top});
+			if(Number($panel._state.top.replace('px', '')) > $panel.$window_height)
+				$panel._state.top = $panel.$window_height - 100 + "px";
+			if(site){
+				// Store new CSS
+				let key1 = site+'_left', key2 = site+'_top';
+				chrome.storage.sync.set({[key1]: $panel._state.left, [key2]: $panel._state.top});
+			}
 		});
 	},
 
@@ -296,7 +315,6 @@ const $panel = {
 		let keys = [site+'_height', site+'_width', site+'_top', site+'_left'];
 		chrome.storage.sync.get({[keys[0]]: null, [keys[1]]: '400px', [keys[2]]: '0px', [keys[3]]: null},
 			function(response){
-				console.log(response);
 				$panel._state.height = response[keys[0]];
 				$panel._state.width = response[keys[1]];
 				$panel._state.top = response[keys[2]];
@@ -324,6 +342,7 @@ const $panel = {
 		left: null,
 		right: null
 	},
+	$window_height: null,
 }
 
 export default $panel;
