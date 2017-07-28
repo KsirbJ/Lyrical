@@ -136,7 +136,7 @@ const $panel = {
 		txt = $panel.$show_hide_btn.text();
 		if(site){
 			let key = 'panel_visible_'+site;
-			chrome.storage.sync.set({[key]: (txt === "Hide Lyrics" ? true : false) });
+			chrome.storage.local.set({[key]: (txt === "Hide Lyrics" ? true : false) });
 		}
 		$panel._state.is_visible = txt === "Hide Lyrics" ? true : false;
 		e.preventDefault();
@@ -145,6 +145,7 @@ const $panel = {
 
 	// Pop the panel in and out of the page
 	pop_in_out(player_height, e, site = null){	
+		console.log(player_height);
 
 		// The first time pull the css 
 		if(!$panel._state.height && !$panel._state.top && site){
@@ -194,7 +195,7 @@ const $panel = {
 		state = $panel.$pop_btn.attr('data-state');
 		if(site){
 			let key = 'panel_state_'+site;
-			chrome.storage.sync.set({[key]: state});
+			chrome.storage.local.set({[key]: state});
 		}
 		$panel._state.is_in = state === "is_in" ? true : false;
 
@@ -258,7 +259,7 @@ const $panel = {
 			$panel.$lyrical_panel.addClass('dark-mode');
 			$panel._state.is_dark = true;
 			let key = site+"_dark";
-			chrome.storage.sync.set({[key]: true});
+			chrome.storage.local.set({[key]: true});
 		}	
 	},
 
@@ -267,7 +268,7 @@ const $panel = {
 		$panel.$lyrical_panel.removeClass('dark-mode');
 		$panel._state.is_dark = false;
 		let key = site+"_dark";
-		chrome.storage.sync.set({[key]: false});
+		chrome.storage.local.set({[key]: false});
 	},
 
 	// Add an event handler to toggle dark / light mode
@@ -292,7 +293,7 @@ const $panel = {
 			if(site){
 				let key1 = site+'_height', key2 = site+'_width';
 				// Store new CSS
-				chrome.storage.sync.set({[key1]: $panel._state.height, [key2]: $panel._state.width});
+				chrome.storage.local.set({[key1]: $panel._state.height, [key2]: $panel._state.width});
 			}
 		});
 		$panel.$lyrical_wrapper.on('dragstop', (event, ui) => {
@@ -304,7 +305,7 @@ const $panel = {
 			if(site){
 				// Store new CSS
 				let key1 = site+'_left', key2 = site+'_top';
-				chrome.storage.sync.set({[key1]: $panel._state.left, [key2]: $panel._state.top});
+				chrome.storage.local.set({[key1]: $panel._state.left, [key2]: $panel._state.top});
 			}
 		});
 	},
@@ -313,7 +314,7 @@ const $panel = {
 	_pull_css(callback, params, site){
 		// Init CSS if it hasn't been yet
 		let keys = [site+'_height', site+'_width', site+'_top', site+'_left'];
-		chrome.storage.sync.get({[keys[0]]: null, [keys[1]]: '400px', [keys[2]]: '0px', [keys[3]]: null},
+		chrome.storage.local.get({[keys[0]]: null, [keys[1]]: '400px', [keys[2]]: '0px', [keys[3]]: null},
 			function(response){
 				$panel._state.height = response[keys[0]];
 				$panel._state.width = response[keys[1]];

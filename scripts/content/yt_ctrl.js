@@ -56,6 +56,8 @@ $(function(){
 		// Backup's backup
 		if($("#lyrics").css('height') === "0px")
 			$("#lyrics").css('height', '360px');
+
+		console.log(player_height);
 	}
 
 	// (NEW YT) When the page loads check if the panel is already there and add it if not
@@ -65,7 +67,7 @@ $(function(){
 			
 			spf_simulated = true;
 			$("#show_hide_lyrics").remove(); // Prevents duplicate buttons
-			chrome.storage.sync.get({'run_on_yt': true, 
+			chrome.storage.local.get({'run_on_yt': true, 
 				'panel_state_yt': 'is_in', 'panel_visible_yt': false, 'yt_dark': false, 'run_all': false}, 
 			(response) => {
 			
@@ -177,6 +179,8 @@ $(function(){
 			else
 				$panel.append_btn("#watch-header");
 
+			// Fix height issues
+			heightFix();
 			// Hide panel by default on page load
 			if(!params.panel_visible_yt)
 				$panel.show_hide_panel(new Event('click'));
@@ -201,8 +205,8 @@ $(function(){
 			// Run 
 			$panel.add_mode_handler('yt');
 			$panel.add_resize_move_hanler('yt');
-			heightFix();
-			chrome.storage.sync.get({'yt_detect_mode': true}, (response) => {
+			
+			chrome.storage.local.get({'yt_detect_mode': true}, (response) => {
 				if(response.yt_detect_mode && $(".ytd-page-manager").length > 0 ) // NEW YT
 					toggle_dark_mode();	
 				else{
@@ -316,7 +320,7 @@ $(function(){
 	}
 
 	// On load pull the user specified options, and run extension accordingly
-	chrome.storage.sync.get({'run_on_yt': true, 'run_all': false,
+	chrome.storage.local.get({'run_on_yt': true, 'run_all': false,
 	'yt_dark': false, "panel_state_yt": "is_in", "panel_visible_yt": false}, (response) => {
 		if(response.run_on_yt){
 			params = response;
@@ -328,7 +332,7 @@ $(function(){
 
 	// Listen to youtube's spfdone event to detect page changes
 	document.addEventListener("spfdone", function(){
-		chrome.storage.sync.get({'run_on_yt': true,
+		chrome.storage.local.get({'run_on_yt': true,
 			'panel_state_yt': 'is_in', 'panel_visible_yt': false, 'yt_dark': false, 'run_all': false}, 
 		(response) => {
 			if(response.run_on_yt){

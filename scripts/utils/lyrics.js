@@ -279,7 +279,7 @@ const $lyrics = {
 	 *	@param in_milli {int} - The length of the song in milliseconds
 	 */
 	autoscroll(in_milli){
-		chrome.storage.sync.get({'autoscroll': false}, function(response){
+		chrome.storage.local.get({'autoscroll': false}, function(response){
 			if(response.autoscroll){
 				$lyrics.$words.stop();
 				$lyrics.$words.scrollTop(0);

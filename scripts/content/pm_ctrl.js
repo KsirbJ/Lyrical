@@ -11,7 +11,7 @@ $(function(){
 		$player = $("#player");
 
 	// pull the user specified options from storage and react accordingly
-	chrome.storage.sync.get({'run_on_gp': true, 'pm_dark': false, "panel_state_pm": 'is_in', "panel_visible_pm": false, 
+	chrome.storage.local.get({'run_on_gp': true, 'pm_dark': false, "panel_state_pm": 'is_in', "panel_visible_pm": false, 
 		'pm_mem': true}, 
 		function(response){
 		if(response.run_on_gp){

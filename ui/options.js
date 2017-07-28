@@ -2,8 +2,9 @@
 
 $(function(){
 	// Restore saved settings on page load
+	chrome.storage.sync.clear();
 	function pull_options(){
-		chrome.storage.sync.get({'run_on_gp': true, 'run_on_yt': true, 'run_on_sp': true, 'autoscroll': false, 
+		chrome.storage.local.get({'run_on_gp': true, 'run_on_yt': true, 'run_on_sp': true, 'autoscroll': false, 
 			'run_all': false, 'yt_detect_mode': true, 'yt_mem': true, 'pm_mem': true, 'sp_mem': true}, 
 			function(response){
 			//console.log(response);
@@ -29,7 +30,7 @@ $(function(){
 		let pm_mem = $("#pm_mem").prop('checked');
 		let sp_mem = $("#sp_mem").prop('checked');
 
-		chrome.storage.sync.set({'run_on_gp': run_on_gp, 'run_on_yt': run_on_yt, 'run_on_sp': run_on_sp, 
+		chrome.storage.local.set({'run_on_gp': run_on_gp, 'run_on_yt': run_on_yt, 'run_on_sp': run_on_sp, 
 			'autoscroll': autoscroll, 'run_all': run_all, 'yt_detect_mode': yt_detect_mode, 'yt_mem': yt_mem, 
 			'pm_mem': pm_mem, 'sp_mem': sp_mem},
 			function(){
@@ -44,7 +45,7 @@ $(function(){
 
 	// Restore default options
 	function restore_defaults(e){
-		chrome.storage.sync.set({'run_on_gp': true, 'run_on_yt': true, 'run_on_sp': true, 'autoscroll': false, 
+		chrome.storage.local.set({'run_on_gp': true, 'run_on_yt': true, 'run_on_sp': true, 'autoscroll': false, 
 			'run_all': false, 'yt_detect_mode': true, 'yt_mem': true, 'pm_mem': true, 'sp_mem': true}, function(){
 				pull_options();
 				$("#response_msg").text("Options restored to defaults");
