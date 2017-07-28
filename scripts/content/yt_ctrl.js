@@ -65,16 +65,12 @@ $(function(){
 			
 			spf_simulated = true;
 			$("#show_hide_lyrics").remove(); // Prevents duplicate buttons
-			chrome.storage.sync.get({'run_on_yt': true, 'autorun': false, 'auto_pop': false, 
+			chrome.storage.local.get({'run_on_yt': true, 
 				'panel_state_yt': 'is_in', 'panel_visible_yt': false, 'yt_dark': false, 'run_all': false}, 
 			(response) => {
 			
 				params = response;
 				if(response.run_on_yt){
-					if(response.panel_state_yt === 'is_out')
-						params.auto_pop = true;
-					if(response.panel_visible_yt)
-						params.autorun = true;
 					
 					wait_and_do("h1.title.ytd-video-primary-info-renderer", "#items.ytd-watch-next-secondary-results-renderer", "#more .more-button",
 			"#watch-header", ".watch-extras-section", init);
@@ -181,12 +177,13 @@ $(function(){
 			else
 				$panel.append_btn("#watch-header");
 
+			// Fix height issues
+			heightFix();
 			// Hide panel by default on page load
-			if(!params.autorun)
+			if(!params.panel_visible_yt)
 				$panel.show_hide_panel(new Event('click'));
-			if(params.auto_pop){
+			if(params.panel_state_yt === "is_out"){
 				$panel.pop_in_out(player_height, new Event('click'), 'yt');
-				if(!params.autorun) $panel.$lyrical_panel.toggle();
 			}
 
 			// (NEW YT) Toggle panel's dark mode when the page's dark mode is toggled
@@ -205,8 +202,9 @@ $(function(){
 
 			// Run 
 			$panel.add_mode_handler('yt');
-			heightFix();
-			chrome.storage.sync.get({'yt_detect_mode': true}, (response) => {
+			$panel.add_resize_move_hanler('yt');
+			
+			chrome.storage.local.get({'yt_detect_mode': true}, (response) => {
 				if(response.yt_detect_mode && $(".ytd-page-manager").length > 0 ) // NEW YT
 					toggle_dark_mode();	
 				else{
@@ -280,7 +278,8 @@ $(function(){
 			// listen for clicks on the pop-in-out button
 			document.getElementById("pop-in-out").addEventListener("click", function(e){
 				$panel.pop_in_out(player_height, e, 'yt');
-			}, false);
+				return false;
+			});
 
 			$panel.register_keybd_shortcut(toggle_panel, null, 'S');
 
@@ -319,8 +318,8 @@ $(function(){
 	}
 
 	// On load pull the user specified options, and run extension accordingly
-	chrome.storage.sync.get({'run_on_yt': true, 'autorun': false, 'auto_pop': false, 'run_all': false,
-	'yt_dark': false}, (response) => {
+	chrome.storage.local.get({'run_on_yt': true, 'run_all': false,
+	'yt_dark': false, "panel_state_yt": "is_in", "panel_visible_yt": false}, (response) => {
 		if(response.run_on_yt){
 			params = response;
 			wait_and_do("h1.title.ytd-video-primary-info-renderer", "#items.ytd-watch-next-secondary-results-renderer", "#more .more-button",
@@ -331,14 +330,10 @@ $(function(){
 
 	// Listen to youtube's spfdone event to detect page changes
 	document.addEventListener("spfdone", function(){
-		chrome.storage.sync.get({'run_on_yt': true, 'autorun': false, 'auto_pop': false, 
+		chrome.storage.local.get({'run_on_yt': true,
 			'panel_state_yt': 'is_in', 'panel_visible_yt': false, 'yt_dark': false, 'run_all': false}, 
 		(response) => {
 			if(response.run_on_yt){
-				if(response.panel_state_yt === 'is_out')
-					response.auto_pop = true;
-				if(response.panel_visible_yt)
-					response.autorun = true;
 				params = response;
 				wait_and_do("h1.title.ytd-video-primary-info-renderer", "#items.ytd-watch-next-secondary-results-renderer", "#more .more-button",
 			"#watch-header", ".watch-extras-section", init);

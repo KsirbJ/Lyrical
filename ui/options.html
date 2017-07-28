@@ -32,6 +32,11 @@
 							<label for="run_all">Run on all vidoes <span class="more">&#128712;</span></label>
 						</span>
 						<span class="more-text">By default Lyrical only runs on videos that are under the Music category. When this option is selected Lyrical will run on all youtube videos</span>
+						<span class="input_set">
+							<input type="checkbox" name="yt_mem" id="yt_mem">
+							<label for="yt_mem">Remember panel state <span class="more">&#128712;</span></label>
+						</span>
+						<span class="more-text">When this is selected the extension will remember the size, position, and state (popped in/out, visible/hidden) of the panel </span>
 					</div>
 					<div id="gp_options" class="opt">
 						<h3>On Google Play Music:</h3>
@@ -39,7 +44,12 @@
 							<input type="checkbox" name="run_on_gp" id="run_on_gp">
 							<label for="run_on_gp">Run Lyrical</label>
 						</span>
-
+						<span class="more-text">By default Lyrical only runs on videos that are under the Music category. When this option is selected Lyrical will run on all youtube videos</span>
+						<span class="input_set">
+							<input type="checkbox" name="pm_mem" id="pm_mem">
+							<label for="pm_mem">Remember panel state <span class="more">&#128712;</span></label>
+						</span>
+						<span class="more-text">When this is selected the extension will remember the size, position, and state (popped in/out, visible/hidden) of the panel </span>
 					</div>
 					<div id="sp_options" class="opt">
 						<h3>On Spotify Web Player:</h3>
@@ -47,24 +57,11 @@
 							<input type="checkbox" name="run_on_sp" id="run_on_sp">
 							<label for="run_on_sp">Run Lyrical</label>
 						</span>
-					</div>
-					<div id="global_options" class="opt">
-						<h3>Global Settings</h3>
 						<span class="input_set">
-							<input type="checkbox" name="autorun" id="autorun" >
-							<label for="autorun">Show lyrics automatically <span class="more">&#128712;</span></label>
+							<input type="checkbox" name="sp_mem" id="sp_mem">
+							<label for="sp_mem">Remember panel state <span class="more">&#128712;</span></label>
 						</span>
-						<span class="more-text">When this is selected the lyrics panel will be visible as soon as the page loads.</span>
-						<span class="input_set" >
-							<input type="checkbox" name="auto_pop" id="auto_pop">
-							<label for="auto_pop">Pop out lyrics panel by default <span class="more">&#128712;</span></label>
-						</span>	
-						<span class="more-text">When this is selected the lyrics panel will pop out over the page instead of being integrated.</span>
-						<span class="input_set" title="When this is selected the lyrics will scroll automatically with the song." style="display: none;">
-							<input type="checkbox" name="autoscroll" id="autoscroll">
-							<label for="autoscroll">Auto-scroll the lyrics with the song <span style="color:#f00">WARNING: This feature is still unstable. 
-							Read the "How to Use" guide</span> </label>
-						</span>		
+						<span class="more-text">When this is selected the extension will remember the size, position, and state (popped in/out, visible/hidden) of the panel </span>
 					</div>
 				</div>
 				<div id="action-btns">	
@@ -104,14 +101,14 @@
 							<li>If auto-scroll is too fast or too slow for a song you can stop it for that songby manually scrolling or just clicking on the panel</li>
 						</ul>
 					</li>
-					<li> <span id="new_opt"> New! </span> Click on the panel, then use the right and left arrow keys on your keyboard to move to and heighlight the next or previous line of lyrics</li>
-					<li>Additionally, use the options above to customize where and how the extension works</li>
+					<li> <!-- <span id="new_opt"> New! </span> --> Click on the panel, then use the right and left arrow keys on your keyboard to move to and heighlight the next or previous line of lyrics</li>
+					<li>Additionally, use the options in the "Options" to customize where and how the extension works</li>
 				</ul>
 
 			</div>
 			<div id="about">
 				<h3>About</h3>
-				<p>Lyrical v0.3.6 - Developed by Jake B.</p>
+				<p>Lyrical v0.3.7 - Developed by Jake B.</p>
 				<a href="https://goo.gl/forms/Uf040UhVZv0bugjo1" id="feedback"> Provide feedback and suggestions </a>
 				<p>This extension uses the following technologies:</p>
 				<ul>
