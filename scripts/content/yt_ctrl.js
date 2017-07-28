@@ -56,8 +56,6 @@ $(function(){
 		// Backup's backup
 		if($("#lyrics").css('height') === "0px")
 			$("#lyrics").css('height', '360px');
-
-		console.log(player_height);
 	}
 
 	// (NEW YT) When the page loads check if the panel is already there and add it if not

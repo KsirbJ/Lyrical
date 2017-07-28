@@ -144,8 +144,7 @@ const $panel = {
 	},
 
 	// Pop the panel in and out of the page
-	pop_in_out(player_height, e, site = null){	
-		console.log(player_height);
+	pop_in_out(player_height, e, site = null){
 
 		// The first time pull the css 
 		if(!$panel._state.height && !$panel._state.top && site){
