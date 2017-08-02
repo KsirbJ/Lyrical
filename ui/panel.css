@@ -184,6 +184,7 @@
 	padding: 0;
 	box-shadow: none;
 	transition: all 0.3s;
+	color: #000;
 }
 #search_form input[type=text]:focus {
 	border-bottom: 1px solid #ff9102;
@@ -265,7 +266,7 @@ label {
 	color: inherit;
 	background: inherit;
 }
-#search_form input[type=text] {
+.dark-mode #search_form input[type=text] {
 	color: #fff;
 }
 /*----------------- End dark mode styles -------------------*/
