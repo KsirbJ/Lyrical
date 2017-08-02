@@ -332,7 +332,7 @@ $(function(){
 
 	// Listen to youtube's spfdone event to detect page changes
 	document.addEventListener("spfdone", function(){
-		chrome.storage.local.get({'run_on_yt': true,
+		chrome.storage.local.get({'run_on_yt': true, 'yt_mem': true,
 			'panel_state_yt': 'is_in', 'panel_visible_yt': false, 'yt_dark': false, 'run_all': false}, 
 		(response) => {
 			if(response.run_on_yt){
