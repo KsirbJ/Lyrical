@@ -11,7 +11,8 @@ const $utils = {
 			let observer = new MutationObserver(function(mutations) {
 				
 				mutations.forEach(function(mutation) {
-					call_this_function();
+					// wait a bit to let page update
+					setTimeout(() => { call_this_function(); }, 200);	
 				});    
 			});
 

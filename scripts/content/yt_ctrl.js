@@ -33,7 +33,7 @@ $(function(){
 		cur_song.duration = $(".ytp-time-display .ytp-time-duration").text();
 		cur_song.cur_time = $(".ytp-time-display .ytp-time-current").text();
 
-		$lyrics.get_lyrics(cur_song, false, null);
+		$lyrics.get_lyrics(cur_song, false, [$panel.autoscroll, null]);
 		e.preventDefault();
 		e.stopPropagation();
 	});
@@ -240,7 +240,7 @@ $(function(){
 
 				// get the lyrics - only pull it if the panel is open
 				if($panel.is_visible()){
-					$lyrics.get_lyrics(cur_song, true, manual_search);
+					$lyrics.get_lyrics(cur_song, true, [$panel.autoscroll, manual_search]);
 					cur_song.gotLyrics = true;
 				}
 			}else{
@@ -264,7 +264,7 @@ $(function(){
 					cur_song.duration = $(".ytp-time-display .ytp-time-duration").text();
 
 					if($panel.is_visible()){
-						$lyrics.get_lyrics(cur_song, true, manual_search);
+						$lyrics.get_lyrics(cur_song, true, [$panel.autoscroll, manual_search]);
 						cur_song.gotLyrics = true;
 					}
 				}catch(err){
@@ -313,7 +313,7 @@ $(function(){
 		// If the user opens the panel and we didn't get the lyrics yet, pull it.
 		if(!cur_song.gotLyrics && cur_song.title !== ""){
 			cur_song.cur_time = $(".ytp-time-display .ytp-time-current").text();
-			$lyrics.get_lyrics(cur_song, true, manual_search);
+			$lyrics.get_lyrics(cur_song, true, [$panel.autoscroll, manual_search]);
 			cur_song.gotLyrics = true;
 		}
 		$panel.show_hide_panel(e, site);

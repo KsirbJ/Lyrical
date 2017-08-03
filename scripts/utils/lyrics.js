@@ -22,7 +22,6 @@ const $lyrics = {
 	 *	@param song {Object} - The song to find the lyrics for
 	 */
 	check_cache(song){
-		
 		let id = song.title + song.artist;
 		chrome.runtime.sendMessage(
 			{
@@ -59,7 +58,7 @@ const $lyrics = {
 		// Credit website
 		$lyrics.$words.prepend(`<span id="credits">Lyrics from <a href="${url}" target="_blank">${domain}</a></span>`);
 
-		//$lyrics.autoscroll(song.duration);
+		song.callback_fcns[0](song.duration);
 	},
 
 
@@ -113,7 +112,7 @@ const $lyrics = {
 		    	// Looped through all the data and no lyrics found.
 		    	if(!found){
 		    		if(song.first_search)
-		    			song.callback();
+		    			song.callback_fcns[1]();
 		    		else
 			    		$lyrics.$words.html("<div id='err_msg'><h3>Whoops!</h3><p>Couldn't find lyrics, sorry :( </p></div>");
 		    	}
@@ -160,6 +159,10 @@ const $lyrics = {
 			
 			// Cache the lyrics for next time
 			let key = song.title+song.artist;
+			if($lyrics.og_song){
+				key = $lyrics.og_song.title+$lyrics.og_song.artist;
+				$lyrics.og_song = null;
+			}
 			let compressed = LZString.compressToUTF16(actual_lyrics);
 			let cache_song = {id: key, lyrics: compressed, url: url, domain: domain, num_played: 1, scroll_stamps: []};
 			chrome.runtime.sendMessage({message: 'store-song', song: cache_song});
@@ -182,9 +185,9 @@ const $lyrics = {
 	 *
 	 *	@param song {Object} - The song to get lyrics for
 	 *	@param  first_search {boolean} - If this is the first search for the lyrics
-	 *	@param callback {function} (optional) - A callback function 
+	 *	@param callback_fcns {Array} (optional) - An array of callback functions 
 	 */
-	get_lyrics(song, first_search, callback){	
+	get_lyrics(song, first_search, callback_fcns){	
 
 		if(!$lyrics.init_done){
 			$lyrics.init_handler();
@@ -202,21 +205,18 @@ const $lyrics = {
 		title = title.trim().toUpperCase();
 		artist = artist.trim().toUpperCase();
 
-		let split_dur = my_song.duration.split(":");
-		let in_milli = Number(split_dur[0]) * 60000 + Number(split_dur[1]) * 1000;
-
-
 		// console.log(title);
 		// console.log(artist);
 		my_song.title = title;
 		my_song.artist = artist;
-		my_song.duration = in_milli;
 		my_song.first_search = first_search;
-		my_song.callback = callback;
+		my_song.callback_fcns = callback_fcns;
 
 		// console.log(my_song.title);
 		// console.log(my_song.artist);
 
+		if(!first_search)
+			$lyrics.og_song = $lyrics.cur_song;
 		$lyrics.cur_song = my_song;
 
 		this.$words.empty();
@@ -274,28 +274,6 @@ const $lyrics = {
 	},
 
 	/**
-	 *	Autoscroll the lyrics 
-	 *
-	 *	@param in_milli {int} - The length of the song in milliseconds
-	 */
-	autoscroll(in_milli){
-		chrome.storage.local.get({'autoscroll': false}, function(response){
-			if(response.autoscroll){
-				$lyrics.$words.stop();
-				$lyrics.$words.scrollTop(0);
-
-				$lyrics.$words.bind('scroll mousedown wheel DOMMouseScroll mousewheel keyup keydown', function(e){
-					if ( e.which > 0  || e.type == "mousedown" || e.type == "mousewheel"){
-						$lyrics.$words.stop();
-					}
-				});
-				$lyrics.$words.scroll();
-				$lyrics.$words.animate({ scrollTop: $("#words")[0].scrollHeight}, in_milli);
-			}
-		});
-	},
-
-	/**
 	 *	Highlight a line of lyrics 
 	 *
 	 * @param index {int} - The line to highlight
@@ -328,7 +306,8 @@ const $lyrics = {
 
 	$words: null,
 	cur_song: null,
-	init_done: false
+	init_done: false,
+	og_song: null
 
 }
 

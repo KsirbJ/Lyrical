@@ -43,7 +43,7 @@ $(function(){
 					cur_song.duration = $("#time_container_duration").text();
 					cur_song.cur_time = $("#time_container_current").text();
 
-					$lyrics.get_lyrics(cur_song, false, null);
+					$lyrics.get_lyrics(cur_song, false, [$panel.autoscroll, null]);
 					e.preventDefault();
 					e.stopPropagation();
 				});
@@ -105,7 +105,7 @@ $(function(){
 
 							console.log("updated - " + current_title + " " + current_artist);
 							if($panel.is_visible()){
-								$lyrics.get_lyrics(cur_song, true, manual_search);
+								$lyrics.get_lyrics(cur_song, true, [$panel.autoscroll, manual_search]);
 								cur_song.gotLyrics = true;
 							}
 
