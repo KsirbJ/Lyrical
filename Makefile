@@ -15,6 +15,8 @@ compile:
 	java -jar $(compiler) $(flags) $(common_files) $(youtube_files) --js_output_file scripts/content_compiled/youtube.js
 	java -jar $(compiler) $(flags) $(common_files) $(spotify_files) --js_output_file scripts/content_compiled/spotify.js
 	java -jar $(compiler) $(flags) $(background_files) --js_output_file scripts/background_compiled/background.js
+	uglifycss ui/panel.css > ui/panel.min.css
+	uglifycss ui/options.css > ui/options.min.css
 
 deploy:	clean compile
 	mkdir lyrical
