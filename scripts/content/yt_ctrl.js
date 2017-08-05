@@ -66,7 +66,7 @@ $(function(){
 			
 			spf_simulated = true;
 			$("#show_hide_lyrics").remove(); // Prevents duplicate buttons
-			chrome.storage.local.get({'run_on_yt': true, 'yt_mem': true,
+			chrome.storage.local.get({'run_on_yt': true, 'yt_mem': true, 'yt_as': false,
 				'panel_state_yt': 'is_in', 'panel_visible_yt': false, 'yt_dark': false, 'run_all': false}, 
 			(response) => {
 			
@@ -187,6 +187,8 @@ $(function(){
 			if(params.panel_state_yt === "is_out" && params.yt_mem){
 				$panel.pop_in_out(player_height, new Event('click'), site);
 			}
+			if(params.yt_as)
+				$panel.turn_on_autoscroll();
 
 			// (NEW YT) Toggle panel's dark mode when the page's dark mode is toggled
 			function toggle_dark_mode(){
@@ -320,7 +322,7 @@ $(function(){
 	}
 
 	// On load pull the user specified options, and run extension accordingly
-	chrome.storage.local.get({'run_on_yt': true, 'run_all': false, 'yt_mem': true,
+	chrome.storage.local.get({'run_on_yt': true, 'run_all': false, 'yt_mem': true,'yt_as': false,
 	'yt_dark': false, "panel_state_yt": "is_in", "panel_visible_yt": false}, (response) => {
 		if(response.run_on_yt){
 			params = response;
@@ -332,7 +334,7 @@ $(function(){
 
 	// Listen to youtube's spfdone event to detect page changes
 	document.addEventListener("spfdone", function(){
-		chrome.storage.local.get({'run_on_yt': true, 'yt_mem': true,
+		chrome.storage.local.get({'run_on_yt': true, 'yt_mem': true, 'yt_as': false,
 			'panel_state_yt': 'is_in', 'panel_visible_yt': false, 'yt_dark': false, 'run_all': false}, 
 		(response) => {
 			if(response.run_on_yt){

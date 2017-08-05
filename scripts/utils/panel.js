@@ -4,7 +4,6 @@ const $panel = {
 
 	// set the img src, and set up selector cache
 	init(){
-		$("#translate_icon").attr('src', chrome.extension.getURL("img/translate-icon.png"));
 		$("#translate_icon").click((e) => {Translator.show_hide(e)});
 		Translator.init_js();
 		$panel.$window_height = $(window).height() - 100;
@@ -75,7 +74,7 @@ const $panel = {
 									⇱
 								</a>
 								<a href="#" class="tooltip tooltip-bottom">
-									<img src="" id="translate_icon"/>
+									<img src="${chrome.extension.getURL("img/translate-icon.png")}" id="translate_icon"/>
 								</a>
 							</div>
 							${Translator.get_css()}
@@ -387,6 +386,11 @@ const $panel = {
 		}		
 	},
 
+	// Turn on autoscroll
+	turn_on_autoscroll(){
+		$panel._state.autoscroll = true;
+	},
+
 	// Selector cache, options, and panel state
 	$lyrical_panel: null,
 	$show_hide_btn: null,
@@ -402,7 +406,7 @@ const $panel = {
 		top: null,
 		left: null,
 		right: null,
-		autoscroll: false
+		autoscroll: true
 	},
 	$window_height: null,
 	_scroll_speed: 0,

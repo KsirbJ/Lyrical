@@ -12,7 +12,7 @@ $(function(){
 
 	// pull the user specified options from storage and react accordingly
 	chrome.storage.local.get({'run_on_gp': true, 'pm_dark': false, "panel_state_pm": 'is_in', "panel_visible_pm": false, 
-		'pm_mem': true}, 
+		'pm_mem': true, 'pm_as': false}, 
 		function(response){
 		if(response.run_on_gp){
 			site = response.pm_mem ? "pm" : null;
@@ -177,6 +177,8 @@ $(function(){
 				}
 				if(response.pm_dark)
 					$panel.go_dark("pm");
+				if(response.pm_as)
+					$panel.turn_on_autoscroll();
 
 				$("#lyrics").find("#words").on('keydown', function(e){
 					switch(e.which) {
