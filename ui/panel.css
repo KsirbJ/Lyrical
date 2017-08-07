@@ -354,3 +354,11 @@ label {
     cursor: pointer;
 }
 /*----------------- End dropdown menu styles -------------------*/
+
+.dark-mode #yandex a {
+	color: #fff !important;
+}
+
+#yandex a {
+	color: #000 !important;
+}

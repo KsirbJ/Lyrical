@@ -406,7 +406,7 @@ const $panel = {
 		top: null,
 		left: null,
 		right: null,
-		autoscroll: true
+		autoscroll: false
 	},
 	$window_height: null,
 	_scroll_speed: 0,
