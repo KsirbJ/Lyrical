@@ -3,7 +3,7 @@
 	<head>
 		<title>Options | Lyrical</title>
 		<link href="https://fonts.googleapis.com/css?family=Open+Sans|Merriweather" rel="stylesheet">
-		<link rel="stylesheet" type="text/css" href="options.css">
+		<link rel="stylesheet" type="text/css" href="options.min.css">
 		<script type="text/javascript" src="../libs/jquery-3.1.1.min.js"></script>
 		<script type="text/javascript" src="options.js"></script>
 	</head>
@@ -37,6 +37,10 @@
 							<label for="yt_mem">Remember panel state <span class="more">&#128712;</span></label>
 						</span>
 						<span class="more-text">When this is selected the extension will remember the size, position, and state (popped in/out, visible/hidden) of the panel </span>
+						<!-- <span class="input_set">
+							<input type="checkbox" name="yt_as" id="yt_as">
+							<label for="yt_as">Autoscroll lyrics</label>
+						</span> -->
 					</div>
 					<div id="gp_options" class="opt">
 						<h3>On Google Play Music:</h3>
@@ -50,6 +54,10 @@
 							<label for="pm_mem">Remember panel state <span class="more">&#128712;</span></label>
 						</span>
 						<span class="more-text">When this is selected the extension will remember the size, position, and state (popped in/out, visible/hidden) of the panel </span>
+						<!-- <span class="input_set">
+							<input type="checkbox" name="pm_as" id="pm_as">
+							<label for="pm_as">Autoscroll lyrics</label>
+						</span> -->
 					</div>
 					<div id="sp_options" class="opt">
 						<h3>On Spotify Web Player:</h3>
@@ -62,15 +70,19 @@
 							<label for="sp_mem">Remember panel state <span class="more">&#128712;</span></label>
 						</span>
 						<span class="more-text">When this is selected the extension will remember the size, position, and state (popped in/out, visible/hidden) of the panel </span>
+						<!-- <span class="input_set">
+							<input type="checkbox" name="sp_as" id="sp_as">
+							<label for="sp_as">Autoscroll lyrics</label>
+						</span> -->
 					</div>
 				</div>
 				<div id="action-btns">	
 					<a href="#" class="btn"  id="reset">Reset to Default</a>		
 					<span id="submit_btn">
 						<a href="#" class="btn" id="save">Save Options</a>
-						<p id="response_msg"></p>
 					</span>
 				</div>
+				<p id="response_msg"></p>
 
 			</div>
 
@@ -108,7 +120,7 @@
 			</div>
 			<div id="about">
 				<h3>About</h3>
-				<p>Lyrical v0.3.7 - Developed by Jake B.</p>
+				<p>Lyrical v0.4.0 - Developed by Jake B.</p>
 				<a href="https://goo.gl/forms/Uf040UhVZv0bugjo1" id="feedback"> Provide feedback and suggestions </a>
 				<p>This extension uses the following technologies:</p>
 				<ul>

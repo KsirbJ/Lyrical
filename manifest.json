@@ -1,7 +1,7 @@
 {
 	"manifest_version": 2,
 	"name": "Lyrical",
-	"version": "0.3.7",
+	"version": "0.4.0",
 	"description": "Instantly get lyrics for songs on Youtube, Google Play Music, and Spotify Web Player",
 
 	"permissions": [
@@ -22,7 +22,7 @@
 			],
 
 			"css" : [
-				"libs/jquery-ui.min.css", "ui/panel.css"
+				"libs/jquery-ui.min.css", "ui/panel.min.css"
 			]
 		},
 
@@ -38,7 +38,7 @@
 			],
 
 			"css" : [
-				"libs/jquery-ui.min.css", "ui/panel.css"
+				"libs/jquery-ui.min.css", "ui/panel.min.css"
 			]
 		},
 
@@ -54,7 +54,7 @@
 			],
 
 			"css" : [
-				"libs/jquery-ui.min.css", "ui/panel.css"
+				"libs/jquery-ui.min.css", "ui/panel.min.css"
 			]
 		}
 

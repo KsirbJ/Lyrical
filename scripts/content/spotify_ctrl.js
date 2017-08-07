@@ -8,7 +8,7 @@ $(function(){
 
 	// pull the user specified options from storage and react accordingly
 	chrome.storage.local.get({'run_on_sp': true, 'sp_dark': false, "panel_state_sp": "is_in", "panel_visible_sp": false,
-		'sp_mem': true}, 
+		'sp_mem': true, 'sp_as': false}, 
 		function(response){
 		if(response.run_on_sp){
 			site = response.sp_mem ? "sp" : null;
@@ -42,7 +42,7 @@ $(function(){
 					cur_song.duration = $(".playback-bar__progress-time").eq(1).text();
 					cur_song.cur_time = $(".playback-bar__progress-time").eq(0).text();
 
-					$lyrics.get_lyrics(cur_song, false, null);
+					$lyrics.get_lyrics(cur_song, false, [$panel.autoscroll, null]);
 					e.preventDefault();
 					e.stopPropagation();
 				});
@@ -124,7 +124,7 @@ $(function(){
 						cur_song.gotLyrics = false;
 						console.log("updated - " + current_title + " " + current_artist);
 						if($panel.is_visible()){
-							$lyrics.get_lyrics(cur_song, true, manual_search);
+							$lyrics.get_lyrics(cur_song, true, [$panel.autoscroll, manual_search]);
 							cur_song.gotLyrics = true;
 						}
 
@@ -148,7 +148,7 @@ $(function(){
 						if($panel.is_popped_in()) $mainContainer.addClass("lyrics_visible");
 						if(!cur_song.gotLyrics && cur_song.artist !== ""){
 							cur_song.cur_time = $("#time_container_current").text();
-							$lyrics.get_lyrics(cur_song, true, manual_search);
+							$lyrics.get_lyrics(cur_song, true, [$panel.autoscroll, manual_search]);
 							cur_song.gotLyrics = true;
 						}
 					}
@@ -192,6 +192,8 @@ $(function(){
 				}
 				if(response.sp_dark)
 					$panel.go_dark('sp');
+				if(response.sp_as)
+					$panel.turn_on_autoscroll();
 
 				$panel.register_keybd_shortcut(show_hide_panel, null, 'S');
 

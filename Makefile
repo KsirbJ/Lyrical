@@ -15,6 +15,8 @@ compile:
 	java -jar $(compiler) $(flags) $(common_files) $(youtube_files) --js_output_file scripts/content_compiled/youtube.js
 	java -jar $(compiler) $(flags) $(common_files) $(spotify_files) --js_output_file scripts/content_compiled/spotify.js
 	java -jar $(compiler) $(flags) $(background_files) --js_output_file scripts/background_compiled/background.js
+	uglifycss ui/panel.css > ui/panel.min.css
+	uglifycss ui/options.css > ui/options.min.css
 
 deploy:	clean compile
 	mkdir lyrical
@@ -24,12 +26,16 @@ deploy:	clean compile
 	mkdir lyrical/scripts
 	cp -rf scripts/content_compiled/ lyrical/scripts/
 	cp -rf scripts/background_compiled lyrical/scripts/background_compiled/
-	cp -rf ui/ lyrical/ui/
+	mkdir lyrical/ui
+	cp -rf ui/*.html lyrical/ui/
+	cp -rf ui/*.min.css lyrical/ui/
+	cp -rf ui/*.js lyrical/ui/
 	cd lyrical && zip -r ../lyrical.zip *
 	rm -rf lyrical
 
 clean:
 	rm -rf scripts/content_compiled/*
+	rm -rf scripts/background_compiled/*
 	rm -rf lyrical/*
 	rm -rf lyrical
 	rm -rf lyrical.zip

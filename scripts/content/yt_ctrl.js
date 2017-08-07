@@ -14,6 +14,7 @@ $(function(){
 	let this_is_music = false;
 	let player_height = "0px";
 	let params = null;
+	let site = null;
 
 	// Info about the currently playing song
 	let cur_song = {
@@ -32,7 +33,7 @@ $(function(){
 		cur_song.duration = $(".ytp-time-display .ytp-time-duration").text();
 		cur_song.cur_time = $(".ytp-time-display .ytp-time-current").text();
 
-		$lyrics.get_lyrics(cur_song, false, null);
+		$lyrics.get_lyrics(cur_song, false, [$panel.autoscroll, null]);
 		e.preventDefault();
 		e.stopPropagation();
 	});
@@ -65,7 +66,7 @@ $(function(){
 			
 			spf_simulated = true;
 			$("#show_hide_lyrics").remove(); // Prevents duplicate buttons
-			chrome.storage.local.get({'run_on_yt': true, 
+			chrome.storage.local.get({'run_on_yt': true, 'yt_mem': true, 'yt_as': false,
 				'panel_state_yt': 'is_in', 'panel_visible_yt': false, 'yt_dark': false, 'run_all': false}, 
 			(response) => {
 			
@@ -134,6 +135,7 @@ $(function(){
 	function init(){
 
 		cur_song.gotLyrics = false;
+		site = params.yt_mem ? "yt" : null;
 
 		$(window).off('keydown');
 
@@ -180,11 +182,13 @@ $(function(){
 			// Fix height issues
 			heightFix();
 			// Hide panel by default on page load
-			if(!params.panel_visible_yt)
+			if(!params.panel_visible_yt || !params.yt_mem)
 				$panel.show_hide_panel(new Event('click'));
-			if(params.panel_state_yt === "is_out"){
-				$panel.pop_in_out(player_height, new Event('click'), 'yt');
+			if(params.panel_state_yt === "is_out" && params.yt_mem){
+				$panel.pop_in_out(player_height, new Event('click'), site);
 			}
+			if(params.yt_as)
+				$panel.turn_on_autoscroll();
 
 			// (NEW YT) Toggle panel's dark mode when the page's dark mode is toggled
 			function toggle_dark_mode(){
@@ -202,7 +206,7 @@ $(function(){
 
 			// Run 
 			$panel.add_mode_handler('yt');
-			$panel.add_resize_move_hanler('yt');
+			$panel.add_resize_move_hanler(site);
 			
 			chrome.storage.local.get({'yt_detect_mode': true}, (response) => {
 				if(response.yt_detect_mode && $(".ytd-page-manager").length > 0 ) // NEW YT
@@ -238,7 +242,7 @@ $(function(){
 
 				// get the lyrics - only pull it if the panel is open
 				if($panel.is_visible()){
-					$lyrics.get_lyrics(cur_song, true, manual_search);
+					$lyrics.get_lyrics(cur_song, true, [$panel.autoscroll, manual_search]);
 					cur_song.gotLyrics = true;
 				}
 			}else{
@@ -262,7 +266,7 @@ $(function(){
 					cur_song.duration = $(".ytp-time-display .ytp-time-duration").text();
 
 					if($panel.is_visible()){
-						$lyrics.get_lyrics(cur_song, true, manual_search);
+						$lyrics.get_lyrics(cur_song, true, [$panel.autoscroll, manual_search]);
 						cur_song.gotLyrics = true;
 					}
 				}catch(err){
@@ -277,7 +281,7 @@ $(function(){
 
 			// listen for clicks on the pop-in-out button
 			document.getElementById("pop-in-out").addEventListener("click", function(e){
-				$panel.pop_in_out(player_height, e, 'yt');
+				$panel.pop_in_out(player_height, e, site);
 				return false;
 			});
 
@@ -311,14 +315,14 @@ $(function(){
 		// If the user opens the panel and we didn't get the lyrics yet, pull it.
 		if(!cur_song.gotLyrics && cur_song.title !== ""){
 			cur_song.cur_time = $(".ytp-time-display .ytp-time-current").text();
-			$lyrics.get_lyrics(cur_song, true, manual_search);
+			$lyrics.get_lyrics(cur_song, true, [$panel.autoscroll, manual_search]);
 			cur_song.gotLyrics = true;
 		}
-		$panel.show_hide_panel(e, 'yt');
+		$panel.show_hide_panel(e, site);
 	}
 
 	// On load pull the user specified options, and run extension accordingly
-	chrome.storage.local.get({'run_on_yt': true, 'run_all': false,
+	chrome.storage.local.get({'run_on_yt': true, 'run_all': false, 'yt_mem': true,'yt_as': false,
 	'yt_dark': false, "panel_state_yt": "is_in", "panel_visible_yt": false}, (response) => {
 		if(response.run_on_yt){
 			params = response;
@@ -330,7 +334,7 @@ $(function(){
 
 	// Listen to youtube's spfdone event to detect page changes
 	document.addEventListener("spfdone", function(){
-		chrome.storage.local.get({'run_on_yt': true,
+		chrome.storage.local.get({'run_on_yt': true, 'yt_mem': true, 'yt_as': false,
 			'panel_state_yt': 'is_in', 'panel_visible_yt': false, 'yt_dark': false, 'run_all': false}, 
 		(response) => {
 			if(response.run_on_yt){

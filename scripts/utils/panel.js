@@ -4,8 +4,6 @@ const $panel = {
 
 	// set the img src, and set up selector cache
 	init(){
-		let img = chrome.extension.getURL("img/translate-icon.png");
-		$("#translate_icon").attr('src', img);
 		$("#translate_icon").click((e) => {Translator.show_hide(e)});
 		Translator.init_js();
 		$panel.$window_height = $(window).height() - 100;
@@ -16,7 +14,6 @@ const $panel = {
 			minWidth: 200,
 			maxWidth: 400,
 			minHeight: 80,
-
 			stop(event, ui){
 				// Hack to fix movement after resizing 
 				let top_pos = $panel.$lyrical_panel.css('top');
@@ -28,7 +25,6 @@ const $panel = {
 		});
 		$(".resize-fix").draggable({
 			containment: "document",
-
 			stop(event, ui){
 				let top_pos = $panel.$lyrical_wrapper.css('top');
 				if(Number(top_pos.replace('px', '')) >= $panel.$window_height){
@@ -53,7 +49,10 @@ const $panel = {
 
 		$panel.$options.hide();
 		$panel.$lyrical_panel.find('#options-btn').click(function(e){
-			if($panel._state.is_dark) $("#mode-toggle-btn").prop('checked', true);
+			if($panel._state.is_dark){
+				$("#mode-toggle-btn").prop('checked', true);
+				$("#toggle-label").text('on');
+			}
 			$panel.$options.toggle();
 			$(this).text($(this).text() === "☰" ? "✖" : "☰");
 		});
@@ -71,8 +70,12 @@ const $panel = {
 		let panel = `<div class="resize-fix"><div id="lyrics">
 						<div class="btn_bar">
 							<div id="left">
-								<a href="#" class="pop_out_btn" id="pop-in-out" data-state="is_in" title="Pop in/out the lyrics panel">⇱</a>
-								<img src="" id="translate_icon" title="Translate lyrics to another language"/>
+								<a href="#" class="pop_out_btn tooltip tooltip-bottom" id="pop-in-out" data-state="is_in">
+									⇱
+								</a>
+								<a href="#" class="tooltip tooltip-bottom">
+									<img src="${chrome.extension.getURL("img/translate-icon.png")}" id="translate_icon"/>
+								</a>
 							</div>
 							${Translator.get_css()}
 							${Translator.get_html()}
@@ -221,7 +224,7 @@ const $panel = {
 		$panel.$lyrical_panel.find("#words").empty();
 		$panel.$lyrical_panel.find("#words").append(`
 			<form name="search_form" id="search_form" >
-				<h3> Whoops! </h3>
+				<h3> Couldn't Identify Song </h3>
 				<p> Lyrical couldn't identify this song. Try searching for it manually</p>
 				<label for="artist_name">Artist</label>
 				<input type="text" required="required" id="artist_name">
@@ -326,7 +329,69 @@ const $panel = {
 		
 	},
 
-	// Used for selector cache
+	/**
+	 *	Autoscroll the lyrics 
+	 *
+	 *	@param in_milli {int} - The length of the song in milliseconds
+	 */
+	autoscroll(duration){
+		if(!$panel._state.autoscroll)
+			return;
+
+		let split_dur = duration.split(":");
+		let in_milli = Number(split_dur[0]) * 60000 + Number(split_dur[1]) * 1000;
+		$panel._scroll_speed = in_milli;
+		$panel._scroll_init_time = new Date().getTime();
+
+		let $words = $panel.$lyrical_panel.find('#words');
+		$words.stop();
+		$words.scrollTop(0);
+
+		// Stop autoscroll onclick
+		$words.unbind('scroll mousedown wheel DOMMouseScroll mousewheel keyup keydown');
+		$words.bind('scroll mousedown wheel DOMMouseScroll mousewheel keyup keydown', function(e){
+			if ( e.which > 0  || e.type == "mousedown" || e.type == "mousewheel"){
+				$words.stop();
+				$words.off('mouseenter mouseleave');
+			}
+		});
+		$words.off('mouseenter mouseleave');
+		$words.on('mouseenter', $panel.pause_autoscroll).on('mouseleave', $panel.resume_autoscroll)
+
+		// scroll
+		$words.scroll();
+		$words.animate({ scrollTop: $words[0].scrollHeight}, in_milli);
+	},
+
+	// Pause autoscroll on hover
+	pause_autoscroll(){
+		// calculate remaining scroll time 
+		// = song length - amount played (time - scroll begin time)
+		$panel._rem_time = $panel._scroll_speed - (new Date().getTime() - $panel._scroll_init_time);
+		$panel._scroll_init_time = new Date().getTime(); // Pause init time
+		// stop scrolling
+		$(this).stop();
+	},
+
+	// Resume autoscroll on mouseleave
+	resume_autoscroll(){
+		if($panel._rem_time > 0){
+			// Calculate remaining time
+			// = remaining time - pause time (time - pause init time)
+			$panel._rem_time -= (new Date().getTime() - $panel._scroll_init_time );
+			$panel._scroll_init_time = new Date().getTime(); // Scroll reinit time
+			$panel._scroll_speed = $panel._rem_time; // Scroll over the remaining time
+			// Scroll
+			$(this).animate({ scrollTop: $(this)[0].scrollHeight}, $panel._rem_time);
+		}		
+	},
+
+	// Turn on autoscroll
+	turn_on_autoscroll(){
+		$panel._state.autoscroll = true;
+	},
+
+	// Selector cache, options, and panel state
 	$lyrical_panel: null,
 	$show_hide_btn: null,
 	$pop_btn: null,
@@ -340,9 +405,13 @@ const $panel = {
 		width: null,
 		top: null,
 		left: null,
-		right: null
+		right: null,
+		autoscroll: false
 	},
 	$window_height: null,
+	_scroll_speed: 0,
+	_scroll_init_time: 0,
+	_rem_time: 0
 }
 
 export default $panel;

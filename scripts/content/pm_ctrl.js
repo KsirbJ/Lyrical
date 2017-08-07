@@ -12,7 +12,7 @@ $(function(){
 
 	// pull the user specified options from storage and react accordingly
 	chrome.storage.local.get({'run_on_gp': true, 'pm_dark': false, "panel_state_pm": 'is_in', "panel_visible_pm": false, 
-		'pm_mem': true}, 
+		'pm_mem': true, 'pm_as': false}, 
 		function(response){
 		if(response.run_on_gp){
 			site = response.pm_mem ? "pm" : null;
@@ -43,7 +43,7 @@ $(function(){
 					cur_song.duration = $("#time_container_duration").text();
 					cur_song.cur_time = $("#time_container_current").text();
 
-					$lyrics.get_lyrics(cur_song, false, null);
+					$lyrics.get_lyrics(cur_song, false, [$panel.autoscroll, null]);
 					e.preventDefault();
 					e.stopPropagation();
 				});
@@ -105,7 +105,7 @@ $(function(){
 
 							console.log("updated - " + current_title + " " + current_artist);
 							if($panel.is_visible()){
-								$lyrics.get_lyrics(cur_song, true, manual_search);
+								$lyrics.get_lyrics(cur_song, true, [$panel.autoscroll, manual_search]);
 								cur_song.gotLyrics = true;
 							}
 
@@ -177,6 +177,8 @@ $(function(){
 				}
 				if(response.pm_dark)
 					$panel.go_dark("pm");
+				if(response.pm_as)
+					$panel.turn_on_autoscroll();
 
 				$("#lyrics").find("#words").on('keydown', function(e){
 					switch(e.which) {
