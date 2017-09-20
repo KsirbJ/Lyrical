@@ -235,6 +235,10 @@ input[type="checkbox"]+label:before {
   text-align: center;
 }
 
+.as-warning {
+  color: #ff0000;
+}
+
 @media only screen and (max-width: 1220px){
   .opt {
     flex-basis: 25%;
