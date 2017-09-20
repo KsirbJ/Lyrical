@@ -46,7 +46,8 @@ $(function(){
 	function heightFix(){
 		// Make the lyrics div as tall as the Youtube player
 		player_height = $(".player-height").css("height");
-		if(player_height !== "0px"){
+		console.log(player_height);
+		if(player_height !== undefined && player_height !== "0px"){
 			$("#lyrics").css('height', player_height);
 		}else{
 			player_height = $("#player").css("height"); // (NEW YT)
