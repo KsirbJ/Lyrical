@@ -40,6 +40,7 @@ const $lyrics = {
 	 *	@param song {Object} - The song we're working with
 	 */
 	display_lyrics(lyrics, url, domain, song){
+		//console.log("in display lyrics", song);
 
 		// add html tags to lyrics
 		lyrics = lyrics.split(/\r?\n/);
@@ -69,6 +70,8 @@ const $lyrics = {
 	 */
 	find_lyrics(song){
 		let access_token = keys.genius;
+
+		//console.log("in find_lyrics", song);
 
 		fetch('https://api.genius.com/search?access_token=' + access_token + '&q=' + 
 			encodeURIComponent(song.title) + "%20" + encodeURIComponent(song.artist)).then(
@@ -188,6 +191,7 @@ const $lyrics = {
 	 *	@param callback_fcns {Array} (optional) - An array of callback functions 
 	 */
 	get_lyrics(song, first_search, callback_fcns){	
+		//console.log("in get_lyrics", callback_fcns);
 
 		if(!$lyrics.init_done){
 			$lyrics.init_handler();

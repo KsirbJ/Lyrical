@@ -3,81 +3,16 @@ import $lyrics from '../utils/lyrics'
 import $panel from '../utils/panel'
 
 // Lyrics on google play music
-$(function(){
-	let executed = false, timeout = null, site = null;
+(function(){
 
-	// Selector cache 
-	let $mainContainer = $("#mainContainer"),
-		$player = $("#player");
+	$(function(){
+		// pull the user specified options from storage and react accordingly
+		chrome.storage.local.get({'run_on_gp': true, 'pm_dark': false, "panel_state_pm": 'is_in', "panel_visible_pm": false, 
+			'pm_mem': true, 'pm_as': false}, 
+			function(response){
+			if(response.run_on_gp){
+				let site = response.pm_mem ? "pm" : null;
 
-	// pull the user specified options from storage and react accordingly
-	chrome.storage.local.get({'run_on_gp': true, 'pm_dark': false, "panel_state_pm": 'is_in', "panel_visible_pm": false, 
-		'pm_mem': true, 'pm_as': false}, 
-		function(response){
-		if(response.run_on_gp){
-			site = response.pm_mem ? "pm" : null;
-			/**
-			 * Wait for a part of the page to load before initializing lyrical
-			 *
-			 * @param wait_on {string} - A selector of an element to wait on
-			 * @param execute_this {function} - The function to execute when the element is found
-			 */
-			function wait_and_do(wait1, wait2, execute_this){
-
-				if(($(wait1).length === 0 || $(wait2).length === 0) && !executed){
-					timeout = setTimeout(function(){
-						wait_and_do(wait1, wait2, execute_this);
-					}, 100);
-				}else if(!executed){
-					clearTimeout(timeout);
-					executed = true;
-					execute_this();
-				}
-			}
-
-			// Main function
-			function run(){
-				$(document).on('submit', '#search_form', function(e){
-					cur_song.artist = $('#search_form').find("#artist_name").val();
-					cur_song.title = $('#search_form').find("#song_name").val();
-					cur_song.duration = $("#time_container_duration").text();
-					cur_song.cur_time = $("#time_container_current").text();
-
-					$lyrics.get_lyrics(cur_song, false, [$panel.autoscroll, null]);
-					e.preventDefault();
-					e.stopPropagation();
-				});
-
-				function manual_search(){
-					$panel.add_search_box(); 
-				}
-
-				// Add site specific styles
-				$("head").append(`
-					<style type="text/css">
-						#mainContainer.lyrics_visible {
-							width: 75%;
-						}
-						#lyrics {
-							width: 26%;
-							height: 100%;
-							position: absolute;
-							right: 0;
-							top: 0;
-						}
-						.lyrics_visible #pageIndicatorContainer {
-							right: 27% !important;
-						}
-					</style>
-					`);
-
-				// add the lyrics div
-				$panel.append_panel("#mainPanel")
-				// add the show-hide-lyrics button
-				$panel.prepend_btn("#material-one-right");
-
-				// have we already attached a mutation observer?
-				let observer_attached = false;
 				// The currently playing song
 				let cur_song = {
 					title: "",
@@ -87,6 +22,36 @@ $(function(){
 					gotLyrics: false
 				}
 				
+				let executed = false, timeout = null;
+				// have we already attached a mutation observer?
+				let observer_attached = false;
+
+				// Selector cache 
+				let $mainContainer = $("#mainContainer"),
+					$player = $("#player");
+
+				/**
+				 * Wait for a part of the page to load before initializing lyrical
+				 *
+				 * @param wait_on {string} - A selector of an element to wait on
+				 * @param execute_this {function} - The function to execute when the element is found
+				 */
+				function wait_and_do(wait1, wait2, execute_this){
+					if(($(wait1).length === 0 || $(wait2).length === 0) && !executed){
+						timeout = setTimeout(function(){
+							wait_and_do(wait1, wait2, execute_this);
+						}, 100);
+					}else if(!executed){
+						clearTimeout(timeout);
+						executed = true;
+						execute_this();
+					}
+				}
+
+				function manual_search(){
+					$panel.add_search_box(); 
+				}
+
 				// When a mutation on the player is observed, check whether the song has changed by comparing the
 				// title and artist with the stored version
 				function check_playing(){
@@ -114,12 +79,8 @@ $(function(){
 								observer_attached = true;
 							}
 						}
-
 					}
 				}
-				
-				// initialize observer
-				$utils.create_observer("#player", check_playing);
 
 				// Toggle the lyrics panel when #show_hide_lyrics is clicked
 				function show_hide_panel(e){
@@ -132,16 +93,12 @@ $(function(){
 						if($panel.is_popped_in()) $mainContainer.addClass("lyrics_visible");
 						if(!cur_song.gotLyrics && cur_song.artist !== ""){
 							cur_song.cur_time = $("#time_container_current").text();
-							$lyrics.get_lyrics(cur_song, true, manual_search);
+							$lyrics.get_lyrics(cur_song, true, [$panel.autoscroll, manual_search]);
 							cur_song.gotLyrics = true;
 						}
 					}
 					$panel.show_hide_panel(e, site);
 				}
-
-				// Add handlers
-				$panel.add_toggle_handler(show_hide_panel);
-				$panel.add_resize_move_hanler(site);
 
 				// pop the panel in / out on click
 				function pop_in_out(e){
@@ -152,13 +109,8 @@ $(function(){
 					}
 					$panel.pop_in_out($panel.is_popped_in() ? '400px' : '100%', e, site);
 				}
-				$(document).on('click', '.pop_out_btn', pop_in_out);
 
-				// Resize the content on the page 
-				$mainContainer.scroll(resize_content);
-				window.onhashchange = resize_content();
-				
-
+				// Resize page content
 				function resize_content(){
 					if($panel.is_visible() && $panel.is_popped_in()){
 				 		if($mainContainer.length > 0 && ! $mainContainer.hasClass('lyrics_visible'))
@@ -166,42 +118,93 @@ $(function(){
 				 	}
 				}
 
-				$panel.add_mode_handler("pm");
+				// Main function
+				function run(){
+					$(document).on('submit', '#search_form', function(e){
+						cur_song.artist = $('#search_form').find("#artist_name").val();
+						cur_song.title = $('#search_form').find("#song_name").val();
+						cur_song.duration = $("#time_container_duration").text();
+						cur_song.cur_time = $("#time_container_current").text();
 
-				// Hide panel by default on page load
-				if(!response.panel_visible_pm || !response.pm_mem)
-					show_hide_panel(new Event('click'), site);
-				// pop panel out if option is selected
-				if(response.panel_state_pm === "is_out" && response.pm_mem){
-					pop_in_out(new Event('click'), site);
+						$lyrics.get_lyrics(cur_song, false, [$panel.autoscroll, null]);
+						e.preventDefault();
+						e.stopPropagation();
+					});
+
+					// Add site specific styles
+					$("head").append(`
+						<style type="text/css">
+							#mainContainer.lyrics_visible {
+								width: 75%;
+							}
+							#lyrics {
+								width: 26%;
+								height: 100%;
+								position: absolute;
+								right: 0;
+								top: 0;
+							}
+							.lyrics_visible #pageIndicatorContainer {
+								right: 27% !important;
+							}
+						</style>
+						`);
+
+					// add the lyrics div
+					$panel.append_panel("#mainPanel")
+					// add the show-hide-lyrics button
+					$panel.prepend_btn("#material-one-right");
+					
+					// initialize observer
+					$utils.create_observer("#player", check_playing);
+
+					// Add handlers
+					$panel.add_toggle_handler(show_hide_panel);
+					$panel.add_resize_move_hanler(site);
+
+					$(document).on('click', '.pop_out_btn', pop_in_out);
+
+					// Resize the content on the page 
+					$mainContainer.scroll(resize_content);
+					window.onhashchange = resize_content();
+
+					$panel.add_mode_handler("pm");
+
+					// Hide panel by default on page load
+					if(!response.panel_visible_pm || !response.pm_mem)
+						show_hide_panel(new Event('click'), site);
+					// pop panel out if option is selected
+					if(response.panel_state_pm === "is_out" && response.pm_mem){
+						pop_in_out(new Event('click'), site);
+					}
+					if(response.pm_dark)
+						$panel.go_dark("pm");
+					if(response.pm_as)
+						$panel.turn_on_autoscroll();
+
+					$("#lyrics").find("#words").on('keydown', function(e){
+						switch(e.which) {
+					        case 37:
+					        	e.preventDefault();
+					            e.stopPropagation();
+					            e.stopImmediatePropagation();
+					            $lyrics.prev();
+					            break;
+					        case 39:
+					            e.preventDefault();
+					            e.stopPropagation();
+					            e.stopImmediatePropagation();
+					            $lyrics.next();
+					            break;
+					    }				
+					});
+
+					$panel.register_keybd_shortcut(show_hide_panel, null, 'S');
 				}
-				if(response.pm_dark)
-					$panel.go_dark("pm");
-				if(response.pm_as)
-					$panel.turn_on_autoscroll();
+				
 
-				$("#lyrics").find("#words").on('keydown', function(e){
-					switch(e.which) {
-				        case 37:
-				        	e.preventDefault();
-				            e.stopPropagation();
-				            e.stopImmediatePropagation();
-				            $lyrics.prev();
-				            break;
-				        case 39:
-				            e.preventDefault();
-				            e.stopPropagation();
-				            e.stopImmediatePropagation();
-				            $lyrics.next();
-				            break;
-				    }				
-				});
-
-				$panel.register_keybd_shortcut(show_hide_panel, null, 'S');
+				wait_and_do("#mainPanel", "#mainContainer", run);
 			}
-
-			wait_and_do("#mainPanel", "#mainContainer", run);
-		}
-
-	});	
-});
+		});
+	});
+})();
