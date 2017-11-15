@@ -208,16 +208,11 @@ const $lyrics = {
 		let artist = this.clean_text(my_song.artist);
 		title = title.trim().toUpperCase();
 		artist = artist.trim().toUpperCase();
-
-		// console.log(title);
-		// console.log(artist);
+		
 		my_song.title = title;
 		my_song.artist = artist;
 		my_song.first_search = first_search;
 		my_song.callback_fcns = callback_fcns;
-
-		// console.log(my_song.title);
-		// console.log(my_song.artist);
 
 		if(!first_search)
 			$lyrics.og_song = $lyrics.cur_song;

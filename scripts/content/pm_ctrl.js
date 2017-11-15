@@ -27,8 +27,7 @@ import $panel from '../utils/panel'
 				let observer_attached = false;
 
 				// Selector cache 
-				let $mainContainer = $("#mainContainer"),
-					$player = $("#player");
+				let $mainContainer = null, $player = null;
 
 				/**
 				 * Wait for a part of the page to load before initializing lyrical
@@ -130,6 +129,8 @@ import $panel from '../utils/panel'
 						e.preventDefault();
 						e.stopPropagation();
 					});
+
+					$mainContainer = $("#mainContainer"), $player = $("#player");
 
 					// Add site specific styles
 					$("head").append(`

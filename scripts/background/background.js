@@ -2,14 +2,18 @@ import Cache from "../utils/cache"
 
 Cache.init();
 
-
 // Used to handle the response of a "get" call to the cache. 
-// This function will return the lyrics to the tab that requested it
-let cur_tab = null;
-function response_handler(res){
-	chrome.tabs.sendMessage(cur_tab.tab.id, {message: res}, function(res){
-		cur_tab = null;
-	});
+// The sendResponse function will return the lyrics to the tab that requested it
+// Class so that different instances of tab won't be overwritten
+class ResponseHandler {
+	constructor(tab){
+		this._tab = tab;
+	}
+	sendResponse(res){
+		chrome.tabs.sendMessage(this._tab.tab.id, {message: res}, function(res){
+			cur_tab = null;
+		});
+	}
 }
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
@@ -18,8 +22,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 			Cache.add_item(request.song);
 			break;
 		case 'get-song':
-			cur_tab = sender;
-			Cache.get_item(request.id, response_handler);
+			const responder = new ResponseHandler(sender);
+			Cache.get_item(request.id, responder.sendResponse.bind(responder));
 			break;
 		default:
 			break;

@@ -11,8 +11,18 @@ import $panel from '../utils/panel'
 			function(response){
 			if(response.run_on_sp){
 				let site = response.sp_mem ? "sp" : null;
-
+				let $mainContainer = null, $player = null;
 				let timeout = null, executed = false;
+				// have we already attached a mutation observer?
+				let observer_attached = false;
+				// The currently playing song
+				let cur_song = {
+					title: "",
+					artist: "",
+					duration: 0,
+					cur_time: 0,
+					gotLyrics: false
+				}
 
 				/**
 				 * Wait for a part of the page to load before initializing lyrical
@@ -100,7 +110,7 @@ import $panel from '../utils/panel'
 
 				function run(){
 					// Selector cache 
-					let $mainContainer = $(".root"),
+					$mainContainer = $(".root"),
 						$player = $(".now-playing-bar");
 
 					$(document).on('submit', '#search_form', function(e){
@@ -159,17 +169,6 @@ import $panel from '../utils/panel'
 					$panel.append_panel("#main")
 					// add the show-hide-lyrics button
 					$panel.prepend_btn(".extra-controls");
-
-					// have we already attached a mutation observer?
-					let observer_attached = false;
-					// The currently playing song
-					let cur_song = {
-						title: "",
-						artist: "",
-						duration: 0,
-						cur_time: 0,
-						gotLyrics: false
-					}
 					
 					$panel.add_toggle_handler(show_hide_panel);
 
