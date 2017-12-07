@@ -27,7 +27,6 @@ const Cache = {
 		Cache._events.init_started = true;
 
 		window.indexedDB = window.indexedDB || window.webkitIndexedDB;
- 
 		window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction;
 		window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange;
  
@@ -37,34 +36,32 @@ const Cache = {
 		   return;
 		}
 
-		let request = indexedDB.open('LyricCache', 1);
+		const request = indexedDB.open('LyricCache', 1);
 
-		request.onerror = function(event) {
+		request.onerror = (event) => {
 			console.log(event.target.error.message);
 			Cache._events.init_started = false;
 		};
 
-		request.onsuccess = function(event) {
-			console.log("request.onsuccess");
+		request.onsuccess = (event) => {
 		 	Cache._cache = event.target.result;
-
 		 	// Update size
-		 	let count_req = Cache._cache.transaction(["lyrics"], "readonly").objectStore("lyrics").count();
+		 	const count_req = Cache._cache.transaction(["lyrics"], "readonly").objectStore("lyrics").count();
 		 	count_req.onsuccess = (e) => { 
 		 		Cache._size.cur_items = count_req.result;
 			 	Cache._events.init_complete = true;
 			};
 		};
 
-		request.onupgradeneeded = function(event) {
-			console.log("request.onupgradeneeded " + event);
+		request.onupgradeneeded = (event) => {
+			//console.log("request.onupgradeneeded " + event);
 			Cache._cache = event.target.result;
 
-			let obj_store = Cache._cache.createObjectStore("lyrics", { keyPath: "id" });
+			const obj_store = Cache._cache.createObjectStore("lyrics", { keyPath: "id" });
   			obj_store.createIndex("id", "id", { unique: true });
   			obj_store.createIndex("num_played", "num_played", { unique: false });
 
-  			obj_store.transaction.oncomplete = function(e) {
+  			obj_store.transaction.oncomplete = (e) => {
   				Cache._events.init_complete = true;
   			}
 		};
@@ -72,31 +69,25 @@ const Cache = {
 
 	/**
 	 *	Add an item to the cache
-	 *
 	 *	@param cache_item {Object} - The song to add
 	 */
 	add_item(cache_item, callback){
 
 		if(Cache._events.init_complete){
-
 			if(Cache._size.cur_size >= Cache._size.max_size || Cache._size.cur_items >= Cache._size.max_items){
-				let cb = [Cache.add_item, cache_item, callback];
+				const cb = [Cache.add_item, cache_item, callback];
 				Cache.eject_lowest(cb);
 				return;
 			}
 
-			//console.log("in add " + cache_item.id);
-			let req = Cache._cache.transaction(["lyrics"], "readwrite").objectStore('lyrics').add(cache_item);
-
-			req.onsuccess = function(e) {
-				//console.log(e.target)
+			const req = Cache._cache.transaction(["lyrics"], "readwrite").objectStore('lyrics').add(cache_item);
+			req.onsuccess = (e) => {
 				Cache._size.cur_items++;
-
 				if(callback)
 					callback(true);
 			};
 
-			req.onerror = function(e) {
+			req.onerror = (e) => {
 				if(callback)
 					callback(false);
 				console.log(e.target.error.message);
@@ -115,7 +106,6 @@ const Cache = {
 
 	/**
 	 *	Get an item from the cache 
-	 *
 	 *	@param id {string} - The ID of the song to get
 	 * 	@param callback {function} - A callback function
 	 */
@@ -123,24 +113,22 @@ const Cache = {
 
 		if(Cache._events.init_complete){
 			//console.log("in get");
-			let transaction = Cache._cache.transaction(["lyrics"], "readwrite");
-			let obj_store = transaction.objectStore("lyrics");
-			let request = obj_store.get(id);
+			const transaction = Cache._cache.transaction(["lyrics"], "readwrite");
+			const obj_store = transaction.objectStore("lyrics");
+			const request = obj_store.get(id);
 
-			request.onerror = function(event) {
+			request.onerror = (event) => {
 				console.log(event.target.error.message);
 				callback(null);
 			};
 
-
-			request.onsuccess = function(event) {
+			request.onsuccess = (event) => {
 				// Return result
 				if(event.target.result){
 					let data = event.target.result;
 					callback(data);
 					data.num_played++;
-
-					let update_req = obj_store.put(data);
+					const update_req = obj_store.put(data);
 				}else{
 					callback(null);
 				}
@@ -149,7 +137,7 @@ const Cache = {
 
 		}else if(Cache._events.init_started){
 			// Wait for cache initilization to complete
-			setTimeout(function(){
+			setTimeout(() => {
 				Cache.get_item(id, callback);
 			}, 300);
 		}else{
@@ -161,19 +149,18 @@ const Cache = {
 
 	/**
 	 *	Update a record in tha cache
-	 *
 	 *	@param obj {Object} - The updated record
 	 *	@param callback {function} - An optional callback function
 	 */
 	update_item(obj, callback){
 		let req = Cache._cache.transaction(["lyrics"], "readwrite").objectStore("lyrics").put(obj);
 
-		req.onsuccess = function(e){
+		req.onsuccess = (e) => {
 			if(callback)
 				callback(true);
 		};
 
-		req.onerror = function(e){
+		req.onerror = (e) => {
 			if(callback)
 				callback(false);
 			console.log(e.target.error.message);
@@ -182,12 +169,11 @@ const Cache = {
 
 	/**
 	 *	Delete a record from the cache
-	 *
 	 *	@param id {string} - The ID of the record to delete
 	 *	@param callback {function} - An optional callback function
 	 */
 	delete_item(id, callback){
-		let request = Cache._cache.transaction(["lyrics"], "readwrite").objectStore("lyrics").delete(id);
+		const request = Cache._cache.transaction(["lyrics"], "readwrite").objectStore("lyrics").delete(id);
 
 		request.onsuccess = (e) => {
 			Cache._size.cur_items--;
@@ -207,21 +193,21 @@ const Cache = {
 		};
 	},
 
-	// Remove the least frequently accessed item in the cache
+	/**
+	 *	Remove the least frequently accessed item in the cache
+	 *	@param callback {Function} - A callback function
+	 */
 	eject_lowest(callback){
 
-		let obj_store = Cache._cache.transaction(["lyrics"]).objectStore("lyrics");
-
-		let index = obj_store.index('num_played');
+		const obj_store = Cache._cache.transaction(["lyrics"]).objectStore("lyrics");
+		const index = obj_store.index('num_played');
 
 		index.openCursor().onsuccess = (e) => {
-			let cursor = e.target.result;
-
+			const cursor = e.target.result;
 			if(cursor){
 				Cache.delete_item(cursor.value.id, callback);
 			}
 		}
-
 	}
 	
 }
