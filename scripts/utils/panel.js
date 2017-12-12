@@ -1,4 +1,4 @@
-import Translator from '../utils/translate'
+import Translator from '../utils/translate.js'
 // Basic functions to create and add the lyrics panel to sites
 const $panel = {
 
@@ -131,7 +131,6 @@ const $panel = {
 
 	// Show or hide the panel
 	show_hide_panel(e, site = null){
-
 		$panel.$lyrical_panel.toggle();
 		let txt = $panel.$show_hide_btn.text();
 		$panel.$show_hide_btn.text(txt === "Hide Lyrics" ? "Show Lyrics" : "Hide Lyrics");
@@ -148,15 +147,13 @@ const $panel = {
 
 	// Pop the panel in and out of the page
 	pop_in_out(player_height, e, site = null){
-
 		// The first time pull the css 
 		if(!$panel._state.height && !$panel._state.top && site){
 			$panel._pull_css($panel.pop_in_out, [player_height, e, site], site);
 			e.preventDefault();
 			e.stopPropagation();
 			return;
-		}
-		
+		}	
 		// Rotate the pop-in-out button
 		if($panel.$pop_btn.css("transform") === 'none')
 		    $panel.$pop_btn.css("transform", "rotate(180deg)");
@@ -169,8 +166,7 @@ const $panel = {
 
 		// Use panel state to determine which rules to apply
 		let state = $panel.$pop_btn.attr('data-state');
-		let action = state === "is_in" ? "enable" : "disable";
-		
+		let action = state === "is_in" ? "enable" : "disable";		
 		$panel.$lyrical_panel.resizable(action);
 		$panel.$lyrical_wrapper.removeAttr("style");
 		if(state === "is_in"){
@@ -190,8 +186,6 @@ const $panel = {
 
 		$panel.$lyrical_wrapper.draggable(action);
 		$panel.$pop_btn.attr('data-state', state === 'is_in' ? 'is_out' : 'is_in' );
-		
-
 		$panel.$lyrical_panel.find("#words")[0].focus();
 		// save the new state of the panel
 		state = $panel.$pop_btn.attr('data-state');

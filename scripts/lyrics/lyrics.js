@@ -1,5 +1,7 @@
-import keys from "../utils/keys"
-import {LyricsHelper, Highlighter} from "./lyrics_helper"
+'use strict'
+
+import keys from "../utils/keys.js"
+import {LyricsHelper, Highlighter} from "./lyrics_helper.js"
 
 const GENIUS_TOKEN = keys.genius;
 
@@ -139,7 +141,7 @@ const $lyrics = {
 
 	// To keep API same for now
 	hightlight(index){
-		Highlighter.hightlight(index, this._$lyrics);
+		Highlighter.hightlight(index);
 	},
 
 	next(){

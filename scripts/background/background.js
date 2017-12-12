@@ -1,4 +1,4 @@
-import Cache from "../utils/cache"
+import Cache from "../utils/cache.js"
 
 Cache.init();
 

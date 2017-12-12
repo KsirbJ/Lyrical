@@ -1,5 +1,5 @@
 // This file contains the base code for translating lyrics to another language
-import keys from "../utils/keys"
+import keys from "../utils/keys.js"
 
 const Translator = {
 	// contains the list of supported languages and their code

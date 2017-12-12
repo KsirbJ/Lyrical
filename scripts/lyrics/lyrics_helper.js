@@ -1,3 +1,5 @@
+'use strict'
+
 // Provides auxiliary functions to help pull lyrics
 export class LyricsHelper {
 	constructor(){

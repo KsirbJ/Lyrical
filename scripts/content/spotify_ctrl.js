@@ -1,6 +1,6 @@
-import $utils from '../utils/utils'
-import $lyrics from '../utils/lyrics'
-import $panel from '../utils/panel'
+import $utils from '../utils/utils.js'
+import $lyrics from '../utils/lyrics.js'
+import $panel from '../utils/panel.js'
 
 // Lyrics on Spotify
 (function(){
