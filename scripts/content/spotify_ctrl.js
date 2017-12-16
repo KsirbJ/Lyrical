@@ -1,5 +1,5 @@
 import $utils from '../utils/utils.js'
-import $lyrics from '../utils/lyrics.js'
+import $lyrics from '../lyrics/lyrics.js'
 import $panel from '../utils/panel.js'
 
 // Lyrics on Spotify
