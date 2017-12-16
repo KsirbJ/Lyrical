@@ -1,4 +1,5 @@
 import Translator from '../utils/translate.js'
+import {LyricsScroller} from './autoscroll.js'
 // Basic functions to create and add the lyrics panel to sites
 const $panel = {
 
@@ -325,63 +326,18 @@ const $panel = {
 
 	/**
 	 *	Autoscroll the lyrics 
-	 *
 	 *	@param in_milli {int} - The length of the song in milliseconds
 	 */
 	autoscroll(duration){
 		if(!$panel._state.autoscroll)
 			return;
-
-		let split_dur = duration.split(":");
-		let in_milli = Number(split_dur[0]) * 60000 + Number(split_dur[1]) * 1000;
-		$panel._scroll_speed = in_milli;
-		$panel._scroll_init_time = new Date().getTime();
-
-		let $words = $panel.$lyrical_panel.find('#words');
-		$words.stop();
-		$words.scrollTop(0);
-
-		// Stop autoscroll onclick
-		$words.unbind('scroll mousedown wheel DOMMouseScroll mousewheel keyup keydown');
-		$words.bind('scroll mousedown wheel DOMMouseScroll mousewheel keyup keydown', function(e){
-			if ( e.which > 0  || e.type == "mousedown" || e.type == "mousewheel"){
-				$words.stop();
-				$words.off('mouseenter mouseleave');
-			}
-		});
-		$words.off('mouseenter mouseleave');
-		$words.on('mouseenter', $panel.pause_autoscroll).on('mouseleave', $panel.resume_autoscroll)
-
-		// scroll
-		$words.scroll();
-		$words.animate({ scrollTop: $words[0].scrollHeight}, in_milli);
-	},
-
-	// Pause autoscroll on hover
-	pause_autoscroll(){
-		// calculate remaining scroll time 
-		// = song length - amount played (time - scroll begin time)
-		$panel._rem_time = $panel._scroll_speed - (new Date().getTime() - $panel._scroll_init_time);
-		$panel._scroll_init_time = new Date().getTime(); // Pause init time
-		// stop scrolling
-		$(this).stop();
-	},
-
-	// Resume autoscroll on mouseleave
-	resume_autoscroll(){
-		if($panel._rem_time > 0){
-			// Calculate remaining time
-			// = remaining time - pause time (time - pause init time)
-			$panel._rem_time -= (new Date().getTime() - $panel._scroll_init_time );
-			$panel._scroll_init_time = new Date().getTime(); // Scroll reinit time
-			$panel._scroll_speed = $panel._rem_time; // Scroll over the remaining time
-			// Scroll
-			$(this).animate({ scrollTop: $(this)[0].scrollHeight}, $panel._rem_time);
-		}		
+		$panel._lyrics_scroller.scrollSong(duration);
+		
 	},
 
 	// Turn on autoscroll
 	turn_on_autoscroll(){
+		$panel._lyrics_scroller.panel = $panel.$lyrical_panel;
 		$panel._state.autoscroll = true;
 	},
 
@@ -403,9 +359,7 @@ const $panel = {
 		autoscroll: false
 	},
 	$window_height: null,
-	_scroll_speed: 0,
-	_scroll_init_time: 0,
-	_rem_time: 0
+	_lyrics_scroller: new LyricsScroller()
 }
 
 export default $panel;
