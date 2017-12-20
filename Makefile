@@ -10,7 +10,7 @@ flags = --rewrite_polyfills=false --js
 all: compile
 
 # build the content scripts
-compile:	pm spotify yt css
+compile:	pm spotify yt css bg
 
 pm:
 	java -jar $(compiler) $(flags) $(common_files) $(play_music_files) --js_output_file scripts/content_compiled/play_music.js
