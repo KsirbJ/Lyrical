@@ -5,6 +5,10 @@ import $panel from '../utils/panel.js'
 // lyrics on youtube 
 (function(){
 	$(function(){
+		function sleep(ms) {
+			return new Promise(resolve => setTimeout(resolve, ms));
+		}
+		
 		// Tracks whether panel load has been initiated, used as a mutex
 		let spf_simulated = false;	
 		let timeout = null;	
@@ -45,7 +49,6 @@ import $panel from '../utils/panel.js'
 		function heightFix(){
 			// Make the lyrics div as tall as the Youtube player
 			player_height = $(".player-height").css("height");
-			console.log(player_height);
 			if(player_height !== undefined && player_height !== "0px"){
 				$("#lyrics").css('height', player_height);
 			}else{
@@ -63,7 +66,6 @@ import $panel from '../utils/panel.js'
 		function check_for_panel(){
 
 			if(location.pathname === "/watch" && $("#lyrics").length === 0 && !spf_simulated){
-				
 				spf_simulated = true;
 				$("#show_hide_lyrics").remove(); // Prevents duplicate buttons
 				chrome.storage.local.get({'run_on_yt': true, 'yt_mem': true, 'yt_as': false,
@@ -146,7 +148,7 @@ import $panel from '../utils/panel.js'
 			}
 		}
 
-		function init(){
+		async function init(){
 
 			cur_song.gotLyrics = false;
 			site = params.yt_mem ? "yt" : null;
@@ -183,8 +185,11 @@ import $panel from '../utils/panel.js'
 					$panel.prepend_panel("#watch7-sidebar-modules");
 				else if($("#watch7-sidebar-contents").length > 0)
 					$panel.prepend_panel("#watch7-sidebar-contents");
-				else if( $("#items.ytd-watch-next-secondary-results-renderer").length > 0 ) // (NEW YT)
+				else if( $("#items.ytd-watch-next-secondary-results-renderer").length > 0 ){ // (NEW YT)
 					$panel.prepend_panel("#items.ytd-watch-next-secondary-results-renderer");
+					await sleep(10); // Hack to wait for DOM manipulation to 
+									 // end before trying to pull lyrics
+				}
 
 				// add the show-hide-lyrics button 
 				if($(".ytd-page-manager").length > 0){ // (NEW YT)
