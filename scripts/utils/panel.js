@@ -317,7 +317,6 @@ const $panel = {
 				$panel._state.width = response[keys[1]];
 				$panel._state.top = response[keys[2]];
 				$panel._state.left = response[keys[3]];
-
 				callback(...params)
 			}
 		);

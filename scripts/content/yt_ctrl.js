@@ -5,10 +5,6 @@ import $panel from '../utils/panel.js'
 // lyrics on youtube 
 (function(){
 	$(function(){
-		function sleep(ms) {
-			return new Promise(resolve => setTimeout(resolve, ms));
-		}
-		
 		// Tracks whether panel load has been initiated, used as a mutex
 		let spf_simulated = false;	
 		let timeout = null;	
@@ -148,7 +144,7 @@ import $panel from '../utils/panel.js'
 			}
 		}
 
-		async function init(){
+		function init(){
 
 			cur_song.gotLyrics = false;
 			site = params.yt_mem ? "yt" : null;
@@ -187,8 +183,6 @@ import $panel from '../utils/panel.js'
 					$panel.prepend_panel("#watch7-sidebar-contents");
 				else if( $("#items.ytd-watch-next-secondary-results-renderer").length > 0 ){ // (NEW YT)
 					$panel.prepend_panel("#items.ytd-watch-next-secondary-results-renderer");
-					await sleep(10); // Hack to wait for DOM manipulation to 
-									 // end before trying to pull lyrics
 				}
 
 				// add the show-hide-lyrics button 

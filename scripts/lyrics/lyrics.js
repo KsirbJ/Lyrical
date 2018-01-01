@@ -119,10 +119,11 @@ const $lyrics = {
 	get_lyrics(song, first_search, callback_fcns){	
 		if(!this._genius || !this._init_done){
 			this.init();
-			this._helper.lyric_panel = $("#words");
-			this._genius = new GeniusLyrics(this._helper);
 			this._init_done = true;
 		}
+
+		this._helper.lyric_panel = $("#words");
+		this._genius = new GeniusLyrics(this._helper);
 
 		let my_song = $.extend(true, {}, song);
 		my_song.first_search = first_search;
