@@ -1,4 +1,5 @@
-import Translator from '../utils/translate'
+import Translator from '../utils/translate.js'
+import {LyricsScroller} from './autoscroll.js'
 // Basic functions to create and add the lyrics panel to sites
 const $panel = {
 
@@ -131,7 +132,6 @@ const $panel = {
 
 	// Show or hide the panel
 	show_hide_panel(e, site = null){
-
 		$panel.$lyrical_panel.toggle();
 		let txt = $panel.$show_hide_btn.text();
 		$panel.$show_hide_btn.text(txt === "Hide Lyrics" ? "Show Lyrics" : "Hide Lyrics");
@@ -148,15 +148,13 @@ const $panel = {
 
 	// Pop the panel in and out of the page
 	pop_in_out(player_height, e, site = null){
-
 		// The first time pull the css 
 		if(!$panel._state.height && !$panel._state.top && site){
 			$panel._pull_css($panel.pop_in_out, [player_height, e, site], site);
 			e.preventDefault();
 			e.stopPropagation();
 			return;
-		}
-		
+		}	
 		// Rotate the pop-in-out button
 		if($panel.$pop_btn.css("transform") === 'none')
 		    $panel.$pop_btn.css("transform", "rotate(180deg)");
@@ -169,8 +167,7 @@ const $panel = {
 
 		// Use panel state to determine which rules to apply
 		let state = $panel.$pop_btn.attr('data-state');
-		let action = state === "is_in" ? "enable" : "disable";
-		
+		let action = state === "is_in" ? "enable" : "disable";		
 		$panel.$lyrical_panel.resizable(action);
 		$panel.$lyrical_wrapper.removeAttr("style");
 		if(state === "is_in"){
@@ -190,8 +187,6 @@ const $panel = {
 
 		$panel.$lyrical_wrapper.draggable(action);
 		$panel.$pop_btn.attr('data-state', state === 'is_in' ? 'is_out' : 'is_in' );
-		
-
 		$panel.$lyrical_panel.find("#words")[0].focus();
 		// save the new state of the panel
 		state = $panel.$pop_btn.attr('data-state');
@@ -322,7 +317,6 @@ const $panel = {
 				$panel._state.width = response[keys[1]];
 				$panel._state.top = response[keys[2]];
 				$panel._state.left = response[keys[3]];
-
 				callback(...params)
 			}
 		);
@@ -331,63 +325,18 @@ const $panel = {
 
 	/**
 	 *	Autoscroll the lyrics 
-	 *
 	 *	@param in_milli {int} - The length of the song in milliseconds
 	 */
 	autoscroll(duration){
 		if(!$panel._state.autoscroll)
 			return;
-
-		let split_dur = duration.split(":");
-		let in_milli = Number(split_dur[0]) * 60000 + Number(split_dur[1]) * 1000;
-		$panel._scroll_speed = in_milli;
-		$panel._scroll_init_time = new Date().getTime();
-
-		let $words = $panel.$lyrical_panel.find('#words');
-		$words.stop();
-		$words.scrollTop(0);
-
-		// Stop autoscroll onclick
-		$words.unbind('scroll mousedown wheel DOMMouseScroll mousewheel keyup keydown');
-		$words.bind('scroll mousedown wheel DOMMouseScroll mousewheel keyup keydown', function(e){
-			if ( e.which > 0  || e.type == "mousedown" || e.type == "mousewheel"){
-				$words.stop();
-				$words.off('mouseenter mouseleave');
-			}
-		});
-		$words.off('mouseenter mouseleave');
-		$words.on('mouseenter', $panel.pause_autoscroll).on('mouseleave', $panel.resume_autoscroll)
-
-		// scroll
-		$words.scroll();
-		$words.animate({ scrollTop: $words[0].scrollHeight}, in_milli);
-	},
-
-	// Pause autoscroll on hover
-	pause_autoscroll(){
-		// calculate remaining scroll time 
-		// = song length - amount played (time - scroll begin time)
-		$panel._rem_time = $panel._scroll_speed - (new Date().getTime() - $panel._scroll_init_time);
-		$panel._scroll_init_time = new Date().getTime(); // Pause init time
-		// stop scrolling
-		$(this).stop();
-	},
-
-	// Resume autoscroll on mouseleave
-	resume_autoscroll(){
-		if($panel._rem_time > 0){
-			// Calculate remaining time
-			// = remaining time - pause time (time - pause init time)
-			$panel._rem_time -= (new Date().getTime() - $panel._scroll_init_time );
-			$panel._scroll_init_time = new Date().getTime(); // Scroll reinit time
-			$panel._scroll_speed = $panel._rem_time; // Scroll over the remaining time
-			// Scroll
-			$(this).animate({ scrollTop: $(this)[0].scrollHeight}, $panel._rem_time);
-		}		
+		$panel._lyrics_scroller.scrollSong(duration);
+		
 	},
 
 	// Turn on autoscroll
 	turn_on_autoscroll(){
+		$panel._lyrics_scroller.panel = $panel.$lyrical_panel;
 		$panel._state.autoscroll = true;
 	},
 
@@ -409,9 +358,7 @@ const $panel = {
 		autoscroll: false
 	},
 	$window_height: null,
-	_scroll_speed: 0,
-	_scroll_init_time: 0,
-	_rem_time: 0
+	_lyrics_scroller: new LyricsScroller()
 }
 
 export default $panel;

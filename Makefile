@@ -1,22 +1,33 @@
 
 compiler = closure-compiler.jar
-common_files =  scripts/utils/lyrics.js scripts/utils/translate.js scripts/utils/keys.js scripts/utils/panel.js
+common_files =  scripts/lyrics/lyrics.js scripts/lyrics/lyrics_helper.js scripts/utils/translate.js scripts/utils/keys.js scripts/utils/panel.js scripts/utils/autoscroll.js
 play_music_files = scripts/content/pm_ctrl.js scripts/utils/utils.js  
 youtube_files = scripts/content/yt_ctrl.js scripts/utils/utils.js  
 spotify_files = scripts/content/spotify_ctrl.js scripts/utils/utils.js
 background_files = scripts/background/background.js scripts/utils/cache.js
-flags = --js
+flags = --rewrite_polyfills=false --js 
 
 all: compile
 
 # build the content scripts
-compile:
+compile:	pm spotify yt css bg
+
+pm:
 	java -jar $(compiler) $(flags) $(common_files) $(play_music_files) --js_output_file scripts/content_compiled/play_music.js
-	java -jar $(compiler) $(flags) $(common_files) $(youtube_files) --js_output_file scripts/content_compiled/youtube.js
+
+spotify: 
 	java -jar $(compiler) $(flags) $(common_files) $(spotify_files) --js_output_file scripts/content_compiled/spotify.js
+
+yt: 
+	java -jar $(compiler) $(flags) $(common_files) $(youtube_files) --js_output_file scripts/content_compiled/youtube.js
+
+bg:
 	java -jar $(compiler) $(flags) $(background_files) --js_output_file scripts/background_compiled/background.js
+
+css:
 	uglifycss ui/panel.css > ui/panel.min.css
 	uglifycss ui/options.css > ui/options.min.css
+
 
 deploy:	clean compile
 	mkdir lyrical

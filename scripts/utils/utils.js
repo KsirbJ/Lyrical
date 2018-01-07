@@ -7,7 +7,7 @@ const $utils = {
 	 *	@param	call_this_function {function} - The function to call when a mutation is observed
 	 *	@param config {array} - (optional) The configuration for the observer
 	 */
-	create_observer: function(target, call_this_function, config = [true, true, false, false]){
+	create_observer(target, call_this_function, config = [true, true, false, false]){
 			let observer = new MutationObserver(function(mutations) {
 				
 				mutations.forEach(function(mutation) {
