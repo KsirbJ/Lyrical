@@ -112,7 +112,7 @@ export class LyricsHelper {
 		lyrics = lyrics.split(/\r?\n/);
 		lyrics.forEach(function(element, index, arr){
 			if(arr[index].trim() !== "")
-				arr[index] = "<p>" + arr[index] + "</p>";
+				arr[index] = `<p style="width:${arr[index].length * 8}px"> ${arr[index]} </p>`;
 		});
 
 		// Finally, show the lyrics

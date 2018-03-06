@@ -26,6 +26,7 @@ const $panel = {
 		});
 		$(".resize-fix").draggable({
 			containment: "document",
+			cancel: '#words p',
 			stop(event, ui){
 				let top_pos = $panel.$lyrical_wrapper.css('top');
 				if(Number(top_pos.replace('px', '')) >= $panel.$window_height){

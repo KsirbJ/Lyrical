@@ -31,6 +31,7 @@
 	width: 90%;
 	top: 5px; 
 	right: 5px;
+	cursor: move;
 }
 .pop_out_btn {
 	color: #fff;
@@ -55,6 +56,9 @@
 	right: 0;
 	left: 0;
 	height: calc(100% - 76px);
+}
+#words p {
+	cursor: text;
 }
 #err_msg {
 	padding-top: 30%;
