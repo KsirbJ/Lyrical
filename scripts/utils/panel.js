@@ -65,6 +65,12 @@ const $panel = {
 			cb.prop('checked', !cb.prop('checked'));
 			cb.trigger('change');
 		});
+
+		$("#words").on('click', e => {
+			if(e.detail === 4){
+				this.selectAll();
+			}
+		})
 	},
 
 	// Set up the panel HTML 
@@ -339,6 +345,19 @@ const $panel = {
 	turn_on_autoscroll(){
 		$panel._lyrics_scroller.panel = $panel.$lyrical_panel;
 		$panel._state.autoscroll = true;
+	},
+
+	// select all the lyrics on quadruple click
+	selectAll(){
+		let text = document.getElementById("words")
+        	, range, selection;
+        if (window.getSelection) {
+			selection = window.getSelection();        
+			range = document.createRange();
+			range.selectNodeContents(text);
+			selection.removeAllRanges();
+			selection.addRange(range);
+	    }
 	},
 
 	// Selector cache, options, and panel state
