@@ -1,9 +1,8 @@
-import Translator from '../utils/translate.js'
-import {LyricsScroller} from './autoscroll.js'
+import Translator from '../../utils/translate.js'
+import {LyricsScroller} from '../../utils/autoscroll.js'
 // Basic functions to create and add the lyrics panel to sites
 const $panel = {
-
-	// set the img src, and set up selector cache
+	// set up event handlers
 	init(){
 		$("#translate_icon").click((e) => {Translator.show_hide(e)});
 		Translator.init_js();
@@ -66,11 +65,10 @@ const $panel = {
 			cb.trigger('change');
 		});
 
+		// quadruple click to select all
 		$("#words").on('click', e => {
-			if(e.detail === 4){
-				this.selectAll();
-			}
-		})
+			if(e.detail === 4) this.selectAll();
+		});
 	},
 
 	// Set up the panel HTML 
@@ -82,7 +80,7 @@ const $panel = {
 									⇱
 								</a>
 								<a href="#" class="tooltip tooltip-bottom">
-									<img src="${chrome.extension.getURL("img/translate-icon.png")}" id="translate_icon"/>
+									<img src="${chrome.extension.getURL("src/img/translate-icon.png")}" id="translate_icon"/>
 								</a>
 							</div>
 							${Translator.get_css()}
@@ -98,7 +96,7 @@ const $panel = {
 									<input type="checkbox" id="mode-toggle-btn" />
 									<label for="mode-toggle-btn" id="toggle-label">off</label>
     							</span>
-    							<a href="${chrome.extension.getURL("ui/options.html")}" target="_blank">
+    							<a href="${chrome.extension.getURL("src/ui/options.html")}" target="_blank">
 	    							<span id="moreOptions">
 	    								More Options
 	    							</span>
@@ -348,6 +346,7 @@ const $panel = {
 	},
 
 	// select all the lyrics on quadruple click
+	// (https://stackoverflow.com/questions/985272/)
 	selectAll(){
 		let text = document.getElementById("words")
         	, range, selection;

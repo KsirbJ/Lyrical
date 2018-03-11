@@ -1,7 +1,7 @@
 {
 	"manifest_version": 2,
 	"name": "Lyrical",
-	"version": "0.5.1",
+	"version": "0.5.2",
 	"description": "Instantly get lyrics for songs on Youtube, Google Play Music, and Spotify Web Player",
 
 	"permissions": [
@@ -17,12 +17,12 @@
 			],
 
 			"js" : [
-				"libs/jquery-3.1.1.min.js", "libs/jquery-ui.min.js", "scripts/content_compiled/play_music.js",
+				"libs/jquery-3.1.1.min.js", "libs/jquery-ui.min.js", "src/compiled/play_music.js",
 				"libs/lz-string.min.js"
 			],
 
 			"css" : [
-				"libs/jquery-ui.min.css", "ui/panel.min.css"
+				"libs/jquery-ui.min.css", "src/compiled/panel.min.css"
 			]
 		},
 
@@ -33,12 +33,12 @@
 			],
 
 			"js" : [
-				"libs/jquery-3.1.1.min.js", "libs/jquery-ui.min.js", "scripts/content_compiled/youtube.js",
+				"libs/jquery-3.1.1.min.js", "libs/jquery-ui.min.js", "src/compiled/youtube.js",
 				"libs/lz-string.min.js"
 			],
 
 			"css" : [
-				"libs/jquery-ui.min.css", "ui/panel.min.css"
+				"libs/jquery-ui.min.css", "src/compiled/panel.min.css"
 			]
 		},
 
@@ -49,12 +49,12 @@
 			],
 
 			"js" : [
-				"libs/jquery-3.1.1.min.js", "libs/jquery-ui.min.js", "scripts/content_compiled/spotify.js",
+				"libs/jquery-3.1.1.min.js", "libs/jquery-ui.min.js", "src/compiled/spotify.js",
 				"libs/lz-string.min.js"
 			],
 
 			"css" : [
-				"libs/jquery-ui.min.css", "ui/panel.min.css"
+				"libs/jquery-ui.min.css", "src/compiled/panel.min.css"
 			]
 		}
 
@@ -62,31 +62,31 @@
 
 
 	"browser_action": {
-		"default_popup": "ui/popup.html",
+		"default_popup": "src/ui/popup.html",
 		"default_title": "Lyrical",
-		"default_icon":	"img/icon.png"
+		"default_icon":	"src/img/icon.png"
 	},
 
 	"icons" : {
-		"16" : "img/icon.png",
-		"48" : "img/icon.png",
-		"128" : "img/icon.png"
+		"16" : "src/img/icon.png",
+		"48" : "src/img/icon.png",
+		"128" : "src/img/icon.png"
 	},
 
 	"options_ui" : {
-		"page" : "ui/options.html",
+		"page" : "src/ui/options.html",
 		"chrome_style" : true
 	},
 
 	"background": {
 		"scripts": [
-			"scripts/background_compiled/background.js"
+			"src/compiled/background.js"
 		]
 	},
 
 	"web_accessible_resources" : [
-		"img/*.png",
-		"img/*.gif",
-		"ui/options.html"
+		"src/img/*.png",
+		"src/img/*.gif",
+		"src/ui/options.html"
 	]
 }

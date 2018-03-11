@@ -1,6 +1,6 @@
-import $lyrics from '../lyrics/lyrics.js'
-import $utils from '../utils/utils.js'
-import $panel from '../utils/panel.js'
+import $utils from '../../utils/utils.js'
+import $lyrics from '../../components/lyrics/lyrics.js'
+import $panel from '../../components/panel/panel.js'
 
 // lyrics on youtube 
 (function(){

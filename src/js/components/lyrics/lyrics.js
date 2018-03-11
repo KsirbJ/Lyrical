@@ -1,6 +1,6 @@
 'use strict'
 
-import keys from "../utils/keys.js"
+import keys from "../../utils/keys.js"
 import {LyricsHelper, Highlighter} from "./lyrics_helper.js"
 
 const GENIUS_TOKEN = keys.genius;
@@ -133,7 +133,7 @@ const $lyrics = {
 		this._helper.cur_song = my_song;
 
 		this._helper.errorMessage(
-			`<div id="err_msg">Working...<br><img src="${chrome.extension.getURL('img/loader.gif')}"></div>`);
+			`<div id="err_msg">Working...<br><img src="${chrome.extension.getURL('src/img/loader.gif')}"></div>`);
 
 		// Pull the lyrics
 		this._helper.checkCache();

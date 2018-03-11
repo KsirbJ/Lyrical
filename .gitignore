@@ -1,7 +1,6 @@
-scripts/content_compiled/*
-scripts/background_compiled/*
+**/compiled/*
 *.jar
 *.zip
-ui/*.min.css
+**/*/*.min.css
 lyrical
-scripts/utils/keys.js
+**/*/keys.js
