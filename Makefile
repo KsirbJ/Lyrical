@@ -33,13 +33,13 @@ deploy:	clean compile
 	mkdir lyrical
 	cp -f manifest.json lyrical/
 	cp -rf libs/ lyrical/
-	cp -rf src/img/ lyrical/
 	mkdir lyrical/src
+	cp -rf src/img/ lyrical/src/
 	cp -rf src/compiled/ lyrical/src/
-	mkdir lyrical/ui
-	cp -rf src/ui/*.html lyrical/ui/
-	cp -rf src/ui/*.min.css lyrical/ui/
-	cp -rf src/ui/*.js lyrical/ui/
+	mkdir lyrical/src/ui
+	cp -rf src/ui/*.html lyrical/src/ui/
+	cp -rf src/ui/*.min.css lyrical/src/ui/
+	cp -rf src/ui/*.js lyrical/src/ui/
 	cd lyrical && zip -r ../lyrical.zip *
 	rm -rf lyrical
 
