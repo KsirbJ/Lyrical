@@ -1,6 +1,6 @@
 'use strict'
 
-import keys from "../utils/keys.js"
+import keys from "../../utils/keys.js"
 import {LyricsHelper, Highlighter} from "./lyrics_helper.js"
 
 const GENIUS_TOKEN = keys.genius;
@@ -47,8 +47,10 @@ class GeniusLyrics {
 	    	}
 	    	// Looped through all the data and no lyrics found.
 	    	if(!found){
-	    		if(song.first_search)
+	    		if(song.first_search){
+	    			this._helper.og_song = song;
 	    			song.callback_fcns[1]();
+	    		}
 	    		else
 		    		this._helper.errorMessage(
 		    			"<div id='err_msg'><h3>Whoops!</h3><p>Couldn't find lyrics, sorry :( </p></div>");
@@ -129,12 +131,9 @@ const $lyrics = {
 		my_song.first_search = first_search;
 		my_song.callback_fcns = callback_fcns;
 		this._helper.cur_song = my_song;
-	
-		if(!first_search)
-			this._helper.og_song = my_song;
 
 		this._helper.errorMessage(
-			`<div id="err_msg">Working...<br><img src="${chrome.extension.getURL('img/loader.gif')}"></div>`);
+			`<div id="err_msg">Working...<br><img src="${chrome.extension.getURL('src/img/loader.gif')}"></div>`);
 
 		// Pull the lyrics
 		this._helper.checkCache();

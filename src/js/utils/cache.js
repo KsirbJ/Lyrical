@@ -199,7 +199,7 @@ const Cache = {
 	 */
 	eject_lowest(callback){
 
-		const obj_store = Cache._cache.transaction(["lyrics"]).objectStore("lyrics");
+		const obj_store = Cache._cache.transaction(["lyrics"], "readwrite").objectStore("lyrics");
 		const index = obj_store.index('num_played');
 
 		index.openCursor().onsuccess = (e) => {
@@ -208,6 +208,20 @@ const Cache = {
 				Cache.delete_item(cursor.value.id, callback);
 			}
 		}
+	},
+
+	// clear the song cache
+	clear(callback){
+		const transaction = Cache._cache.transaction(["lyrics"], "readwrite");
+		transaction.oncomplete = evt => {
+			if(callback) callback(true);
+		}
+		transaction.onerror = e => {
+			console.error(transaction.error);
+			if(callback) callback(false);
+		}
+		const obj_store = transaction.objectStore("lyrics");
+		obj_store.clear();
 	}
 	
 }

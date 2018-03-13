@@ -1,4 +1,4 @@
-import Cache from "../utils/cache.js"
+import Cache from "../../utils/cache.js"
 
 Cache.init();
 
@@ -25,6 +25,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 			const responder = new ResponseHandler(sender);
 			Cache.get_item(request.id, responder.sendResponse.bind(responder));
 			break;
+		case 'clear-cache':
+			Cache.clear();
 		default:
 			break;
 	}
