@@ -1,6 +1,6 @@
 **/compiled/*
 *.jar
 *.zip
-**/*/*.min.css
+src/ui/*.min.css
 lyrical
 **/*/keys.js
