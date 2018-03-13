@@ -17,12 +17,12 @@
 			],
 
 			"js" : [
-				"libs/jquery-3.1.1.min.js", "libs/jquery-ui.min.js", "src/compiled/play_music.js",
-				"libs/lz-string.min.js"
+				"src/libs/jquery-3.1.1.min.js", "src/libs/jquery-ui.min.js", "src/compiled/play_music.js",
+				"src/libs/lz-string.min.js"
 			],
 
 			"css" : [
-				"libs/jquery-ui.min.css", "src/compiled/panel.min.css"
+				"src/libs/jquery-ui.min.css", "src/compiled/panel.min.css"
 			]
 		},
 
@@ -33,12 +33,12 @@
 			],
 
 			"js" : [
-				"libs/jquery-3.1.1.min.js", "libs/jquery-ui.min.js", "src/compiled/youtube.js",
-				"libs/lz-string.min.js"
+				"src/libs/jquery-3.1.1.min.js", "src/libs/jquery-ui.min.js", "src/compiled/youtube.js",
+				"src/libs/lz-string.min.js"
 			],
 
 			"css" : [
-				"libs/jquery-ui.min.css", "src/compiled/panel.min.css"
+				"src/libs/jquery-ui.min.css", "src/compiled/panel.min.css"
 			]
 		},
 
@@ -49,12 +49,12 @@
 			],
 
 			"js" : [
-				"libs/jquery-3.1.1.min.js", "libs/jquery-ui.min.js", "src/compiled/spotify.js",
-				"libs/lz-string.min.js"
+				"src/libs/jquery-3.1.1.min.js", "src/libs/jquery-ui.min.js", "src/compiled/spotify.js",
+				"src/libs/lz-string.min.js"
 			],
 
 			"css" : [
-				"libs/jquery-ui.min.css", "src/compiled/panel.min.css"
+				"src/libs/jquery-ui.min.css", "src/compiled/panel.min.css"
 			]
 		}
 
