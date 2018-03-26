@@ -24,6 +24,8 @@
 	font-size: 14px;
 	margin: 10px 0;
 	line-height: 1.2;
+	max-width: 100%;
+	cursor: text;
 }
 #lyrics.can_drag {
 	position: absolute;
@@ -31,6 +33,9 @@
 	width: 90%;
 	top: 5px; 
 	right: 5px;
+}
+#lyrics.can_drag #words {
+	cursor: move;
 }
 .pop_out_btn {
 	color: #fff;
