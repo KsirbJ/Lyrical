@@ -32,8 +32,8 @@ css:
 deploy:	clean compile
 	mkdir lyrical
 	cp -f manifest.json lyrical/
-	cp -rf libs/ lyrical/
 	mkdir lyrical/src
+	cp -rf src/libs/ lyrical/src/
 	cp -rf src/img/ lyrical/src/
 	cp -rf src/compiled/ lyrical/src/
 	mkdir lyrical/src/ui
