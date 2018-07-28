@@ -25,7 +25,6 @@ $(function(){
 	}
 
 	// Restore saved settings on page load
-	chrome.storage.sync.clear();
 	function pull_options(){
 		chrome.storage.local.get(OPTS, (response) => {
 			for(const opt in response){
