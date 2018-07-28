@@ -25,7 +25,7 @@ Alternatively:
 * Clone this project
 * Obtain a [Genius API key](https://genius.com/api-clients)
 * Obtain a [Yandex API key](https://tech.yandex.com/keys/)
-* In the `scripts/utils` directory create a file called `keys.js`. The file should contain the following:
+* In the `js/utils` directory create a file called `keys.js`. The file should contain the following:
 ```javascript
 const keys = {
 	genius: "<Your Genius API key>",
@@ -34,6 +34,7 @@ const keys = {
 export default keys
 ```
 * Download [Google Closure Compiler](https://developers.google.com/closure/compiler/), and make sure the compiler variable in Makefile has the right location.
+* Verify that you have make and uglifycss installed as you'll need these to compile the extension
 * Run `make` or `make compile`. This will run the closure compiler and generate the required files.
 * Follow the steps [here](https://developer.chrome.com/extensions/getstarted#unpacked) to install the extension in Chrome.
 

@@ -13,19 +13,19 @@ all: compile
 compile:	pm spotify yt css bg
 
 pm:
-	java -jar $(compiler) $(flags) $(common_files) $(play_music_files) --js_output_file src/compiled/play_music.js
+	java -jar $(compiler) $(flags) $(common_files) $(play_music_files) --js_output_file compiled/play_music.js
 
 spotify: 
-	java -jar $(compiler) $(flags) $(common_files) $(spotify_files) --js_output_file src/compiled/spotify.js
+	java -jar $(compiler) $(flags) $(common_files) $(spotify_files) --js_output_file compiled/spotify.js
 
 yt: 
-	java -jar $(compiler) $(flags) $(common_files) $(youtube_files) --js_output_file src/compiled/youtube.js
+	java -jar $(compiler) $(flags) $(common_files) $(youtube_files) --js_output_file compiled/youtube.js
 
 bg:
-	java -jar $(compiler) $(flags) $(background_files) --js_output_file src/compiled/background.js
+	java -jar $(compiler) $(flags) $(background_files) --js_output_file compiled/background.js
 
 css:
-	uglifycss src/js/components/panel/panel.css > src/compiled/panel.min.css
+	uglifycss src/js/components/panel/panel.css > compiled/panel.min.css
 	uglifycss src/ui/options.css > src/ui/options.min.css
 
 
@@ -35,7 +35,7 @@ deploy:	clean compile
 	mkdir lyrical/src
 	cp -rf src/libs/ lyrical/src/
 	cp -rf src/img/ lyrical/src/
-	cp -rf src/compiled/ lyrical/src/
+	cp -rf compiled/ lyrical/src/
 	mkdir lyrical/src/ui
 	cp -rf src/ui/*.html lyrical/src/ui/
 	cp -rf src/ui/*.min.css lyrical/src/ui/
