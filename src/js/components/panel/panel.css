@@ -1,22 +1,32 @@
 @import url('https://fonts.googleapis.com/css?family=Kalam:400,700|Lato');
+
+:root {
+	--new-color: #607d8b;
+	--main-color: #607d8b;
+	--secondary-color: #ff9102;
+}
+
 #lyrics a {
 	text-decoration: none;
 }
+
 #lyrics a:hover {
 	text-decoration: none;
 }
+
 #lyrics {
 	background: #fff;
 	padding: 0;
 	overflow: visible;
 	backface-visibility: hidden;
 	perspective: 1000px;
-	border-top: 1px solid #FFCF90;
-	border-bottom: 1px solid #FFCF90;
-	border-left: 1px solid #FFCF90;
+	border-top: 1px solid var(--main-color);
+	border-bottom: 1px solid var(--main-color);
+	border-left: 1px solid var(--main-color);
 	margin: 0 0 1em .7em;
 	font-family: 'Lato', sans-serif;
 }
+
 #lyrics p{
 	backface-visibility: hidden; 
 	perspective: 1000px;
@@ -69,7 +79,7 @@
 .btn_bar {
 	width: 100%;
 	height: 35px;
-	background: #FFCF90;
+	background: var(--main-color);
 	position: relative;
 	right: 0;
 	margin: 0;
@@ -98,20 +108,20 @@
 	height: 0px;
 }
 #words::-webkit-scrollbar-thumb {
-	background: #ffcf90;
+	background: var(--main-color);
 	border: 1px solid #fff;
 	border-radius: 10px;
 }
 #words::-webkit-scrollbar-thumb:hover {
-	background: #ffcf90;
+	background: var(--main-color);
 }
 #words::-webkit-scrollbar-thumb:active {
-	background: #ffcf90;
+	background: var(--main-color);
 }
 #words::-webkit-scrollbar-track {
 	background: #ffffff;
-	border-right: 1px solid #ffcf90;
-	border-left: 1px solid #ffcf90;
+	border-right: 1px solid var(--main-color);
+	border-left: 1px solid var(--main-color);
 }
 #words::-webkit-scrollbar-track:hover {
 	background: #ffffff;
@@ -142,16 +152,57 @@
 	overflow: hidden;
 	border-radius: 2px;
 	box-shadow: 0 1px 4px rgba(0, 0, 0, .35);  
-	background-color: #ff9102;
+	background-color: var(--secondary-color);
 	color: #fff;		  
 	text-decoration: none;
 	transition: background-color .3s;
 	text-align: center;
 }
 #show_hide_lyrics:hover {
-	background-color: #ee792c;
 	text-decoration: none;
 	transition: background-color .3s;
+}
+#show_hide_lyrics:active{
+	text-decoration: none !important;
+}
+/** Ripple effect **/
+
+#show_hide_lyrics {
+  position: relative;
+  overflow: hidden;
+}
+
+#show_hide_lyrics:after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  background: rgba(255, 255, 255, .5);
+  opacity: 0;
+  border-radius: 100%;
+  transform: scale(1, 1) translate(-50%);
+  transform-origin: 50% 50%;
+}
+
+#show_hide_lyrics:focus:not(:active)::after{
+  animation: ripple 1s ease-out;
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(0, 0);
+    opacity: 1;
+  }
+  20% {
+    transform: scale(25, 25);
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(40, 40);
+  }
 }
 /*------------- end ----------------*/
 
