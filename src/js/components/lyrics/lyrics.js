@@ -63,8 +63,6 @@ class GeniusLyrics {
 
 	/**
 	 * Function to pull the lyrics page and extract the lyrics from it
-	 * @param url {string} - The page to pull
-	 * @param song {Object} - The song we're working on
 	 */
 	pull(){
 		const song = this._helper._cur_song;

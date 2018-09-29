@@ -135,18 +135,19 @@ const Translator = {
 						padding: 10px;
 						width: 100%;
 						max-width: 200px;
-						box-shadow: 1px -1px 1px 1px rgba(0,0,0,.2), 0px 1px 1px 1px rgba(0,0,0,.2);
+						box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14), 
+						    0 3px 1px -2px rgba(0,0,0,0.12), 
+						    0 1px 5px 0 rgba(0,0,0,0.2);
 						margin-top: 45px;
 						position: absolute;
 						z-index: 900000;
 						background: #FAFAFA;
 						left: 20px;
 						top: 0;
-						border-radius: 5px;
-						border: 1px solid #ee792c;
 						color: #000;
 						min-width: 150px;
 						font-size: 13px;
+						border-radius: 2px;
 					}
 					#lyrics .dropdown-menu:after {
 						content: "";
@@ -171,6 +172,7 @@ const Translator = {
 						padding: 2px;
 						box-shadow: none;
 						transition: all 0.3s;
+						color: #000 !important;
 					}
 					#lyrics input[type=text]:focus {
 						border-bottom: 1px solid #ee792c;
@@ -198,13 +200,13 @@ const Translator = {
 						top: 0px;
 						font-size: 16px;
 						transition: color .4s linear;
-						background: #ff0000;
+						background: #f44336;
 						padding: 1px 4px;
-						border-top-right-radius: 5px;
+						border-top-right-radius: 2px;
 					}
 					#close_translator:hover {
 						cursor: pointer;
-						color: #ff0000;
+						color: #f44336;
 						background: #fff;
 					}
 					#yandex {
@@ -265,13 +267,15 @@ const Translator = {
 						);
 				
 				}).catch(function(e){
+					$('#words').html(`<div id="err_msg">Whoops! <br>
+						Something went wrong. Please try again</div>`);
 					console.error("Fetch error: " + e.message);
 				});
 
 				// close the popup
 				Translator.show_hide(e);
 				// notify the user that it's in process
-				$("#words").html(`<div id="err_msg">Working...<br><img src="${chrome.extension.getURL('img/loader.gif')}"></div>`);
+				$("#words").html(`<div id="err_msg">Working...<br><img src="${chrome.extension.getURL('src/img/loader.gif')}"></div>`);
 
 			}catch(err){
 				$('#words').html(`<div id="err_msg">${err.message}</div>`);

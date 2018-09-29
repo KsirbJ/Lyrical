@@ -2,20 +2,24 @@ import $utils from '../../utils/utils.js'
 import $lyrics from '../../components/lyrics/lyrics.js'
 import $panel from '../../components/panel/panel.js'
 
-// Lyrics on Spotify
 (function(){
 	$(function(){
+		const spotify_opts = {
+			'run_on_sp': true, 
+			'sp_dark': false, 
+			'panel_state_sp': 'is_in', 
+			'panel_visible_sp': false,
+			'sp_mem': true, 
+			'sp_as': false
+		}
 		// pull the user specified options from storage and react accordingly
-		chrome.storage.local.get({'run_on_sp': true, 'sp_dark': false, "panel_state_sp": "is_in", "panel_visible_sp": false,
-			'sp_mem': true, 'sp_as': false}, 
+		chrome.storage.local.get(spotify_opts, 
 			function(response){
 			if(response.run_on_sp){
 				let site = response.sp_mem ? "sp" : null;
 				let $mainContainer = null, $player = null;
 				let timeout = null, executed = false;
-				// have we already attached a mutation observer?
 				let observer_attached = false;
-				// The currently playing song
 				let cur_song = {
 					title: "",
 					artist: "",
@@ -68,7 +72,8 @@ import $panel from '../../components/panel/panel.js'
 
 						if(!observer_attached){
 							setTimeout(function(){
-								$utils.create_observer(".track-info__name div a", check_playing, [true, true, true, true]);
+								$utils.create_observer(".track-info__name div a", 
+									check_playing, [true, true, true, true]);
 								observer_attached = true;
 							}, 500);
 							

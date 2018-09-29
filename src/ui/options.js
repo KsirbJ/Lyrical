@@ -25,11 +25,10 @@ $(function(){
 	}
 
 	// Restore saved settings on page load
-	chrome.storage.sync.clear();
-	function pull_options(){
+	function pullOptions(){
 		chrome.storage.local.get(OPTS, (response) => {
 			for(const opt in response){
-				if(response[opt]){
+				if(response[opt] === true){
 					$(`#${opt}`).prop("checked", true);
 				}else{
 					$(`#${opt}`).prop('checked', false);
@@ -39,7 +38,7 @@ $(function(){
 	}
 	
 	// Save options on click
-	function update_options(e){
+	function updateOptions(e){
 		for(const opt in OPTS){
 			OPTS[opt] = $(`#${opt}`).prop('checked');
 		}
@@ -55,17 +54,17 @@ $(function(){
 	}
 
 	// Restore default options
-	function restore_defaults(e){
+	function restoreDefaults(e){
 		chrome.storage.local.set(OPTS, () => {
-				pull_options();
-				showResMsg("Options restored to defaults");
+			pullOptions();
+			showResMsg("Options restored to defaults");
 		});
 		e.preventDefault();
 		e.stopPropagation();
 	}
 
-	$("#save").click(function(e){update_options(e)});
-	$("#reset").click((e) => { restore_defaults(e)})
+	$("#save").click(function(e){updateOptions(e)});
+	$("#reset").click((e) => { restoreDefaults(e)})
 
 
 	$("#tabs ul li").first().addClass("active");
@@ -73,7 +72,7 @@ $(function(){
 	let first_tab = $("#tabs ul li a").first().attr("href");
 	$(first_tab).show();
 
-	$("#tabs > ul > li > a").click(function(e){
+	$(".tab-btn").click(function(e){
 		let tab_id = $(this).attr("href");
 		$("#tabs ul li").removeClass("active");
 		$(this).parent().addClass("active");
@@ -97,5 +96,5 @@ $(function(){
 
 	})
 
-	pull_options();
+	pullOptions();
 });
