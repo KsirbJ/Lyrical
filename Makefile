@@ -35,7 +35,7 @@ deploy:	clean compile
 	mkdir lyrical/src
 	cp -rf src/libs/ lyrical/src/
 	cp -rf src/img/ lyrical/src/
-	cp -rf compiled/ lyrical/src/
+	cp -rf compiled/ lyrical/
 	mkdir lyrical/src/ui
 	cp -rf src/ui/*.html lyrical/src/ui/
 	cp -rf src/ui/*.min.css lyrical/src/ui/
@@ -44,7 +44,7 @@ deploy:	clean compile
 	rm -rf lyrical
 
 clean:
-	rm -rf src/compiled/*
+	rm -rf compiled/*
 	rm -rf lyrical/*
 	rm -rf lyrical
 	rm -rf lyrical.zip

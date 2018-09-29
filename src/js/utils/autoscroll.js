@@ -34,7 +34,8 @@ export class LyricsScroller {
 			this._panel_inner.stop();
 			this._panel_inner.scrollTop(0);			
 			this._panel_inner.off('mouseenter mouseleave');
-			this._panel_inner.on('mouseenter', this.pauseScroll.bind(this)).on('mouseleave', this.resumeScroll.bind(this))
+			this._panel_inner.on('mouseenter', this.pauseScroll.bind(this))
+				.on('mouseleave', this.resumeScroll.bind(this));
 
 			// scroll
 			this._panel_inner.scroll();

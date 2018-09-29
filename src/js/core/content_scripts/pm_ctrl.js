@@ -6,14 +6,19 @@ import $panel from '../../components/panel/panel.js'
 (function(){
 
 	$(function(){
+		const pm_options = {
+			'run_on_gp': true, 
+			'pm_dark': false, 
+			"panel_state_pm": 'is_in', 
+			"panel_visible_pm": false, 
+			'pm_mem': true, 
+			'pm_as': false
+		}
 		// pull the user specified options from storage and react accordingly
-		chrome.storage.local.get({'run_on_gp': true, 'pm_dark': false, "panel_state_pm": 'is_in', "panel_visible_pm": false, 
-			'pm_mem': true, 'pm_as': false}, 
+		chrome.storage.local.get(pm_options, 
 			function(response){
 			if(response.run_on_gp){
 				let site = response.pm_mem ? "pm" : null;
-
-				// The currently playing song
 				let cur_song = {
 					title: "",
 					artist: "",
@@ -23,7 +28,6 @@ import $panel from '../../components/panel/panel.js'
 				}
 				
 				let executed = false, timeout = null;
-				// have we already attached a mutation observer?
 				let observer_attached = false;
 
 				// Selector cache 

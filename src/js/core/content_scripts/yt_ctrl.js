@@ -2,13 +2,11 @@ import $utils from '../../utils/utils.js'
 import $lyrics from '../../components/lyrics/lyrics.js'
 import $panel from '../../components/panel/panel.js'
 
-// lyrics on youtube 
 (function(){
 	$(function(){
-		// Tracks whether panel load has been initiated, used as a mutex
 		let spf_simulated = false;	
 		let timeout = null;	
-		let executed = false;  // Used as a mutex 
+		let executed = false; 
 		let nav_obs_attached = false;
 		let mode_obs_attached = false;
 		let this_is_music = false;
@@ -16,13 +14,22 @@ import $panel from '../../components/panel/panel.js'
 		let params = null;
 		let site = null;
 
-		// Info about the currently playing song
 		let cur_song = {
 			artist: "",
 			title: "",
 			duration: 0,
 			cur_time: 0,
 			gotLyrics: false
+		}
+
+		const yt_options = {
+			'run_on_yt': true, 
+			'run_all': false, 
+			'yt_mem': true,
+			'yt_as': false,
+			'yt_dark': false, 
+			'panel_state_yt': 'is_in', 
+			'panel_visible_yt': false
 		}
 
 		// Submit handler for search form
@@ -41,7 +48,6 @@ import $panel from '../../components/panel/panel.js'
 			$panel.add_search_box(); 
 		}
 
-		// Fix panel height issues
 		function heightFix(){
 			// Make the lyrics div as tall as the Youtube player
 			player_height = $(".player-height").css("height");
@@ -58,16 +64,11 @@ import $panel from '../../components/panel/panel.js'
 				$("#lyrics").css('height', '360px');
 		}
 
-		// (NEW YT) When the page loads check if the panel is already there and add it if not
 		function check_for_panel(){
-
 			if(location.pathname === "/watch" && $("#lyrics").length === 0 && !spf_simulated){
 				spf_simulated = true;
 				$("#show_hide_lyrics").remove(); // Prevents duplicate buttons
-				chrome.storage.local.get({'run_on_yt': true, 'yt_mem': true, 'yt_as': false,
-					'panel_state_yt': 'is_in', 'panel_visible_yt': false, 'yt_dark': false, 'run_all': false}, 
-				(response) => {
-				
+				chrome.storage.local.get(yt_options, (response) => {				
 					params = response;
 					if(response.run_on_yt){
 						
@@ -89,7 +90,6 @@ import $panel from '../../components/panel/panel.js'
 		 */
 		function wait_and_do(wait1a, wait1b, wait2a, wait1c, wait2b, execute_this){
 			if(location.pathname === "/watch" && !executed){
-
 				if(($(wait1a).length === 0 || $(wait1b).length === 0 || $(wait1c).length === 0) && 
 					($(wait2a).length === 0 || $(wait2b).length === 0)){
 
@@ -109,28 +109,26 @@ import $panel from '../../components/panel/panel.js'
 
 			// Listen for transition from main or search pages to watch page
 			if(!nav_obs_attached && $(".ytd-page-manager").length > 0){
-				
 				$utils.create_observer("title", check_for_panel, [true, true, false, true]);
 				nav_obs_attached = true;
 			}
 		}
 
-		// (NEW YT) Confirm that the current video is under the music category 
-		function check_if_music(){
-			$("#more .more-button").click();
-			
+		// Confirm that the current video is under the music category 
+		function check_if_music() {
+			$("#more .more-button").click();			
 			setTimeout(function(){
-				if($(".ytd-metadata-row-container-renderer #content a:contains('Music')").text().includes("Music")){
+				if($(".ytd-metadata-row-container-renderer #content a:contains('Music')")
+					.text().includes("Music")) {
 					this_is_music = true;
 					init();
 					this_is_music = false;
 				}	
-				$("#less .less-button").click();
-					
+				$("#less .less-button").click();		
 			}, 100);
 		}
 
-		// (NEW YT) Toggle panel's dark mode when the page's dark mode is toggled
+		// Toggle panel's dark mode when the page's dark mode is toggled
 		function toggle_dark_mode(){
 			if($('body').attr('dark') === "true" || $('html').attr('dark') === "true"){
 				$panel.go_dark('yt');
@@ -144,16 +142,14 @@ import $panel from '../../components/panel/panel.js'
 			}
 		}
 
-		function init(){
-
+		function init() {
 			cur_song.gotLyrics = false;
 			site = params.yt_mem ? "yt" : null;
 
 			$(window).off('keydown');
 
 			// Only append the lyrics panel if it's under the music category
-			if($(".watch-extras-section").find(".watch-info-tag-list a:contains('Music')").text() === "Music" 
-				|| this_is_music || params.run_all ){
+			if(this_is_music || params.run_all){
 
 				// Append youtube specific panel styles
 				$('body').append(`
@@ -177,20 +173,17 @@ import $panel from '../../components/panel/panel.js'
 					`);
 
 				// Append the lyrics panel to the side
-				if($("#watch7-sidebar-modules").length > 0) // TODO: Remove this soon
-					$panel.prepend_panel("#watch7-sidebar-modules");
-				else if($("#watch7-sidebar-contents").length > 0)
+				if($("#watch7-sidebar-contents").length > 0)
 					$panel.prepend_panel("#watch7-sidebar-contents");
-				else if( $("#items.ytd-watch-next-secondary-results-renderer").length > 0 ){ // (NEW YT)
+				else if( $("#items.ytd-watch-next-secondary-results-renderer")
+					.length > 0 ){
 					$panel.prepend_panel("#items.ytd-watch-next-secondary-results-renderer");
 				}
 
 				// add the show-hide-lyrics button 
-				if($(".ytd-page-manager").length > 0){ // (NEW YT)
+				if($(".ytd-page-manager").length > 0){ 
 					$panel.insert_btn_after("h1.title.ytd-video-primary-info-renderer");
 				}
-				else
-					$panel.append_btn("#watch-header");
 
 				// Fix height issues
 				heightFix();
@@ -219,63 +212,34 @@ import $panel from '../../components/panel/panel.js'
 				
 
 				// Try to find the song's info 
-				// TODO: Remove if part soon
-				if($(".watch-extras-section .watch-meta-item").find(".title:contains('Music')").text().trim() === "Music"){
-
-					let song_info = $(".watch-extras-section .watch-meta-item").find(".title:contains('Music')").parent().find("ul.watch-info-tag-list");
-
-					// Find the title
-					let title = $(song_info).text().split("\"")[1];
-
-					// find the artist and clean it up
-					let artist = $(song_info).find("a").first().text();
-
-					// If it got the wrong artist use an alternative method to find it
-					if(artist === "Google Play" || artist.toUpperCase() === "ITUNES" || artist.indexOf("Listen ad-free") !== -1){
-						let song_txt = song_info.text();
-						artist = (song_txt.match(/by (.*) \(G/) || $(song_info).text().match(/by (.*) Listen/))[1];
-					}
+				// Less accurate method. Try to find song info from the title
+				// Assumes "Artist - Song Title", "Artist | song title", or "Artist : song title" format
+				// Only method that works on new YT
+				try{
+					let song_info = $("h1.watch-title-container").text();
+					if(song_info === "")
+						song_info = $("h1.title.ytd-video-primary-info-renderer").text();
+					// try to split song in all possible ways, then choose correct one
+					let s1 = song_info.split(/\|(.+)/), s2 = song_info.split(/-(.+)/), s3 = song_info.split(/:(.+)/);
+					song_info = (s1.length > 1) ? s1 : (s2.length > 1) ? s2 : (s3.length > 1) ? s3 : null; 
+					if(!song_info)
+						throw new Error("Couldn't parse song info :(");
+					let artist = song_info[0].trim();
+					let title = song_info[1].trim();
 
 					cur_song.title = title;
 					cur_song.artist = artist;
 					cur_song.duration = $(".ytp-time-display .ytp-time-duration").text();
-					cur_song.cur_time = $(".ytp-time-display .ytp-time-current").text();
 
-					// get the lyrics - only pull it if the panel is open
 					if($panel.is_visible()){
 						$lyrics.get_lyrics(cur_song, true, [$panel.autoscroll, manual_search]);
 						cur_song.gotLyrics = true;
 					}
-				}else{
-					// Less accurate method. Try to find song info from the title
-					// Assumes "Artist - Song Title", "Artist | song title", or "Artist : song title" format
-					// Only method that works on new YT
-					try{
-						let song_info = $("h1.watch-title-container").text();
-						if(song_info === "")
-							song_info = $("h1.title.ytd-video-primary-info-renderer").text();
-						// try to split song in all possible ways, then choose correct one
-						let s1 = song_info.split(/\|(.+)/), s2 = song_info.split(/-(.+)/), s3 = song_info.split(/:(.+)/);
-						song_info = (s1.length > 1) ? s1 : (s2.length > 1) ? s2 : (s3.length > 1) ? s3 : null; 
-						if(!song_info)
-							throw new Error("Couldn't parse song info :(");
-						let artist = song_info[0].trim();
-						let title = song_info[1].trim();
-
-						cur_song.title = title;
-						cur_song.artist = artist;
-						cur_song.duration = $(".ytp-time-display .ytp-time-duration").text();
-
-						if($panel.is_visible()){
-							$lyrics.get_lyrics(cur_song, true, [$panel.autoscroll, manual_search]);
-							cur_song.gotLyrics = true;
-						}
-					}catch(err){
-						// Couldn't figure out song info, let user enter it manually
-						$panel.add_search_box();
-					}
-
+				}catch(err){
+					// Couldn't figure out song info, let user enter it manually
+					$panel.add_search_box();
 				}
+
 
 				// listen for clicks on the show-hide button
 				$panel.add_toggle_handler(toggle_panel);
@@ -288,7 +252,7 @@ import $panel from '../../components/panel/panel.js'
 
 				$panel.register_keybd_shortcut(toggle_panel, null, 'S');
 
-			}else if($(".ytd-page-manager").length > 0)	{ // (NEW YT)
+			}else if($(".ytd-page-manager").length > 0)	{
 				check_if_music();
 				return;
 			}	
@@ -323,31 +287,13 @@ import $panel from '../../components/panel/panel.js'
 		}
 
 		// On load pull the user specified options, and run extension accordingly
-		chrome.storage.local.get({'run_on_yt': true, 'run_all': false, 'yt_mem': true,'yt_as': false,
-		'yt_dark': false, "panel_state_yt": "is_in", "panel_visible_yt": false}, (response) => {
+		chrome.storage.local.get(yt_options, (response) => {
 			if(response.run_on_yt){
 				params = response;
 				wait_and_do("h1.title.ytd-video-primary-info-renderer", "#items.ytd-watch-next-secondary-results-renderer", "#more .more-button",
 				"#watch-header", ".watch-extras-section", init);
 			}
-		});
-
-
-		// Listen to youtube's spfdone event to detect page changes (OLD YT)
-		// TODO: Remove this soon
-		document.addEventListener("spfdone", function(){
-			chrome.storage.local.get({'run_on_yt': true, 'yt_mem': true, 'yt_as': false,
-				'panel_state_yt': 'is_in', 'panel_visible_yt': false, 'yt_dark': false, 'run_all': false}, 
-			(response) => {
-				if(response.run_on_yt){
-					params = response;
-					wait_and_do("h1.title.ytd-video-primary-info-renderer", "#items.ytd-watch-next-secondary-results-renderer", "#more .more-button",
-				"#watch-header", ".watch-extras-section", init);
-				}
-
-			});
-		});
-		
+		});	
 
 	});
 })();
