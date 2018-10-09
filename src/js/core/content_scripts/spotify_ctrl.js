@@ -173,7 +173,7 @@ import $panel from '../../components/panel/panel.js'
 					// add the lyrics div
 					$panel.append_panel("#main")
 					// add the show-hide-lyrics button
-					$panel.prepend_btn(".extra-controls");
+					$panel.prepend_btn(".ExtraControls");
 					
 					$panel.add_toggle_handler(show_hide_panel);
 
