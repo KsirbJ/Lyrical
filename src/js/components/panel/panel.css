@@ -328,7 +328,7 @@ label {
 	background: inherit;
 }
 .dark-mode #search_form input[type=text] {
-	color: #fff;
+	color: #fff !important;
 }
 /*----------------- End dark mode styles -------------------*/
 

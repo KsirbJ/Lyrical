@@ -53,7 +53,7 @@ import $panel from '../../components/panel/panel.js'
 				// When a mutation on the player is observed, check whether the song has changed by comparing the
 				// title and artist with the stored version
 				function check_playing(){
-					let current_title = $(".track-info__name div a ").text();
+					let current_title = $(".track-info__name div a:eq(0)").text();
 					let current_artist = $(".track-info__artists span span a:eq(0)").text();					
 
 					if(cur_song.title !== current_title || cur_song.artist !== current_artist){
@@ -115,7 +115,7 @@ import $panel from '../../components/panel/panel.js'
 
 				function run(){
 					// Selector cache 
-					$mainContainer = $(".root"),
+					$mainContainer = ($(".root").length > 0 ? $(".root") : $(".Root")),
 						$player = $(".now-playing-bar");
 
 					$(document).on('submit', '#search_form', function(e){
@@ -132,8 +132,14 @@ import $panel from '../../components/panel/panel.js'
 					// Add site specific styles
 					$("head").append(`
 						<style type="text/css">
-							.root.lyrics_visible {
+							.lyrics_visible {
 								width: 70%;
+							}
+							.lyrics_visible ~ .resize-fix #lyrics {
+								height: calc(100% - 90px) !important;
+							}
+							.lyrics_visible ~ .resize-fix #words {
+								height: calc(100% - 50px) !important;
 							}
 							.resize-fix {
 								width: 28%;
