@@ -116,7 +116,7 @@ import $panel from '../../components/panel/panel.js'
 
 		// Confirm that the current video is under the music category 
 		function check_if_music() {
-			$("#more .more-button").click();			
+			$("#meta-contents #more .more-button").click();			
 			setTimeout(function(){
 				if($(".ytd-metadata-row-container-renderer #content a:contains('Music')")
 					.text().includes("Music")) {
@@ -124,7 +124,7 @@ import $panel from '../../components/panel/panel.js'
 					init();
 					this_is_music = false;
 				}	
-				$("#less .less-button").click();		
+				$("#meta-contents #less .less-button").click();		
 			}, 100);
 		}
 
