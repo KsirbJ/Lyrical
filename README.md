@@ -1,3 +1,7 @@
+## [UNMAINTAINED] ## 
+This project is no longer maintained as Google Play Music is no more, and YouTube music has integrated lyrics
+
+
 # Lyrical #
 
 ## Chrome Lyrics Extension ##
